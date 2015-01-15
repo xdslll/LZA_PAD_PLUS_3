@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:layout_margin="30dp">
+    <TextView
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="25dp"
+        android:text="标题"
+        />
+    <EditText
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:hint="请填写数字"
+        android:inputType="number"
+        android:layout_marginBottom="10dp"
+        />
+    <Button
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:text="开始更新"
+        android:id="@+id/content_update"
+        />
+</LinearLayout>

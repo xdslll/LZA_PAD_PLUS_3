@@ -10,17 +10,11 @@ import android.app.Activity;
  */
 public interface Consts {
 
-    public static final String API_KEY_ACCESS_TOKEN = "access_token";
-    public static final String API_WEIXIN = "api.weixin.qq.com";
+    public static final String KEY_FRAGMENT_WIDTH = "fragment_width";
+    public static final String KEY_FRAGMENT_HEIGHT = "fragment_height";
 
     public static final String GLOBAL_TYPE_SCHOOL = "School";
     public static final String GLOBAL_TYPE_RUN_TIME = "Runtime";
-
-    public static final String SCHOOL_KEY_CODE = "code";
-    public static final String SCHOOL_KEY_NAME = "name";
-    public static final String SCHOOL_KEY_APP_ID = "app_id";
-    public static final String SCHOOL_KEY_APP_SECRET_KEY = "app_secret_key";
-
 
     public static final String INTENT_ACTION_RESPONSE_OK = "com.lza.pad.receiver.RESPONSE_OK";
     public static final String INTENT_ACTION_RESPONSE_EMPTY = "com.lza.pad.receiver.RESPONSE_EMPTY";

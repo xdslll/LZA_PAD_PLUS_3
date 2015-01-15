@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--电子书布局-->
+    <dimen name="ebook_list_module_title">16sp</dimen>
+    <dimen name="ebook_list_book_width">180dp</dimen>
+    <dimen name="ebook_list_book_height">250dp</dimen>
+    <dimen name="ebook_list_book_padding_bottom">30dp</dimen>
+    <dimen name="ebook_list_book_title_size">26sp</dimen>
+    <dimen name="ebook_list_book_author_size">16sp</dimen>
+    <dimen name="ebook_list_book_content_size">14sp</dimen>
+    <dimen name="ebook_list_book_content_max_width">220dp</dimen>
+    <integer name="ebook_list_book_content_max_lines">8</integer>
+    <dimen name="ebook_list_seperate_margin">0dp</dimen>
+
+    <dimen name="ebook_list_book_thumb_width">85dp</dimen>
+    <dimen name="ebook_list_book_thumb_height">120dp</dimen>
+    <dimen name="ebook_list_book_thumb_title_size">22sp</dimen>
+    <dimen name="ebook_list_book_thumb_author_size">16sp</dimen>
+    <dimen name="ebook_list_book_thumb_content_size">14sp</dimen>
+    <integer name="ebook_list_book_thumb_content_max_lines">2</integer>
+    <dimen name="ebook_list_book_thumb_margin">5dp</dimen>
+
+    <!--首页头部的尺寸-->
+    <dimen name="title_bg_logo_width">250dp</dimen>
+    <dimen name="title_bg_logo_height">176dp</dimen>
+    <dimen name="title_bg_logo_margin_left">20dp</dimen>
+    <dimen name="title_bg_logo_margin_top">20dp</dimen>
+    <dimen name="title_nav_img_width">64dp</dimen>
+    <dimen name="title_nav_img_height">64dp</dimen>
+    <dimen name="title_nav_text_size">16sp</dimen>
+</resources>

@@ -1,19 +1,16 @@
 <resources>
     <string name="app_name">Pad+</string>
-
     <string name="main_menu_settings">设置</string>
     <string name="main_prompt">请选择学校</string>
     <string name="main_more">更多功能</string>
     <string name="main_get_access_token">获取AccessToken</string>
     <string name="main_get_access_token_success">获取AccessToken成功！</string>
     <string name="main_get_access_token_failed">获取AccessToken失败！</string>
-
     <string name="clear_db_title">清空数据库</string>
     <string name="clear_db_content">清空数据库后当前用户的所有数据都将被清空，是否确认？</string>
     <string name="restore_db_title">还原数据库</string>
     <string name="restore_db_content">还原数据库后当前用户的所有数据都将被还原至初始状态，是否确认？</string>
-
     <string name="ten_thousand">万</string>
-
     <string name="menu_func_get_menu">获取菜单</string>
+
 </resources>
