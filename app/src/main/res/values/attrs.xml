@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <declare-styleable name="DefaultEbookCover">
+        <attr name="cover_title" format="string"/>
+        <attr name="cover_author" format="string"/>
+        <attr name="cover_img" format="reference"/>
+        <attr name="cover_title_size" format="dimension"/>
+        <attr name="cover_author_size" format="dimension"/>
+        <attr name="cover_title_margin" format="dimension"/>
+        <attr name="cover_author_margin" format="dimension"/>
+    </declare-styleable>
 </resources>

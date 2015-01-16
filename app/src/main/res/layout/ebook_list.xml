@@ -1,41 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@color/white">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="电子书推荐"
-        android:textColor="@color/common_gray"
-        android:textSize="@dimen/ebook_list_module_title"
-        android:paddingLeft="30dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="电子书推荐"
+            android:textColor="@color/common_gray"
+            android:textSize="@dimen/ebook_list_module_title"
+            android:paddingLeft="30dp"
+            android:paddingTop="10dp"
+            android:layout_weight="1"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="换一批"
+            android:textColor="@color/common_gray"
+            android:textSize="@dimen/ebook_list_module_title"
+            android:paddingRight="30dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_weight="1">
-            <ImageView
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/ebook_list_book_margin_top">
+            <com.lza.pad.widget.DefaultEbookCover
                 android:layout_width="@dimen/ebook_list_book_width"
                 android:layout_height="@dimen/ebook_list_book_height"
-                android:src="@drawable/default_ebook_cover"
+                app:cover_img="@drawable/default_hotbook_cover"
+                app:cover_author="[日]寺山修司"
+                app:cover_title="幻想图书馆幻想图书馆"
+                app:cover_title_size="@dimen/ebook_list_book_cover_title_size"
+                app:cover_author_size="@dimen/ebook_list_book_cover_author_size"
+                app:cover_title_margin="@dimen/ebook_list_book_cover_title_margin"
+                app:cover_author_margin="@dimen/ebook_list_book_cover_author_margin"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
                 />
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginTop="10dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,25 +84,31 @@
         </LinearLayout>
         <ImageView
             android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/common_light_gray"
             android:layout_marginBottom="@dimen/ebook_list_seperate_margin"
             />
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_marginTop="@dimen/ebook_list_book_margin_top">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/ebook_list_book_thumb_margin"
                 android:layout_marginBottom="@dimen/ebook_list_book_thumb_margin">
-                <ImageView
+                <com.lza.pad.widget.DefaultEbookCover
                     android:layout_width="@dimen/ebook_list_book_thumb_width"
                     android:layout_height="@dimen/ebook_list_book_thumb_height"
-                    android:src="@drawable/default_ebook_cover"
+                    app:cover_img="@drawable/default_teaching_cover"
+                    app:cover_author="[日]寺山修司"
+                    app:cover_title="幻想图书馆幻想图书馆"
+                    app:cover_title_size="@dimen/ebook_list_book_thumb_cover_title_size"
+                    app:cover_author_size="@dimen/ebook_list_book_thumb_cover_author_size"
+                    app:cover_title_margin="@dimen/ebook_list_book_thumb_cover_title_margin"
+                    app:cover_author_margin="@dimen/ebook_list_book_thumb_cover_author_margin"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     />
@@ -134,10 +158,16 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/ebook_list_book_thumb_margin">
-                <ImageView
+                <com.lza.pad.widget.DefaultEbookCover
                     android:layout_width="@dimen/ebook_list_book_thumb_width"
                     android:layout_height="@dimen/ebook_list_book_thumb_height"
-                    android:src="@drawable/default_ebook_cover"
+                    app:cover_img="@drawable/default_newbook_cover"
+                    app:cover_author="[日]寺山修司"
+                    app:cover_title="幻想图书馆幻想图书馆"
+                    app:cover_title_size="@dimen/ebook_list_book_thumb_cover_title_size"
+                    app:cover_author_size="@dimen/ebook_list_book_thumb_cover_author_size"
+                    app:cover_title_margin="@dimen/ebook_list_book_thumb_cover_title_margin"
+                    app:cover_author_margin="@dimen/ebook_list_book_thumb_cover_author_margin"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     />
@@ -169,10 +199,16 @@
                         android:maxWidth="@dimen/ebook_list_book_content_max_width"
                         android:maxLines="@integer/ebook_list_book_thumb_content_max_lines"
                         android:ellipsize="end"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="10dp"
                         />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bottom"
+        android:scaleType="fitXY"
+        />
 </LinearLayout>

@@ -6,10 +6,10 @@
     <dimen name="ebook_list_book_height">250dp</dimen>
     <dimen name="ebook_list_book_padding_bottom">30dp</dimen>
     <dimen name="ebook_list_book_title_size">26sp</dimen>
-    <dimen name="ebook_list_book_author_size">16sp</dimen>
-    <dimen name="ebook_list_book_content_size">14sp</dimen>
+    <dimen name="ebook_list_book_author_size">18sp</dimen>
+    <dimen name="ebook_list_book_content_size">16sp</dimen>
     <dimen name="ebook_list_book_content_max_width">220dp</dimen>
-    <integer name="ebook_list_book_content_max_lines">8</integer>
+    <integer name="ebook_list_book_content_max_lines">9</integer>
     <dimen name="ebook_list_seperate_margin">0dp</dimen>
 
     <dimen name="ebook_list_book_thumb_width">85dp</dimen>
@@ -17,8 +17,27 @@
     <dimen name="ebook_list_book_thumb_title_size">22sp</dimen>
     <dimen name="ebook_list_book_thumb_author_size">16sp</dimen>
     <dimen name="ebook_list_book_thumb_content_size">14sp</dimen>
-    <integer name="ebook_list_book_thumb_content_max_lines">2</integer>
-    <dimen name="ebook_list_book_thumb_margin">5dp</dimen>
+    <integer name="ebook_list_book_thumb_content_max_lines">3</integer>
+    <dimen name="ebook_list_book_thumb_margin">2dp</dimen>
+
+    <dimen name="ebook_list_book_cover_title_size">23dp</dimen>
+    <dimen name="ebook_list_book_cover_author_size">18dp</dimen>
+    <dimen name="ebook_list_book_cover_title_margin">40dp</dimen>
+    <dimen name="ebook_list_book_cover_author_margin">15dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_title_size">12dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_author_size">8dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_title_margin">20dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_author_margin">10dp</dimen>
+
+    <dimen name="ebook_list_book_margin_top">10dp</dimen>
+    <dimen name="ebook_list_book_thumb_margin_top">0dp</dimen>
+
+    <!--电子书布局2-->
+    <dimen name="ebook_list2_book_width">160dp</dimen>
+    <dimen name="ebook_list2_book_height">230dp</dimen>
+    <dimen name="ebook_list2_book_cover_title_size">21dp</dimen>
+    <dimen name="ebook_list2_book_cover_author_size">16dp</dimen>
+    <dimen name="ebook_list2_book_margin_top">10dp</dimen>
 
     <!--首页头部的尺寸-->
     <dimen name="title_bg_logo_width">250dp</dimen>

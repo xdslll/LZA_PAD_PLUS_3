@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import com.lza.pad.R;
 import com.lza.pad.app.base.BaseActivity;
 import com.lza.pad.fragment.EbookListFragment;
-import com.lza.pad.fragment.TestFragment;
+import com.lza.pad.fragment.EbookListFragment2;
 import com.lza.pad.fragment.TitleFragment;
 
 /**
@@ -65,12 +65,21 @@ public class HomeActivity extends BaseActivity {
                 FragmentTransaction ft = mFm.beginTransaction();
                 ft.replace(id, fragment);
                 ft.commit();
+            } else if (i == 2) {
+                EbookListFragment2 fragment = new EbookListFragment2();
+                FragmentTransaction ft = mFm.beginTransaction();
+                ft.replace(id, fragment);
+                ft.commit();
             } else {
-                TestFragment fragment = new TestFragment();
+                /*TestFragment fragment = new TestFragment();
                 Bundle arg = new Bundle();
                 arg.putString("data", "Hello " + i);
                 arg.putInt("color", colors[i - 1]);
                 fragment.setArguments(arg);
+                FragmentTransaction ft = mFm.beginTransaction();
+                ft.replace(id, fragment);
+                ft.commit();*/
+                EbookListFragment fragment = new EbookListFragment();
                 FragmentTransaction ft = mFm.beginTransaction();
                 ft.replace(id, fragment);
                 ft.commit();
