@@ -12,18 +12,13 @@ import com.lza.pad.fragment.base.BaseFragment;
  * Say something about this class
  *
  * @author xiads
- * @Date 1/13/15.
+ * @Date 1/16/15.
  */
-public class TitleFragment extends BaseFragment {
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+public class IrregularNewsFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.title, container, false);
+        View view = inflater.inflate(R.layout.news_home, container, false);
         return view;
     }
 }

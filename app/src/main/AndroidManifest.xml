@@ -16,6 +16,7 @@
         <activity android:name=".app.HomeActivity" android:screenOrientation="portrait"/>
         <activity android:name=".app.ContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme"/>
+        <activity android:name=".app.EbookActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

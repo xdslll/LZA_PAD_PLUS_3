@@ -15,14 +15,10 @@ import com.lza.pad.support.utils.Consts;
 public class BaseFragment extends Fragment implements Consts {
 
     protected Activity mActivity;
-    protected int W, H;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
-
-        W = getArguments().getInt(KEY_FRAGMENT_WIDTH);
-        H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
     }
 }
