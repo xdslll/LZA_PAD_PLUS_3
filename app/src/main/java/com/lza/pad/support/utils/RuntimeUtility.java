@@ -249,11 +249,11 @@ public final class RuntimeUtility implements Consts {
         return Build.VERSION.SDK_INT >= 20;
     }
 
+    private static DisplayMetrics metrics = new DisplayMetrics();
     public static int getScreenWidth(Activity activity) {
         //Activity activity = GlobalContext.getInstance().getActivity();
         if (activity != null) {
             Display display = activity.getWindowManager().getDefaultDisplay();
-            DisplayMetrics metrics = new DisplayMetrics();
             display.getMetrics(metrics);
             return metrics.widthPixels;
         }
@@ -265,7 +265,6 @@ public final class RuntimeUtility implements Consts {
         //Activity activity = GlobalContext.getInstance().getActivity();
         if (activity != null) {
             Display display = activity.getWindowManager().getDefaultDisplay();
-            DisplayMetrics metrics = new DisplayMetrics();
             display.getMetrics(metrics);
             return metrics.heightPixels;
         }
@@ -820,6 +819,18 @@ public final class RuntimeUtility implements Consts {
             flag = false;
         }
         return flag;
+    }
+
+    private static long lastClickTime = 0;
+
+    public static boolean isFastDoubleClick() {
+        long time = System.currentTimeMillis();
+        long timeD = time - lastClickTime;
+        if (0 < timeD && timeD < 800) {
+            return true;
+        }
+        lastClickTime = time;
+        return false;
     }
 }
 

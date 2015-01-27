@@ -10,6 +10,15 @@ import android.app.Activity;
  */
 public interface Consts {
 
+    public static final String KEY_MAP_FUNC_TEXT = "key_map_func_title";
+    public static final String KEY_MAP_TITLE = "key_map_title";
+    public static final String KEY_MAP_INDEX = "key_map_index";
+    public static final String KEY_URL = "key_url";
+
+    public static final String KEY_CURRENT_SUBJECT = "key_current_subject";
+    public static final String KEY_SUBJECT_DATA = "key_subject_data";
+    public static final String KEY_EBOOK_NUM_COLUMNS = "key_ebook_num_columns";
+    public static final String KEY_IF_HOME = "key_if_home";
     public static final String KEY_FRAGMENT_WIDTH = "fragment_width";
     public static final String KEY_FRAGMENT_HEIGHT = "fragment_height";
 

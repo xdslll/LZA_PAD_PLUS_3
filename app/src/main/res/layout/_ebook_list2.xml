@@ -23,7 +23,9 @@
             android:text="更多"
             android:textColor="@color/common_gray"
             android:textSize="@dimen/ebook_list_module_title"
+            android:paddingLeft="30dp"
             android:paddingRight="30dp"
+            android:background="@drawable/common_bg"
             android:id="@+id/ebook_list2_more"
             />
     </LinearLayout>
@@ -46,6 +48,7 @@
             app:cover_author_margin="@dimen/ebook_list_book_cover_author_margin"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
+            android:id="@+id/ebook_list2_book1"
             />
         <com.lza.pad.widget.DefaultEbookCover
             android:layout_width="@dimen/ebook_list2_book_width"
@@ -91,7 +94,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:id="@+id/ebook_list_pages">
         <TextView
             android:layout_width="30dp"
             android:layout_height="wrap_content"

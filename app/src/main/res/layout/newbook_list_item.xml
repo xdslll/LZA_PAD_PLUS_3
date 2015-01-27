@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:gravity="center" android:id="@+id/newbook_list_item">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/whitesmoke">
+        <com.lza.pad.widget.DefaultEbookCover
+            android:layout_width="@dimen/newbook_list_book_width"
+            android:layout_height="@dimen/newbook_list_book_height"
+            app:cover_img="@drawable/default_hotbook_cover"
+            app:cover_title="幻想图书馆幻想图书馆"
+            app:cover_title_size="@dimen/newbook_list_book_cover_title_size"
+            app:cover_title_margin="@dimen/newbook_list_book_cover_title_margin"
+            android:id="@+id/newbook_list_item_book"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="耶鲁大学公开课：政治哲学"
+                android:textSize="26dp"
+                android:textColor="@color/common_dark_gray"
+                android:layout_marginTop="5dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[美]史蒂夫.B.斯密斯(Steven B. Smith)"
+                android:textSize="18dp"
+                android:textColor="@color/common_blue"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="仙林馆4楼化学物理 T7128"
+                android:textSize="18dp"
+                android:textColor="@color/common_gray"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

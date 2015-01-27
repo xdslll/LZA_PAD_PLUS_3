@@ -31,13 +31,20 @@
     <dimen name="ebook_list_book_margin_top">25dp</dimen>
     <dimen name="ebook_list_book_thumb_margin_top">0dp</dimen>
 
-
     <!--电子书布局2-->
     <dimen name="ebook_list2_book_width">240dp</dimen>
     <dimen name="ebook_list2_book_height">310dp</dimen>
     <dimen name="ebook_list2_book_cover_title_size">31dp</dimen>
     <dimen name="ebook_list2_book_cover_author_size">20dp</dimen>
     <dimen name="ebook_list2_book_margin_top">25dp</dimen>
+
+    <!--到馆新书布局-->
+    <dimen name="newbook_list_book_width">110dp</dimen>
+    <dimen name="newbook_list_book_height">155dp</dimen>
+    <dimen name="newbook_list_book_cover_title_size">18dp</dimen>
+    <dimen name="newbook_list_book_cover_author_size">12dp</dimen>
+    <dimen name="newbook_list_book_cover_title_margin">25dp</dimen>
+    <dimen name="newbook_list_book_cover_author_margin">10dp</dimen>
 
     <!--首页头部的尺寸-->
     <dimen name="title_bg_logo_width">340dp</dimen>
@@ -47,4 +54,34 @@
     <dimen name="title_nav_img_width">100dp</dimen>
     <dimen name="title_nav_img_height">100dp</dimen>
     <dimen name="title_nav_text_size">20sp</dimen>
+
+    <!-- EbookNormalListFragment.java -->
+    <dimen name="ebook_list_book_padding_hor">20dp</dimen>
+    <dimen name="ebook_list_book_padding_ver">40dp</dimen>
+    <dimen name="ebook_list_book_padding_hor2">20dp</dimen>
+    <dimen name="ebook_list_book_padding_ver2">60dp</dimen>
+
+    <!-- NewbookListFragment.java -->
+    <dimen name="newbook_list_book_padding_hor">10dp</dimen>
+    <dimen name="newbook_list_book_padding_ver">10dp</dimen>
+    <dimen name="newbook_list_book_padding_hor2">10dp</dimen>
+    <dimen name="newbook_list_book_padding_ver2">10dp</dimen>
+
+    <!-- SubjectFragment.java -->
+    <dimen name="subject_text_size">25sp</dimen>
+    <dimen name="subject_text_padding">15dp</dimen>
+
+    <!-- news_list_item.xml -->
+    <dimen name="news_list_item_img_width">200dp</dimen>
+    <dimen name="news_list_item_img_height">200dp</dimen>
+
+    <!-- library_map.xml -->
+    <dimen name="library_map_img_width">450dp</dimen>
+    <dimen name="library_map_img_height">380dp</dimen>
+    <dimen name="library_map_img_bg_width">470dp</dimen>
+    <dimen name="library_map_img_bg_height">400dp</dimen>
+
+    <!-- panoramic_view.xml -->
+    <dimen name="panoramic_view_title_size">32sp</dimen>
+    <dimen name="panoramic_view_title_func_size">22sp</dimen>
 </resources>

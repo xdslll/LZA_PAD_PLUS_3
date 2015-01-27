@@ -1,14 +1,14 @@
 package com.lza.pad.app;
 
-import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.content.Intent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
-import com.lza.pad.fragment.EbookListFragment2;
+import com.lza.pad.app.base.BaseModuleActivity;
+import com.lza.pad.fragment.EbookNormalListFragment;
+import com.lza.pad.fragment._EbookListFragment;
 
 /**
  * Say something about this class
@@ -16,44 +16,67 @@ import com.lza.pad.fragment.EbookListFragment2;
  * @author xiads
  * @Date 1/18/15.
  */
-public class EbookActivity extends BaseActivity {
+public class EbookActivity extends BaseModuleActivity {
 
-    private LinearLayout mMainContainer;
+    private static final int REQUEST_SUBJECT = 0x001;
+    private int mCurrentSubject = 0;
+    private String[] mData = {"全部分类", "A 马列主义、毛泽东思想、邓小平理论", "B 哲学、宗教",
+            "C 社会科学总论", "D 政治、法律", "E 军事", "F 经济", "G 文化、科学、教育、体育", "H 语言、文学",
+            "I 文学", "J 艺术", "K 历史、地理", "N 自然科学总论", "O 数理科学与化学", "P 天文学、地球科学",
+            "Q 生物科学", "R 医药、卫生", "S 农业科学", "T 工业技术", "U 交通运输", "V 航空、航天",
+            "X 环境科学，安全科学", "Z 综合性图书"};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.home);
-        mMainContainer = (LinearLayout) findViewById(R.id.home);
+    protected String getModName() {
+        return "电子书";
+    }
 
-        //获取屏幕尺寸
-        int w, h, size = 4;
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        w = metrics.widthPixels;
-        h = metrics.heightPixels;
-
+    @Override
+    protected void onDrawWindow(LinearLayout container, int w, int h) {
+        int size = DEFAULT_SIZE;
         for (int i = 0; i < size; i++) {
             int id = (i + 1) << (i + 1);
             FrameLayout subContainer = new FrameLayout(this);
             subContainer.setLayoutParams(new ViewGroup.LayoutParams(w, h / size));
             subContainer.setId(id);
-            mMainContainer.addView(subContainer);
+            container.addView(subContainer);
 
             if (i == 0) {
-                EbookListFragment2 fragment = new EbookListFragment2();
-                launchFragment(fragment, id);
-            } else if (i == 1) {
-                EbookListFragment2 fragment = new EbookListFragment2();
-                launchFragment(fragment, id);
-            } else if (i == 2) {
-                EbookListFragment2 fragment = new EbookListFragment2();
-                launchFragment(fragment, id);
+                _EbookListFragment fragment = new _EbookListFragment();
+                launchFragment(fragment, id, w, h / size, false);
             } else {
-                EbookListFragment2 fragment = new EbookListFragment2();
-                launchFragment(fragment, id);
+                EbookNormalListFragment fragment = new EbookNormalListFragment();
+                launchFragment(fragment, id, w, h / size, false);
             }
+        }
+    }
 
+    @Override
+    protected void onSubjectClick(View v) {
+        Intent intent = new Intent(EbookActivity.this, SubjectActivity.class);
+        intent.putExtra(KEY_CURRENT_SUBJECT, mCurrentSubject);
+        intent.putExtra(KEY_SUBJECT_DATA, mData);
+        startActivityForResult(intent, REQUEST_SUBJECT);
+    }
+
+    @Override
+    protected void onSearch(View v) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_SUBJECT) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    mCurrentSubject = data.getIntExtra(KEY_CURRENT_SUBJECT, 0);
+                    setSubjectText(mData[mCurrentSubject]);
+                }
+                //ToastUtils.showShort(this, "OK!" + mCurrentSubject);
+            } else {
+                //ToastUtils.showShort(this, "CANCEL!");
+            }
         }
     }
 }

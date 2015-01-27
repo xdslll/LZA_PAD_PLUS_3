@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -69,14 +70,17 @@ public class DefaultEbookCover extends View {
 
         mPaint.setTextSize(mCoverTitleSize);
         mPaint.setColor(Color.WHITE);
-        float titleWidth = mPaint.measureText(mCoverTitle, 0, 5);
-        float x = (W - titleWidth) / 2;
-        canvas.drawText(mCoverTitle, 0, 5, x, mCoverTitleMargin, mPaint);
-
-        mPaint.setTextSize(mCoverAuthorSize);
-        float authorWidth = mPaint.measureText(mCoverAuthor);
-        x = (W - authorWidth) / 2;
-        canvas.drawText(mCoverAuthor, x, H - mCoverAuthorMargin, mPaint);
+        if (!TextUtils.isEmpty(mCoverTitle)) {
+            float titleWidth = mPaint.measureText(mCoverTitle, 0, 5);
+            float x = (W - titleWidth) / 2;
+            canvas.drawText(mCoverTitle, 0, 5, x, mCoverTitleMargin, mPaint);
+        }
+        if (!TextUtils.isEmpty(mCoverAuthor)) {
+            mPaint.setTextSize(mCoverAuthorSize);
+            float authorWidth = mPaint.measureText(mCoverAuthor);
+            float x = (W - authorWidth) / 2;
+            canvas.drawText(mCoverAuthor, x, H - mCoverAuthorMargin, mPaint);
+        }
     }
 
 }

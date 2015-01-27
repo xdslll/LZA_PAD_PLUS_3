@@ -6,6 +6,10 @@ import android.view.View;
 
 import com.lza.pad.R;
 import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.helper.UrlHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Say something about this class
@@ -24,7 +28,15 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                finish();
             }
         });
+
+        Map<String, String> par = new HashMap<String, String>();
+        par.put("control", "get_pad_model");
+        par.put("bh", "nju01");
+        String url = UrlHelper.generateUrl(par);
+
+        //RequestHelper.sendRequest();
     }
 }

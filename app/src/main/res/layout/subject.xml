@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:padding="@dimen/subject_text_padding">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/subject_text_size"
+        android:textColor="@color/common_blue"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:padding="@dimen/subject_text_padding"
+        android:id="@+id/subject_text"
+        />
+</RelativeLayout>

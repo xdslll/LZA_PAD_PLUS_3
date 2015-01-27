@@ -2,12 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@color/white">
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/title_bg"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/title_bg"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在加载..."
+                android:textSize="50sp"
+                android:textStyle="bold"
+                android:textColor="@color/common_blue"
+                android:id="@+id/title_time_text"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在加载..."
+                android:textSize="30sp"
+                android:textColor="@color/common_blue"
+                android:id="@+id/title_date_text"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:id="@+id/title_free_wifi">
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/wifi"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提供免费Wifi"
+                android:textSize="30sp"
+                android:textColor="@color/common_gray"
+                android:layout_marginLeft="10dp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -19,15 +71,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp">
+            android:layout_weight="1"
+            android:gravity="center">
             <ImageButton
                 android:layout_width="@dimen/title_nav_img_width"
                 android:layout_height="@dimen/title_nav_img_height"
@@ -35,11 +89,11 @@
                 android:background="@null"
                 android:layout_marginBottom="5dp"
                 android:scaleType="fitCenter"
+                android:id="@+id/title_nav_ebook"
                 />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:text="电子书"
                 android:textSize="@dimen/title_nav_text_size"
                 android:textColor="@color/common_blue"
@@ -51,21 +105,22 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp">
+            android:layout_weight="1"
+            android:gravity="center">
             <ImageButton
                 android:layout_width="@dimen/title_nav_img_width"
                 android:layout_height="@dimen/title_nav_img_height"
-                android:src="@drawable/nav_ebook_selector"
+                android:src="@drawable/nav_news_selector"
                 android:background="@null"
                 android:layout_marginBottom="5dp"
                 android:scaleType="fitCenter"
+                android:id="@+id/title_nav_news"
                 />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="电子书"
+                android:text="新闻动态"
                 android:textSize="@dimen/title_nav_text_size"
                 android:textColor="@color/common_blue"
                 />
@@ -76,21 +131,20 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp">
+            android:layout_weight="1"
+            android:gravity="center">
             <ImageButton
                 android:layout_width="@dimen/title_nav_img_width"
                 android:layout_height="@dimen/title_nav_img_height"
-                android:src="@drawable/nav_ebook_selector"
+                android:src="@drawable/nav_search_selector"
                 android:background="@null"
                 android:layout_marginBottom="5dp"
                 android:scaleType="fitCenter"
                 />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="电子书"
+                android:text="馆藏搜索"
                 android:textSize="@dimen/title_nav_text_size"
                 android:textColor="@color/common_blue"
                 />
@@ -101,21 +155,21 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp">
+            android:layout_weight="1"
+            android:gravity="center">
             <ImageButton
                 android:layout_width="@dimen/title_nav_img_width"
                 android:layout_height="@dimen/title_nav_img_height"
-                android:src="@drawable/nav_ebook_selector"
+                android:src="@drawable/nav_newbook_selector"
                 android:background="@null"
                 android:layout_marginBottom="5dp"
                 android:scaleType="fitCenter"
+                android:id="@+id/title_nav_newbook"
                 />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="电子书"
+                android:text="到馆新书"
                 android:textSize="@dimen/title_nav_text_size"
                 android:textColor="@color/common_blue"
                 />
@@ -126,21 +180,21 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp">
+            android:layout_weight="1"
+            android:gravity="center">
             <ImageButton
                 android:layout_width="@dimen/title_nav_img_width"
                 android:layout_height="@dimen/title_nav_img_height"
-                android:src="@drawable/nav_ebook_selector"
+                android:src="@drawable/nav_guide_selector"
                 android:background="@null"
                 android:layout_marginBottom="5dp"
                 android:scaleType="fitCenter"
+                android:id="@+id/title_nav_guide"
                 />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="电子书"
+                android:text="布局导航"
                 android:textSize="@dimen/title_nav_text_size"
                 android:textColor="@color/common_blue"
                 />
@@ -151,21 +205,21 @@
             android:orientation="vertical"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp">
+            android:layout_weight="1"
+            android:gravity="center">
             <ImageButton
                 android:layout_width="@dimen/title_nav_img_width"
                 android:layout_height="@dimen/title_nav_img_height"
-                android:src="@drawable/nav_ebook_selector"
+                android:src="@drawable/nav_more_selector"
                 android:background="@null"
                 android:layout_marginBottom="5dp"
                 android:scaleType="fitCenter"
+                android:id="@+id/title_nav_more"
                 />
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="电子书"
+                android:text="更多服务"
                 android:textSize="@dimen/title_nav_text_size"
                 android:textColor="@color/common_blue"
                 />

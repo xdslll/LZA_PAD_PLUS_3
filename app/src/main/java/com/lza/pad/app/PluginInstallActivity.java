@@ -20,12 +20,12 @@ import java.io.File;
  * @author xiads
  * @Date 1/6/15.
  */
-public class ContentActivity extends BaseActivity {
+public class PluginInstallActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content);
+        setContentView(R.layout._update);
 
         File dir = Environment.getExternalStorageDirectory();
         final File file = new File(dir, "Download/app-debug.apk");
@@ -35,7 +35,7 @@ public class ContentActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 UniversalUtility.showDialog(
-                        ContentActivity.this, "请确认", "是否开始更新？",
+                        PluginInstallActivity.this, "请确认", "是否开始更新？",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

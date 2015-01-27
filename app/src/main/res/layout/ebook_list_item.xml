@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/ebook_list_item">
+    <com.lza.pad.widget.DefaultEbookCover
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cover_img="@drawable/default_hotbook_cover"
+        app:cover_author="[日]寺山修司"
+        app:cover_title="幻想图书馆幻想图书馆"
+        app:cover_title_size="@dimen/ebook_list2_book_cover_title_size"
+        app:cover_author_size="@dimen/ebook_list2_book_cover_author_size"
+        app:cover_title_margin="@dimen/ebook_list_book_cover_title_margin"
+        app:cover_author_margin="@dimen/ebook_list_book_cover_author_margin"
+        android:id="@+id/ebook_list_item_book"
+        />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:id="@+id/ebook_list_item_book_img"
+        />
+</RelativeLayout>

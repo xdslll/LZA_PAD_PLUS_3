@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 15
     buildToolsVersion "20.0.0"
-
     defaultConfig {
         applicationId "com.lza.pad"
         minSdkVersion 15
@@ -28,4 +29,9 @@ dependencies {
     compile files('libs/ormlite-android-4.48.jar')
     compile files('libs/ormlite-core-4.48.jar')
     compile files('libs/volley.jar')
+    compile 'com.android.support:support-v4:20.0.0'
+    compile files('libs/NineOldAndroid-2.4.0.jar')
+    compile files('libs/AndroidEasingFunctions-1.0.0.jar')
+    compile files('libs/AndroidViewAnimations-1.1.3.jar')
+    compile files('libs/AMapPanoramaSDK1.0.jar')
 }

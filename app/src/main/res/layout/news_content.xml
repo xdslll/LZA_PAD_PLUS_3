@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:minWidth="1000dp"
+    android:minHeight="600dp" android:id="@+id/news_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/common_dark_gray"
+        android:paddingTop="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="我校开通不列颠百科全书网络版的通知"
+        android:id="@+id/news_content_title"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="@color/common_gray"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="2015-1-6 13:08"
+        android:id="@+id/news_content_date"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/common_light_gray"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/test_news"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:id="@+id/news_content_img"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textColor="@color/common_gray"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:scrollbars="vertical"
+        android:lineSpacingExtra="2dp"
+        android:id="@+id/news_content_text"
+        android:text="不列颠百科全书网络版是第一部网络百科全书。世界各地的用户都可通过网络查询不列颠百科全书的全文。不列颠百科全书公司以其强大的内容编辑实力，丰富可靠咨询来源及数据库检索技术，成为全球工具书领域的领航者。目前，不列颠百科全书网络版已被世界各地的高等院校、中、小学、图书馆及政府机构等普遍应用于教学和研究中，是世界上使用最广泛的完整的电子参考和学习研究工具之一。
+    不列颠百科全书网络版提供高品质、全面、快速、方便查找的信息。可检索词条达到225,000多条，超过340,000种词类变化。并收录了超过160,000篇文章，33,000篇传记，1000种的电子期刊文章，75,000张的图解、地图、统计图、7,000段影片、动画、声音文件等多媒体数据。不列颠百科全书公司还精心挑选了160,000多个优秀的互联网网站链接，其中还包括一个对世界每一个国家的综合统计数据库。
+
+不列颠百科网络版大学版包括了：
+大不列颠百科全书
+EBSCO期刊杂志摘选
+电子原版书
+韦氏辞典和词库
+时事新闻
+个人文件夹
+网站搜索
+互动式世界地图集
+名人名言
+世界数据分析
+视频会集
+大事年表
+优秀网站推荐
+多媒体资料
+主题数据库
+
+    在同一个页面中系列的检索结果包括了大不列颠百科文章，原著，电子书,多媒体信息,相关网站衔接,杂志期刊文章等以上内容。每篇大不列颠百科的文章，视频和图片具备了韦氏快速点击辞典及自动引文。
+    不列颠百科全书还提供了包括历史学家，文学家，哲学家和科学家等140位不列颠百科知名撰稿人的225部经典和重要作品的介绍。读者还可以从不列颠百科全书网络版所收录的数万原始文献中拓宽知识面。 2012年3月，不列颠百科全书出版公司宣布将不再出版印刷版。因此，Encyclopedia Britannica Online Academic Edition（简称 EB Online）成为今后读者检索这些权威参考资料的首选工具。该系统不但包括Encyclopaedia Britannica本身的内容，还整合了Merriam-Webster's Collegiate Dictionary、报章杂志、以及其他众多研究工具提供的可靠资源。除文字条目外，还有丰富的图片以及音频视频资料。这些权威性的参考资料均可通过检索和浏览途径进行访问。此外，EB Online上的整合资源
+还可以通过以下途径访问：
+    1、首页，提供了Merriam-Webster's Dictionary 的访问入口，用户可检索22万余个词汇的定义、用法以及同义词等；在“研究工具（Research Tools）”栏下，用户可以获取不同类型的数据、事实资料，包括百科全书条目、世界地图、世界各国的统计资料、杂志上的论文等等；
+    2、检索结果列表以及条目正文浏览页面中，提供与正文主题相关的来自 the Britannica Book of the Year的内容，以及Web 网站的访问链接，这些网站均是经过百科全书编辑精选的。
+
+
+访问地址：http://search.eb.com/
+"
+        />
+</LinearLayout>

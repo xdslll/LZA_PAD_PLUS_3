@@ -16,7 +16,6 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.lza.pad.R;
-import com.lza.pad.support.utils.ToastUtils;
 
 /**
  * Say something about this class
@@ -36,7 +35,7 @@ public class IrregularNews extends View {
     private int mTitleTextSize = 32;
     private int mAbstractTextSize = 24;
 
-    private int mAlpha = 80;
+    private int mAlpha = 255;
 
     public IrregularNews(Context context) {
         this(context, null);
@@ -53,8 +52,8 @@ public class IrregularNews extends View {
         mTextPaint = new TextPaint();
         mTextPaint.setColor(Color.WHITE);
 
-        BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.news_test);
-        //mBitmap = drawable.getBitmap();
+        BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(R.drawable.test_news);
+        mBitmap = drawable.getBitmap();
         mBitmap2 = drawable.getBitmap();
         if (mBitmap != null) {
             mSrc = new Rect(0, 0, mBitmap.getWidth(), mBitmap.getHeight());
@@ -97,7 +96,7 @@ public class IrregularNews extends View {
         String _title, _abstract;
 
         //绘制背景
-        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(Color.TRANSPARENT);
         canvas.drawRect(0, 0, W, H, mPaint);
 
         //绘制6块新闻
@@ -120,11 +119,11 @@ public class IrregularNews extends View {
             canvas.drawBitmap(mBitmap, mSrc, mDst1, null);
             mPaint.setColor(Color.TRANSPARENT);
             mPaint.setAlpha(mAlpha);
-            Shader shader = new LinearGradient(0, H - 100, 0, H,
-                    new int[]{Color.GRAY, Color.DKGRAY, Color.BLACK},
+            Shader shader = new LinearGradient(0, H - 200, 0, H,
+                    new int[]{Color.TRANSPARENT, Color.BLACK},
                     null, Shader.TileMode.REPEAT);
             mPaint.setShader(shader);
-            canvas.drawRect(0, H - 100, W / 4, H, mPaint);
+            canvas.drawRect(0, H - 200, W / 4, H, mPaint);
             mPaint.setShader(null);
             mTextPaint.setTextSize(mTitleTextSize);
             _title = sub(replace(mTitle), 14);
@@ -142,11 +141,11 @@ public class IrregularNews extends View {
             canvas.drawBitmap(mBitmap2, mSrc, mDst2, null);
             mPaint.setColor(Color.TRANSPARENT);
             mPaint.setAlpha(mAlpha);
-            Shader shader = new LinearGradient(0, H / 5 * 3 - 100, 0, H / 5 * 3,
-                    new int[]{Color.GRAY, Color.DKGRAY, Color.BLACK},
+            Shader shader = new LinearGradient(0, H / 5 * 3 - 200, 0, H / 5 * 3,
+                    new int[]{Color.TRANSPARENT, Color.BLACK},
                     null, Shader.TileMode.REPEAT);
             mPaint.setShader(shader);
-            canvas.drawRect(W / 4 + 5, H / 5 * 3 - 100, W / 4 * 3, H / 5 * 3, mPaint);
+            canvas.drawRect(W / 4 + 5, H / 5 * 3 - 200, W / 4 * 3, H / 5 * 3, mPaint);
             mPaint.setShader(null);
             mTextPaint.setTextSize(mTitleTextSize);
             _title = sub(replace(mTitle), 30);
@@ -162,11 +161,11 @@ public class IrregularNews extends View {
             canvas.drawBitmap(mBitmap2, mSrc, mDst3, null);
             mPaint.setColor(Color.TRANSPARENT);
             mPaint.setAlpha(mAlpha);
-            Shader shader = new LinearGradient(0, H - 100, 0, H,
-                    new int[]{Color.GRAY, Color.DKGRAY, Color.BLACK},
+            Shader shader = new LinearGradient(0, H - 200, 0, H,
+                    new int[]{Color.TRANSPARENT, Color.BLACK},
                     null, Shader.TileMode.REPEAT);
             mPaint.setShader(shader);
-            canvas.drawRect(W / 4 + 5, H - 100, W / 2, H, mPaint);
+            canvas.drawRect(W / 4 + 5, H - 200, W / 2, H, mPaint);
             mPaint.setShader(null);
             mTextPaint.setTextSize(mTitleTextSize);
             _title = sub(replace(mTitle), 14);
@@ -182,11 +181,11 @@ public class IrregularNews extends View {
             canvas.drawBitmap(mBitmap, mSrc, mDst4, null);
             mPaint.setColor(Color.TRANSPARENT);
             mPaint.setAlpha(mAlpha);
-            Shader shader = new LinearGradient(0, H - 100, 0, H,
-                    new int[]{Color.GRAY, Color.DKGRAY, Color.BLACK},
+            Shader shader = new LinearGradient(0, H - 200, 0, H,
+                    new int[]{Color.TRANSPARENT, Color.BLACK},
                     null, Shader.TileMode.REPEAT);
             mPaint.setShader(shader);
-            canvas.drawRect(W / 2 + 5, H - 100, W / 4 * 3, H, mPaint);
+            canvas.drawRect(W / 2 + 5, H - 200, W / 4 * 3, H, mPaint);
             mPaint.setShader(null);
             mTextPaint.setTextSize(mTitleTextSize);
             _title = sub(replace(mTitle), 14);
@@ -205,11 +204,11 @@ public class IrregularNews extends View {
             canvas.drawBitmap(mBitmap, mSrc, mDst5, null);
             mPaint.setColor(Color.TRANSPARENT);
             mPaint.setAlpha(mAlpha);
-            Shader shader = new LinearGradient(0, H / 2 - 100, 0, H / 2,
-                    new int[]{Color.GRAY, Color.DKGRAY, Color.BLACK},
+            Shader shader = new LinearGradient(0, H / 2 - 200, 0, H / 2,
+                    new int[]{Color.TRANSPARENT, Color.BLACK},
                     null, Shader.TileMode.REPEAT);
             mPaint.setShader(shader);
-            canvas.drawRect(W / 4 * 3 + 5, H / 2 - 100, W, H / 2, mPaint);
+            canvas.drawRect(W / 4 * 3 + 5, H / 2 - 200, W, H / 2, mPaint);
             mPaint.setShader(null);
             mTextPaint.setTextSize(mTitleTextSize);
             _title = sub(replace(mTitle), 14);
@@ -228,16 +227,25 @@ public class IrregularNews extends View {
             canvas.drawBitmap(mBitmap2, mSrc, mDst6, null);
             mPaint.setColor(Color.TRANSPARENT);
             mPaint.setAlpha(mAlpha);
-            Shader shader = new LinearGradient(0, H - 100, 0, H,
-                    new int[]{Color.GRAY, Color.DKGRAY, Color.BLACK},
+            Shader shader = new LinearGradient(0, H - 200, 0, H,
+                    new int[]{Color.TRANSPARENT, Color.BLACK},
                     null, Shader.TileMode.REPEAT);
             mPaint.setShader(shader);
-            canvas.drawRect(W / 4 * 3 + 5, H - 100, W, H, mPaint);
+            canvas.drawRect(W / 4 * 3 + 5, H - 200, W, H, mPaint);
             mPaint.setShader(null);
             mTextPaint.setTextSize(mTitleTextSize);
             _title = sub(replace(mTitle), 14);
             drawText(_title, 7, W / 4 * 3 + 25, H - 60, 3, canvas, mTextPaint);
         }
+    }
+
+    public interface OnNewsClickListener {
+        void onClick(View v, int position);
+    }
+    private OnNewsClickListener mListener;
+
+    public void setOnNewsClickListener(OnNewsClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -246,19 +254,33 @@ public class IrregularNews extends View {
             float x = event.getX();
             float y = event.getY();
             if (x <= W / 4) {
-                ToastUtils.showShort(mCtx, "区域1");
+                if (mListener != null) {
+                    mListener.onClick(this, 1);
+                }
             } else if (x > W / 4 && x < W / 4 * 3 && y <= H / 5 * 3) {
-                ToastUtils.showShort(mCtx, "区域2");
+                if (mListener != null) {
+                    mListener.onClick(this, 2);
+                }
             } else if (x > W / 4 && x <= W / 2 && y > H / 5 * 3) {
-                ToastUtils.showShort(mCtx, "区域3");
+                if (mListener != null) {
+                    mListener.onClick(this, 3);
+                }
             } else if (x > W / 2 && x <= W / 4 * 3 && y > H / 5 * 3) {
-                ToastUtils.showShort(mCtx, "区域4");
+                if (mListener != null) {
+                    mListener.onClick(this, 4);
+                }
             } else if (x > W / 4 * 3 && y <= H / 2) {
-                ToastUtils.showShort(mCtx, "区域5");
+                if (mListener != null) {
+                    mListener.onClick(this, 5);
+                }
             } else if (x > W / 4 * 3 && y > H / 2) {
-                ToastUtils.showShort(mCtx, "区域6");
+                if (mListener != null) {
+                    mListener.onClick(this, 6);
+                }
             } else {
-
+                if (mListener != null) {
+                    mListener.onClick(this, -1);
+                }
             }
         }
         return super.onTouchEvent(event);
