@@ -11,7 +11,7 @@ import android.content.Context;
  * Wrapper API for sending log output.
  */
 public class AppLogger {
-    protected static final String TAG = "LZA_WEIXIN";
+    protected static final String TAG = "LZA_PAD_PLUS";
     public static boolean DEBUG = true;
 
     private AppLogger() {

@@ -56,6 +56,7 @@ import com.lza.pad.support.debug.AppLogger;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -249,9 +250,10 @@ public final class RuntimeUtility implements Consts {
         return Build.VERSION.SDK_INT >= 20;
     }
 
-    private static DisplayMetrics metrics = new DisplayMetrics();
+    private static DisplayMetrics metrics = null;
     public static int getScreenWidth(Activity activity) {
-        //Activity activity = GlobalContext.getInstance().getActivity();
+        if (metrics != null) return metrics.widthPixels;
+        else metrics = new DisplayMetrics();
         if (activity != null) {
             Display display = activity.getWindowManager().getDefaultDisplay();
             display.getMetrics(metrics);
@@ -262,7 +264,8 @@ public final class RuntimeUtility implements Consts {
     }
 
     public static int getScreenHeight(Activity activity) {
-        //Activity activity = GlobalContext.getInstance().getActivity();
+        if (metrics != null) return metrics.heightPixels;
+        else metrics = new DisplayMetrics();
         if (activity != null) {
             Display display = activity.getWindowManager().getDefaultDisplay();
             display.getMetrics(metrics);
@@ -831,6 +834,35 @@ public final class RuntimeUtility implements Consts {
         }
         lastClickTime = time;
         return false;
+    }
+
+    public static boolean root() {
+        boolean hasRoot = false;
+        try {
+            //获取Root权限
+            Process process = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("exit\n");
+            os.flush();
+            int exitValue = process.waitFor();
+            if (exitValue == 0) {
+                hasRoot = true;
+            }
+            process.destroy();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return hasRoot;
+    }
+
+    public static void execShellCmd(String cmd) {
+        try {
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

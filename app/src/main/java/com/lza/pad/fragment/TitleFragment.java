@@ -17,7 +17,7 @@ import com.lza.pad.R;
 import com.lza.pad.app.EbookActivity;
 import com.lza.pad.app.GuideActivity;
 import com.lza.pad.app.NewsActivity;
-import com.lza.pad.app.TestActivity;
+import com.lza.pad.app.wifi.SocketServerActivity;
 import com.lza.pad.app.wifi.WifiApActivity;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.fragment.base.BaseFragment;
@@ -69,7 +69,7 @@ public class TitleFragment extends BaseFragment {
         mImgNavMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity, TestActivity.class));
+                startActivity(new Intent(mActivity, SocketServerActivity.class));
             }
         });
 

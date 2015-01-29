@@ -292,14 +292,9 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
             @Override
             public void onClick(View v) {
                 String password = edtPassword.getText().toString();
-                boolean ret = mWifiAdmin.addNetWork(SSID, password, type);
-                if (ret) {
-                    ToastUtils.showShort(mCtx, "[" + SSID + "]连接成功！");
-                    dialog.dismiss();
-                } else {
-                    ToastUtils.showShort(mCtx, "[" + SSID + "]连接失败！");
-                    dialog.dismiss();
-                }
+                WifiConfiguration config = mWifiAdmin.createWifiInfo(SSID, password, type);
+                mWifiAdmin.addNetwork(config);
+                dialog.dismiss();
             }
         });
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="服务端"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:background="@color/translucenter_dark"
+        android:gravity="center"
+        android:padding="15dp"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="启动"
+        android:textSize="25sp"
+        android:layout_margin="5dp"
+        android:id="@+id/socket_server_layout_launch"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/common_gray"
+        android:layout_margin="10dp"
+        android:id="@+id/socket_server_layout_msg"
+        />
+</LinearLayout>

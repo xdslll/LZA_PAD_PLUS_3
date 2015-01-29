@@ -153,7 +153,7 @@ public class EbookNormalListFragment extends BaseEbookListFragment<String> {
             */
             /*holder.book.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void captureScreen(View v) {
                     startActivity(new Intent(mActivity, EbookContentActivity.class));
                 }
             });*/

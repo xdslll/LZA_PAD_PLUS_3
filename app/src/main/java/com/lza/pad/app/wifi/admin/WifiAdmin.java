@@ -80,10 +80,6 @@ public abstract class WifiAdmin {
      */
     public boolean addNetwork(WifiConfiguration wcg) {
         register();
-
-        //关闭热点
-        WifiApAdmin.closeWifiAp(mContext);
-
         int wcgID = mWifiManager.addNetwork(wcg);
         return mWifiManager.enableNetwork(wcgID, true);
     }
@@ -128,7 +124,7 @@ public abstract class WifiAdmin {
                     unregister();
                 } else if (isWifiConnected(mContext) == WIFI_CONNECT_FAILED) {
                     stopTimer();
-                    closeWifi();
+                    //closeWifi();
                     onNotifyWifiConnectFailed();
                     unregister();
                 } else if (isWifiConnected(mContext) == WIFI_CONNECTING) {
