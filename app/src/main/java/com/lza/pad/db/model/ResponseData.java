@@ -10,9 +10,16 @@ import java.util.List;
  */
 public class ResponseData<T> {
 
+    public static final String RESPONSE_STATE_OK = "1";
+    public static final String RESPONSE_STATE_NO_LAYOUT = "2";
+    public static final String RESPONSE_STATE_NO_MAC_ADDRESS = "3";
+
+
     private String state;
 
     private List<T> content;
+
+    private String message;
 
     public String getState() {
         return state;
@@ -28,5 +35,13 @@ public class ResponseData<T> {
 
     public void setContent(List<T> content) {
         this.content = content;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

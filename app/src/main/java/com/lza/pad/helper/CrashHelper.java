@@ -4,12 +4,15 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Looper;
 
+import com.lza.pad.app.socket.service.MinaServiceHelper;
+import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.ToastUtils;
 
 /**
- * Say something about this class
+ * 捕获全局异常事件
  *
  * @author xiads
  * @Date 10/27/14.
@@ -42,6 +45,10 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         }else{
+            //关闭MinaServer
+            AppLogger.e("程序崩溃,正在关闭MinaServer...");
+            MinaServiceHelper.instance().stopMinaServer();
+            //等待3秒后重新启动程序
             try {
                 Thread.sleep(3000);
                 ex.printStackTrace();
@@ -73,7 +80,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
             return false;
         }
         //使用Toast来显示异常信息
-        new Thread(){
+        /*new Thread(){
             @Override
             public void run() {
                 Looper.prepare();
@@ -82,7 +89,15 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
                 ex.printStackTrace();
                 Looper.loop();
             }
-        }.start();
+        }.start();*/
+        new Handler(Looper.myLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtils.showLong(mContext,
+                        "很抱歉，程序出现异常，即将被您重启程序。异常原因：" + ex.getMessage());
+                ex.printStackTrace();
+            }
+        });
         return true;
     }
 }

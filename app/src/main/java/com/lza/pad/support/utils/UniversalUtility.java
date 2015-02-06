@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.Display;
@@ -368,6 +370,29 @@ public class UniversalUtility {
                 .show();
     }
 
+    public static void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener) {
+        showDialog(context, title, message, okListener,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+        });
+    }
+
+    public static void showDialog(Context context, String title, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
     public static int getIntHalfUp(float f) {
         BigDecimal bd = new BigDecimal(f).setScale(BigDecimal.ROUND_HALF_UP);
         return bd.intValue();
@@ -407,5 +432,30 @@ public class UniversalUtility {
             return Object.class;
         }
         return (Class) params[index];
+    }
+
+    /**
+     * Mac地址
+     */
+    private static String sMacAddress = null;
+
+    /**
+     * 获取mac地址
+     *
+     * @param context
+     * @return
+     */
+    public static String getMacAddress(Context context) {
+        if (sMacAddress == null) {
+            sMacAddress = getLocalMacAddress(context);
+            //sMacAddress = getMacAddressWithoutNetwork(context);
+        }
+        return sMacAddress;
+    }
+
+    private static String getLocalMacAddress(Context context) {
+        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifi.getConnectionInfo();
+        return info.getMacAddress();
     }
 }

@@ -34,4 +34,6 @@ dependencies {
     compile files('libs/AndroidEasingFunctions-1.0.0.jar')
     compile files('libs/AndroidViewAnimations-1.1.3.jar')
     compile files('libs/AMapPanoramaSDK1.0.jar')
+    compile files('libs/slf4j-android-1.6.1-RC1.jar')
+    compile files('libs/mina-core-2.0.9.jar')
 }

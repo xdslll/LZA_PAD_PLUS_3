@@ -1,6 +1,7 @@
 package com.lza.pad.helper;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Say something about this class
@@ -11,10 +12,19 @@ import com.google.gson.Gson;
 public class GsonHelper {
 
     private static Gson gson = new Gson();
+    private static GsonBuilder builder = new GsonBuilder();
 
     private GsonHelper(){}
 
     public static Gson instance() {
         return gson;
+    }
+
+    public static GsonBuilder builder() {
+        return builder;
+    }
+
+    public static Gson buildExpose() {
+        return builder.excludeFieldsWithoutExposeAnnotation().create();
     }
 }

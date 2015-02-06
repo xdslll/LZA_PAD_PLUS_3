@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@color/white">
+    android:layout_height="match_parent" android:background="@drawable/test_poster">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="加载页"
-        android:textSize="30sp"
+        android:textSize="40sp"
+        android:textStyle="bold"
         android:gravity="center"
-        android:id="@+id/text1"
+        android:id="@+id/splash_text"
         />
 </LinearLayout>

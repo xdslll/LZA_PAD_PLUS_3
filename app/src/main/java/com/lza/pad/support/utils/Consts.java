@@ -10,6 +10,11 @@ import android.app.Activity;
  */
 public interface Consts {
 
+    public static final String KEY_PAD_DEVICE_INFO = "key_pad_device";
+
+    public static final String ACTION_MINA_SERVICE = "LZA_PAD_MINA_SERVICE";
+    public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
+
     public static final String KEY_MAP_FUNC_TEXT = "key_map_func_title";
     public static final String KEY_MAP_TITLE = "key_map_title";
     public static final String KEY_MAP_INDEX = "key_map_index";
@@ -33,6 +38,7 @@ public interface Consts {
     public static final String INTENT_ACTION_NEW_API_SERVICE = "com.lza.pad.service.NEW_API_SERVICE";
     public static final String INTENT_ACTION_BROWER = "android.intent.action.VIEW";
 
+    public static final String KEY_COOKIE = "cookie";
     public static final String KEY_RESPONSE_CODE = "response_code";
     public static final String KEY_COMMON_RESPONSE = "common_response";
     public static final String API_PARAM_TYPE_COMMON = "Common";
@@ -46,4 +52,6 @@ public interface Consts {
 
     public static final String SP_NAME = "lza_weixin_pref";
     public static final int SP_MODE = Activity.MODE_PRIVATE;
+    String ACTION_START_SERVER = "start_server";
+    String ACTION_STOP_SERVER = "stop_server";
 }

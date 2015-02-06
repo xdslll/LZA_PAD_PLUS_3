@@ -10,10 +10,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.lza.pad.support.debug.AppLogger;
-import com.lza.pad.support.utils.ToastUtils;
 
 import java.util.List;
 import java.util.Timer;
@@ -25,7 +26,7 @@ import java.util.TimerTask;
  * @author xiads
  * @Date 15/1/26.
  */
-public abstract class WifiAdmin {
+public class WifiAdmin {
 
     private WifiManager mWifiManager;
     private WifiInfo mWifiInfo;
@@ -38,6 +39,13 @@ public abstract class WifiAdmin {
 
     private Context mContext;
 
+    private ConnectivityManager mConnManager;
+
+    /**
+     * 连接超时时间
+     */
+    private static final int CONNECTION_TIME_OUT = 60 * 1000;
+
     public WifiAdmin(Context c) {
         mContext = c;
 
@@ -48,17 +56,19 @@ public abstract class WifiAdmin {
     }
 
     public boolean openWifi() {
-        if (!mWifiManager.isWifiEnabled())
+        /*if (!mWifiManager.isWifiEnabled())
             return mWifiManager.setWifiEnabled(true);
         else
-            return true;
+            return true;*/
+        return mWifiManager.setWifiEnabled(true);
     }
 
     public boolean closeWifi() {
-        if (mWifiManager.isWifiEnabled())
+        /*if (mWifiManager.isWifiEnabled())
             return mWifiManager.setWifiEnabled(false);
         else
-            return true;
+            return true;*/
+        return mWifiManager.setWifiEnabled(false);
     }
 
     public Intent registerReceiver(BroadcastReceiver receiver, IntentFilter filter) {
@@ -69,9 +79,11 @@ public abstract class WifiAdmin {
         mContext.unregisterReceiver(receiver);
     }
 
-    public abstract void onNotifyWifiConnected();
+    public void onWifiConnected() {}
 
-    public abstract void onNotifyWifiConnectFailed();
+    public void onWifiConnectTimeout() {}
+
+    public void onWifiConnecting() {}
 
     /**
      * 添加一个网络并连接
@@ -91,17 +103,17 @@ public abstract class WifiAdmin {
     public boolean addNetWork(String ssid, String password, int type) {
         if (TextUtils.isEmpty(ssid)) {
             AppLogger.e("ssid is null!");
-            ToastUtils.showShort(mContext, "ssid为空！");
+            //ToastUtils.showShort(mContext, "ssid为空！");
             return false;
         }
         if (TextUtils.isEmpty(password)) {
             AppLogger.e("password is null!");
-            ToastUtils.showShort(mContext, "wifi密码为空！");
+            //ToastUtils.showShort(mContext, "wifi密码为空！");
             return false;
         }
         if (type != TYPE_NO_PASSWORD && type != TYPE_WEP && type != TYPE_WPA) {
             AppLogger.e("unknown wifi type!type=" + type);
-            ToastUtils.showShort(mContext, "wifi密码为空！");
+            //ToastUtils.showShort(mContext, "wifi密码为空！");
             return false;
         }
 
@@ -118,26 +130,58 @@ public abstract class WifiAdmin {
             if (intent.getAction().equals(WifiManager.RSSI_CHANGED_ACTION)) {
                 AppLogger.e("RSSI changed");
                 AppLogger.e("intent is " + WifiManager.RSSI_CHANGED_ACTION);
-                if (isWifiConnected(mContext) == WIFI_CONNECTED) {
+                /*int connectState = isWifiConnected(mContext);
+                if (connectState == WIFI_CONNECTED) {
                     stopTimer();
-                    onNotifyWifiConnected();
+                    onWifiConnected();
                     unregister();
-                } else if (isWifiConnected(mContext) == WIFI_CONNECT_FAILED) {
+                } else if (connectState == WIFI_CONNECT_FAILED) {
                     stopTimer();
                     //closeWifi();
-                    onNotifyWifiConnectFailed();
+                    onWifiConnectTimeout();
                     unregister();
-                } else if (isWifiConnected(mContext) == WIFI_CONNECTING) {
+                } else if (connectState == WIFI_CONNECTING) {
                     AppLogger.e("Wifi正在连接...");
+                } else {
+                    AppLogger.e("未知状态");
+                }*/
+                if (mConnManager == null)
+                    mConnManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                final NetworkInfo wifiNetworkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+                AppLogger.e("isConnectedOrConnecting = " + wifiNetworkInfo.isConnectedOrConnecting());
+                AppLogger.e("wifiNetworkInfo.getDetailedState() = " + wifiNetworkInfo.getDetailedState());
+
+                NetworkInfo.DetailedState detailedState = wifiNetworkInfo.getDetailedState();
+
+                if (detailedState == NetworkInfo.DetailedState.CONNECTED) {
+                    stopTimer();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onWifiConnected();
+                        }
+                    });
+                    unregister();
+                } else if (detailedState == NetworkInfo.DetailedState.CONNECTING
+                        || detailedState == NetworkInfo.DetailedState.AUTHENTICATING
+                        || detailedState == NetworkInfo.DetailedState.OBTAINING_IPADDR
+                        || detailedState == NetworkInfo.DetailedState.SCANNING) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onWifiConnecting();
+                        }
+                    });
                 }
             }
         }
     };
 
-    private final int STATE_REGISTRING = 0x01;
-    private final int STATE_REGISTERED = 0x02;
-    private final int STATE_UNREGISTERING = 0x03;
-    private final int STATE_UNREGISTERED = 0x04;
+    public final static int STATE_REGISTRING = 0x01;
+    public final static int STATE_REGISTERED = 0x02;
+    public final static int STATE_UNREGISTERING = 0x03;
+    public final static int STATE_UNREGISTERED = 0x04;
     private int mHaveRegister = STATE_UNREGISTERED;
 
     private synchronized void register() {
@@ -153,7 +197,7 @@ public abstract class WifiAdmin {
         startTimer();
     }
 
-    private synchronized void unregister() {
+    public synchronized void unregister() {
         AppLogger.e("mHaveRegister=" + mHaveRegister);
 
         if (mHaveRegister == STATE_UNREGISTERED || mHaveRegister == STATE_UNREGISTERING)
@@ -164,21 +208,37 @@ public abstract class WifiAdmin {
         mHaveRegister = STATE_REGISTERED;
     }
 
+    public int getRegisterState() {
+        return mHaveRegister;
+    }
+
     private Timer mTimer = null;
     private void startTimer() {
         if (mTimer != null)
             stopTimer();
 
         mTimer = new Timer(true);
-        mTimer.schedule(mTimerTask, 30 * 1000);
+        mTimer.schedule(mTimerTask, CONNECTION_TIME_OUT);
     }
 
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private TimerTask mTimerTask = new TimerTask() {
         @Override
         public void run() {
-            AppLogger.e("WIFI connection time out!");
-            onNotifyWifiConnectFailed();
-            unregister();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    AppLogger.e("WIFI connection time out!");
+                    onWifiConnectTimeout();
+                    if (mHaveRegister == STATE_REGISTERED || mHaveRegister == STATE_REGISTRING) {
+                        try {
+                            unregister();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            });
         }
     };
 
@@ -259,7 +319,9 @@ public abstract class WifiAdmin {
         AppLogger.e("wifiNetworkInfo.getDetailedState() = " + wifiNetworkInfo.getDetailedState());
 
         if (wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.OBTAINING_IPADDR
-                || wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTING) {
+                || wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTING
+                || wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.SCANNING
+                || wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.AUTHENTICATING) {
             return WIFI_CONNECTING;
         } else if (wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTED) {
             return WIFI_CONNECTED;
@@ -336,10 +398,10 @@ public abstract class WifiAdmin {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < mWifiList.size(); i++) {
             sb.append("Index_")
-                .append((i + 1))
-                .append(":")
-                .append(mWifiList.get(i).toString())
-                .append("\n");
+                    .append((i + 1))
+                    .append(":")
+                    .append(mWifiList.get(i).toString())
+                    .append("\n");
         }
         return sb;
     }
@@ -362,6 +424,14 @@ public abstract class WifiAdmin {
 
     public String getWifiInfo() {
         return (mWifiInfo == null) ? "NULL" : mWifiInfo.toString();
+    }
+
+    public boolean isWifiEnabled() {
+        return mWifiManager.isWifiEnabled();
+    }
+
+    public int getWifiState() {
+        return mWifiManager.getWifiState();
     }
 
 }

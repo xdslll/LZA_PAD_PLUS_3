@@ -60,7 +60,7 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
         setContentView(R.layout.wifi_hotpot);
 
         mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-        mWifiApAdmin = new WifiApAdmin(mCtx);
+        mWifiApAdmin = WifiApAdmin.instance(mCtx);
 
         mTxtWifiApState = (TextView) findViewById(R.id.wifi_hotpot_ap_state);
         mTxtApWifiSSID = (TextView) findViewById(R.id.wifi_hotpot_ap_ssid);
@@ -69,13 +69,13 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
         mListWifi = (ListView) findViewById(R.id.wifi_hotpot_wifi_list);
 
         mBtnOpenWifiAp = (Button) findViewById(R.id.wifi_hotpot_open);
-        mIsWifiApEnable = WifiApAdmin.isWifiApEnable(mCtx);//获取热点的开启状态
+        mIsWifiApEnable = mWifiApAdmin.isWifiApEnable();//获取热点的开启状态
         setWifiApState();//设置热点状态文字
         mBtnOpenWifiAp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mIsWifiApEnable) {
-                    boolean isOff = WifiApAdmin.closeWifiAp(mCtx);
+                    boolean isOff = mWifiApAdmin.closeWifiAp();
                     if (isOff) {
                         ToastUtils.showShort(mCtx, "热点关闭成功！");
                         mIsWifiApEnable = false;
@@ -92,12 +92,12 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
         setWifiState();//设置Wifi状态文字
         mWifiAdmin = new WifiAdmin(mCtx) {
             @Override
-            public void onNotifyWifiConnected() {
+            public void onWifiConnected() {
                 ToastUtils.showShort(mCtx, "Wifi连接成功！");
             }
 
             @Override
-            public void onNotifyWifiConnectFailed() {
+            public void onWifiConnectTimeout() {
                 ToastUtils.showShort(mCtx, "Wifi连接失败！");
             }
         };
@@ -128,7 +128,7 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                WifiApAdmin.closeWifiAp(mCtx);
+                                                mWifiApAdmin.closeWifiAp();
                                                 boolean result = mWifiAdmin.openWifi();
                                                 if (result) {
                                                     updateWifiState();
@@ -217,7 +217,7 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
             @Override
             public void run() {
                 mIsWifiEnable = mWifiManager.isWifiEnabled();
-                mIsWifiApEnable = WifiApAdmin.isWifiApEnable(mCtx);
+                mIsWifiApEnable = mWifiApAdmin.isWifiApEnable();
                 setWifiState();
                 setWifiApState();
             }

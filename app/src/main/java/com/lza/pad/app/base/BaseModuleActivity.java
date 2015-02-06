@@ -52,7 +52,6 @@ public abstract class BaseModuleActivity extends BaseActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
         //获取屏幕尺寸
         int w, h;
         w = mMainContainer.getWidth();

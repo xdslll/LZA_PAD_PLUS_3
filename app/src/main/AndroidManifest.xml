@@ -11,10 +11,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.READ_FRAME_BUFFER"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application android:allowBackup="true" android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher" android:name=".app.MainApplication"
+        android:icon="@drawable/ic_launcher" android:name=".app.base.MainApplication"
         android:theme="@style/BaseTheme">
         <activity android:name=".app.SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
             <intent-filter>
@@ -22,21 +22,21 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".app.HomeActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
+        <activity android:name=".app.home.HomeActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
         <activity android:name=".app.PluginInstallActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
-        <activity android:name=".app.EbookActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".app.NewsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".app.EbookContentActivity" android:screenOrientation="portrait"
+        <activity android:name=".app.ebook.EbookActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
+        <activity android:name=".app.news.NewsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
+        <activity android:name=".app.ebook.EbookContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
         <activity android:name=".app.SubjectActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
-        <activity android:name=".app.NewsContentActivity" android:screenOrientation="portrait"
+        <activity android:name=".app.news.NewsContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
         <activity android:name=".app.TestActivity" android:screenOrientation="portrait"/>
         <activity android:name=".widget.panoramic.shadow.ball.PanoramicActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name=".app.GuideActivity" android:screenOrientation="portrait"
+        <activity android:name=".app.guide.GuideActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
         <activity android:name=".app.wifi.WifiApActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
@@ -44,6 +44,32 @@
             android:launchMode="singleTop"/>
         <activity android:name=".app.wifi.SocketServerActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
+        <activity android:name=".app.socket.MinaServerActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+
+        <service android:name=".app.socket.service.MinaService" android:enabled="true">
+            <intent-filter>
+                <action android:name="LZA_PAD_MINA_SERVICE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".service.RequestService"
+            android:process=":service"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.lza.pad.service.NEW_API_SERVICE"/>
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".broadcast.RunOnBoot" >
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.HOME"/>
+            </intent-filter>
+            <intent-filter >
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

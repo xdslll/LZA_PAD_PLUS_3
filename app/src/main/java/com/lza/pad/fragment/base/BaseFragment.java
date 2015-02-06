@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 
+import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.support.utils.Consts;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Say something about this class
@@ -29,5 +32,21 @@ public class BaseFragment extends Fragment implements Consts {
             W = getArguments().getInt(KEY_FRAGMENT_WIDTH);
             H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
         }
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEvent(MinaClient client) {
+
+    }
+
+    public void onEventMainThread(MinaClient client) {
+
     }
 }

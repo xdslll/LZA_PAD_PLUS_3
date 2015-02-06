@@ -18,13 +18,22 @@ import java.lang.reflect.Method;
  */
 public class WifiApAdmin {
 
+    private static WifiApAdmin mInstance;
+
+    public static WifiApAdmin instance(Context context) {
+        if (mInstance == null) {
+            mInstance = new WifiApAdmin(context);
+        }
+        return mInstance;
+    }
+
     private static WifiManager mWifiManager = null;
 
     private static WifiConfiguration mWifiConfig = null;
 
     private Context mContext = null;
 
-    public WifiApAdmin(Context context) {
+    private WifiApAdmin(Context context) {
         this.mContext = context;
         mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
     }
@@ -119,7 +128,7 @@ public class WifiApAdmin {
         }
     }
 
-    private static boolean closeWifiAp(WifiManager wifiManager) {
+    private boolean closeWifiAp(WifiManager wifiManager) {
         if (isWifiApEnable(wifiManager)) {
             try {
                 Method method = wifiManager.getClass().getMethod("getWifiApConfiguration");
@@ -140,13 +149,13 @@ public class WifiApAdmin {
         return false;
     }
 
-    public static boolean isWifiApEnable(Context context) {
-        if (mWifiManager == null)
-            mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+    public boolean isWifiApEnable() {
+        //if (mWifiManager == null)
+        //    mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return isWifiApEnable(mWifiManager);
     }
 
-    private static boolean isWifiApEnable(WifiManager wifiManager) {
+    private boolean isWifiApEnable(WifiManager wifiManager) {
         try {
             Method method = wifiManager.getClass().getMethod("isWifiApEnabled");
             method.setAccessible(true);
@@ -162,9 +171,9 @@ public class WifiApAdmin {
         return false;
     }
 
-    public static boolean closeWifiAp(Context context) {
-        if (mWifiManager == null)
-            mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+    public boolean closeWifiAp() {
+        //if (mWifiManager == null)
+        //    mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         return closeWifiAp(mWifiManager);
     }
 

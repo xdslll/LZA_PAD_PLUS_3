@@ -1,6 +1,5 @@
 package com.lza.pad.helper;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,7 +30,7 @@ public class RequestHelper implements Consts {
 
     private String mRequestUrl;
 
-    private Activity mActivity;
+    private Context mContext;
 
     private IRequest mResponseSevice = null;
 
@@ -39,28 +38,45 @@ public class RequestHelper implements Consts {
 
     private ResponseReceiver mResponseReceiver = null;
 
-    private RequestHelper(Activity activity, String requestUrl) {
-        this.mActivity = activity;
+    private RequestHelper(Context c) {
+        this.mContext = c;
+        this.mRequestUrl = "";
+
+        mServiceConnection = new RequestServiceConnection();
+        mResponseReceiver = new ResponseReceiver();
+        mContext.registerReceiver(mResponseReceiver, new IntentFilter(INTENT_ACTION_RESPONSE_RECEIVER));
+        mContext.bindService(new Intent(INTENT_ACTION_NEW_API_SERVICE), mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private RequestHelper(Context c, String requestUrl) {
+        this.mContext = c;
         this.mRequestUrl = requestUrl;
 
         mServiceConnection = new RequestServiceConnection();
         mResponseReceiver = new ResponseReceiver();
-        mActivity.registerReceiver(mResponseReceiver, new IntentFilter(INTENT_ACTION_RESPONSE_RECEIVER));
-        mActivity.bindService(new Intent(INTENT_ACTION_NEW_API_SERVICE), mServiceConnection, Context.BIND_AUTO_CREATE);
+        mContext.registerReceiver(mResponseReceiver, new IntentFilter(INTENT_ACTION_RESPONSE_RECEIVER));
+        mContext.bindService(new Intent(INTENT_ACTION_NEW_API_SERVICE), mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private static RequestHelper sInstance = null;
 
-    public static RequestHelper getInstance(Activity activity, String requestUrl) {
+    public static RequestHelper getInstance(Context c) {
         if (sInstance == null) {
-            sInstance = new RequestHelper(activity, requestUrl);
+            sInstance = new RequestHelper(c);
         }
         return sInstance;
     }
 
-    public static void sendRequest(Activity activity, String requestUrl) {
+    public static RequestHelper getInstance(Context c, String requestUrl) {
         if (sInstance == null) {
-            getInstance(activity, requestUrl);
+            sInstance = new RequestHelper(c, requestUrl);
+        }
+        return sInstance;
+    }
+
+    public static void sendRequest(Context c, String requestUrl) {
+        if (sInstance == null) {
+            getInstance(c, requestUrl);
         } else {
             sInstance.mRequestUrl = requestUrl;
             sInstance.send();
@@ -87,10 +103,10 @@ public class RequestHelper implements Consts {
     public void release() {
         try {
             if (mServiceConnection != null) {
-                mActivity.unbindService(mServiceConnection);
+                mContext.unbindService(mServiceConnection);
             }
             if (mResponseReceiver != null) {
-                mActivity.unregisterReceiver(mResponseReceiver);
+                mContext.unregisterReceiver(mResponseReceiver);
             }
             sInstance = null;
         } catch (Exception ex) {
@@ -103,14 +119,14 @@ public class RequestHelper implements Consts {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mResponseSevice = IRequest.Stub.asInterface(service);
-            send();
+            if (!TextUtils.isEmpty(mRequestUrl)) send();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             mResponseSevice = null;
             mServiceConnection = null;
-            ToastUtils.showShort(mActivity, "服务连接中断！");
+            ToastUtils.showShort(mContext, "服务连接中断！");
         }
     }
 
