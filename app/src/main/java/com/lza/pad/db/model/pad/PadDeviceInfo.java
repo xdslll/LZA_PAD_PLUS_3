@@ -11,6 +11,15 @@ import android.os.Parcelable;
  */
 public class PadDeviceInfo implements Parcelable {
 
+    public static final String TAG_HAVE_UDPATE = "1";
+    public static final String TAG_NEED_UDPATE = "0";
+
+    public static final String TAG_AUTO_UPDATE = "1";
+    public static final String TAG_MANUAL_UPDATE = "0";
+
+    public static final String TAG_HOTSPOT_ON = "1";
+    public static final String TAG_HOTSPOT_OFF = "0";
+
     String id;
 
     String bh;
@@ -30,6 +39,14 @@ public class PadDeviceInfo implements Parcelable {
     String end_pubdate;
 
     String intime;
+
+    String auto_update;
+
+    String update_time;
+
+    String hotspot_password;
+
+    String hotspot_switch;
 
     public String getId() {
         return id;
@@ -111,6 +128,38 @@ public class PadDeviceInfo implements Parcelable {
         this.intime = intime;
     }
 
+    public String getAuto_update() {
+        return auto_update;
+    }
+
+    public void setAuto_update(String auto_update) {
+        this.auto_update = auto_update;
+    }
+
+    public String getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(String update_time) {
+        this.update_time = update_time;
+    }
+
+    public String getHotspot_password() {
+        return hotspot_password;
+    }
+
+    public void setHotspot_password(String hotspot_password) {
+        this.hotspot_password = hotspot_password;
+    }
+
+    public String getHotspot_switch() {
+        return hotspot_switch;
+    }
+
+    public void setHotspot_switch(String hotspot_switch) {
+        this.hotspot_switch = hotspot_switch;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -128,6 +177,10 @@ public class PadDeviceInfo implements Parcelable {
         dest.writeString(area);
         dest.writeString(end_pubdate);
         dest.writeString(intime);
+        dest.writeString(auto_update);
+        dest.writeString(update_time);
+        dest.writeString(hotspot_password);
+        dest.writeString(hotspot_switch);
     }
 
     public PadDeviceInfo() {
@@ -145,6 +198,10 @@ public class PadDeviceInfo implements Parcelable {
         area = src.readString();
         end_pubdate = src.readString();
         intime = src.readString();
+        auto_update = src.readString();
+        update_time = src.readString();
+        hotspot_password = src.readString();
+        hotspot_switch = src.readString();
     }
 
     public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {
@@ -164,12 +221,16 @@ public class PadDeviceInfo implements Parcelable {
         return "设备id：\'" + id + '\'' +
                 "\n设备编号：\'" + bh + '\'' +
                 "\n学校编号：\'" + school_bh + '\'' +
-                "\n模块id：\'" + module_ids + '\'' +
+                "\n布局id：\'" + module_ids + '\'' +
                 "\n更新标识：\'" + (Integer.valueOf(update_tag) == 0 ? "否" : "是") + '\'' +
                 "\nMac地址：\'" + mac_add + '\'' +
                 "\n设备名称：\'" + name + '\'' +
                 "\n所属区域：\'" + area + '\'' +
                 "\n到期时间：\'" + end_pubdate + '\'' +
-                "\n注册时间：\'" + intime + '\'';
+                "\n注册时间：\'" + intime + '\'' +
+                "\n自动更新：\'" + (Integer.valueOf(auto_update) == 0 ? "否" : "是") + '\'' +
+                "\n更新频率：\'" + update_time + "秒" + "\'" +
+                "\n热点密码：\'" + hotspot_password + "秒" + "\'" +
+                "\n热点开关：\'" + (Integer.valueOf(hotspot_switch) == 0 ? "关" : "开") + '\'';
     }
 }

@@ -53,15 +53,15 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </service>
-        <service android:name=".service.RequestService"
-            android:process=":service"
-            android:enabled="true">
+
+        <service android:name=".service.UpdateService" android:enabled="true">
             <intent-filter>
-                <action android:name="com.lza.pad.service.NEW_API_SERVICE"/>
+                <action android:name="LZA_PAD_UPDATE_SERIVCE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </service>
 
-        <receiver android:name=".broadcast.RunOnBoot" >
+        <!--<receiver android:name=".broadcast.RunOnBoot" >
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.HOME"/>
@@ -69,7 +69,7 @@
             <intent-filter >
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
     </application>
 
 </manifest>

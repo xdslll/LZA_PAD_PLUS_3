@@ -5,7 +5,6 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
 import com.lza.pad.support.debug.AppLogger;
-import com.lza.pad.support.utils.ToastUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -60,7 +59,7 @@ public class WifiApAdmin {
             public void onTimerCheck() {
                 if (isWifiApEnable(mWifiManager)) {
                     AppLogger.e("Wifi enabled successfully!");
-                    ToastUtils.showShort(mContext, "热点启动成功！");
+                    //ToastUtils.showShort(mContext, "热点启动成功！");
                     exit();
                     if (mListener != null)
                         mListener.onWifiApSuccess();
@@ -73,7 +72,7 @@ public class WifiApAdmin {
             public void onTimeout() {
                 exit();
                 AppLogger.e("Wifi enabled failed!");
-                ToastUtils.showShort(mContext, "热点启动失败！");
+                //ToastUtils.showShort(mContext, "热点启动失败！");
                 if (mListener != null)
                     mListener.onWifiApFailed();
             }

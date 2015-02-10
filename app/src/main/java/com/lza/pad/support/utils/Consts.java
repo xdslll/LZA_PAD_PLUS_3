@@ -10,8 +10,55 @@ import android.app.Activity;
  */
 public interface Consts {
 
-    public static final String KEY_PAD_DEVICE_INFO = "key_pad_device";
+    /**
+     * Url参数中的Control参数，必须和服务端的接口参数一一对应
+     * 设备与模块的关系为：
+     * 设备(1) -> 布局(1) -> 模块(n) -> 控件(n*n)
+     * 一台设备对应一套布局，布局可以在管理平台随时更换，大的布局切换后，Pad的整体显示内容将变更
+     * 一套布局对应若干模块，每个模块可以在管理平台编辑，模块表示向Pad提供的功能
+     * 一个模块对应若干控件，每个控件可以在管理平台编辑，控件表示一个模块下具体展示哪些数据
+     *
+     * ----------       ----------       ----------
+     * |        |       |        |       |        | -> control
+     * |        |       |        |       | module | -> control
+     * |        |       |        |       |        | -> control
+     * |        |  ---\ |        | ---\  ----------
+     * | device |  ---/ | layout | ---/
+     * |        |       |        |       ----------
+     * |        |       |        |       |        | -> control
+     * |        |       |        |       | module | -> control
+     * |        |       |        |       |        | -> control
+     * ----------       ----------       ----------
+ */
 
+    /**
+     * 获取设备信息
+     */
+    public static final String CONTROL_GET_DEVICE_INFO = "get_device_info";
+
+    /**
+     * 获取设备布局
+     */
+    public static final String CONTROL_GET_LAYOUT_MODULE = "get_layout_module";
+
+    /**
+     * 获取模块下的所有控件
+     */
+    public static final String CONTROL_GET_MODULE_CONTROL = "get_module_control";
+
+    /**
+     * 更新设备信息
+     */
+    public static final String CONTROL_UPDATE_DEVICE_INFO = "update_device_info";
+
+
+    public static final String KEY_PAD_DEVICE_INFO = "key_pad_device";
+    public static final String KEY_DEVICE_IS_UPDATING = "key_device_is_updating";
+    public static final String KEY_UPDATE_DEVICE_IS_RUNNING = "key_update_device_is_running";
+
+    public static final String ACTION_UPDATE_DEVICE_CALLBACK = "LZA_PAD_UPDATE_CALLBACK";
+    public static final String ACTION_UPDATE_DEVICE_RECEIVER = "LZA_PAD_UPDATE_RECEIVER";
+    public static final String ACTION_UPDATE_DEVICE_SERVICE = "LZA_PAD_UPDATE_SERIVCE";
     public static final String ACTION_MINA_SERVICE = "LZA_PAD_MINA_SERVICE";
     public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
 
@@ -50,7 +97,7 @@ public interface Consts {
     public static final long ONE_MINUTE = 60 * 1000;
     public static final long ONE_SECOND = 1000;
 
-    public static final String SP_NAME = "lza_weixin_pref";
+    public static final String SP_NAME = "lza_pad_plus_pref";
     public static final int SP_MODE = Activity.MODE_PRIVATE;
     String ACTION_START_SERVER = "start_server";
     String ACTION_STOP_SERVER = "stop_server";

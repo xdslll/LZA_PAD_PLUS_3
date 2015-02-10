@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.lza.pad.helper.GsonHelper;
-import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.RuntimeUtility;
@@ -58,7 +57,6 @@ public class _MainApplication extends Application implements Consts {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        RequestHelper.releaseService();
         stopServer();
     }
 

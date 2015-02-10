@@ -679,7 +679,8 @@ public final class RuntimeUtility implements Consts {
         } else if (defaultValue instanceof Integer) {
             editor.putInt(key, (Integer) defaultValue);
         }
-        editor.commit();
+        //editor.commit();
+        editor.apply();
     }
 
     /**

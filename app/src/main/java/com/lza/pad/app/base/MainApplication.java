@@ -4,7 +4,6 @@ import android.app.Application;
 import android.os.Handler;
 
 import com.lza.pad.app.socket.service.MinaServiceHelper;
-import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.RuntimeUtility;
@@ -36,18 +35,13 @@ public class MainApplication extends Application implements Consts {
         mCtx = this;
 
         startMinaServer();
-
-        RequestHelper.getInstance(mCtx);
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        RequestHelper.releaseService();
 
         stopMinaServer();
-
-        RequestHelper.releaseService();
     }
 
     private MinaServiceHelper mMinaServiceHelper;

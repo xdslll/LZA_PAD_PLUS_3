@@ -5,7 +5,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -15,9 +18,9 @@ import com.lza.pad.app.socket.admin.server.OnServerIoAdapter;
 import com.lza.pad.app.socket.admin.server.ServerMessageHandler;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.service.MinaServiceHelper;
-import com.lza.pad.event.model.ResponseEventInfo;
-import com.lza.pad.helper.CrashHelper;
 import com.lza.pad.helper.GsonHelper;
+import com.lza.pad.service.UpdateService;
+import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 
 import org.apache.mina.core.session.IoSession;
@@ -32,11 +35,72 @@ import de.greenrobot.event.EventBus;
  */
 public class BaseActivity extends Activity implements Consts {
 
+    public static final String JSON_LAYOUT_MODULE = "json_layout_module";
+    public static final String JSON_MODULE_CONTROL = "json_module_control";
+
+    /**
+     * 重要的状态，Activity的更新状态，关系到界面的实时更新，只有首页才能进行实时更新
+     */
+
+    /**
+     * 未更新界面，默认状态
+     */
+    public static final int ACTIVITY_STATE_NOT_UPDATE = 0x01;
+
+    /**
+     * 正在获取数据
+     */
+    public static final int ACTIVITY_STATE_GETTING_DATA = 0x02;
+
+    /**
+     * 获取数据成功
+     */
+    public static final int ACTIVITY_STATE_GET_DATA_SUCCESS = 0x03;
+
+    /**
+     * 获取数据失败
+     */
+    public static final int ACTIVITY_STATE_GET_DATA_FAILED = 0x04;
+
+    /**
+     * 界面需要更新
+     */
+    public static final int ACTIVITY_STATE_NEED_UPDATE = 0x05;
+
+    /**
+     * 界面已经更新
+     */
+    public static final int ACTIVITY_STATE_HAVE_UPDATED = 0x06;
+
+    /**
+     * 正在更新
+     */
+    public static final int ACTIVITY_STATE_UPDATING = 0x07;
+
+    /**
+     * 请求的延迟
+     */
+    protected static final int DEFAULT_REQUEST_DELAY = 0;
+
     public static final int DEFAULT_SIZE = 4;
 
     protected Context mCtx;
 
     protected MinaServiceHelper mMinaServiceHelper;
+
+    protected int mActivityUpdateState = ACTIVITY_STATE_NOT_UPDATE;
+
+    /**
+     * 是否为首页
+     */
+    protected boolean mIsHome = false;
+
+    /**
+     * 用于接收更新界面服务提交的请求
+     */
+    private UpdateReceiver mUpdateReceiver;
+
+    private Intent mIntentService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +111,7 @@ public class BaseActivity extends Activity implements Consts {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //启动异常监控
-        CrashHelper.getInstance(this).init();
+        //CrashHelper.getInstance(this).init();
 
         mMinaServiceHelper = MinaServiceHelper.instance();
         if (mMinaServiceHelper.isStarted()) {
@@ -58,9 +122,44 @@ public class BaseActivity extends Activity implements Consts {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsHome) {
+            //启动界面自动更新服务
+            mIntentService = new Intent(ACTION_UPDATE_DEVICE_SERVICE);
+            startService(mIntentService);
+            //如果是首页，则开始监听更新的状况
+            log("注册UpdateReceiver");
+            mUpdateReceiver = new UpdateReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ACTION_UPDATE_DEVICE_RECEIVER);
+            registerReceiver(mUpdateReceiver, filter);
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if (mIsHome) {
+            //回传给更新界面服务，使之停止运行
+            UpdateService.UpdateCallback callback = new UpdateService.UpdateCallback();
+            callback.isRunning = false;
+            EventBus.getDefault().post(callback);
+            //停止监听
+            log("注销UpdateReceiver");
+            unregisterReceiver(mUpdateReceiver);
+        }
     }
 
     protected void launchFragment(Fragment fragment, int id) {
@@ -124,24 +223,6 @@ public class BaseActivity extends Activity implements Consts {
 
     }
 
-    /**
-     * 处理网络请求
-     *
-     * @param response
-     */
-    public void onEvent(ResponseEventInfo response) {
-
-    }
-
-    /**
-     * 在主线程处理网络请求
-     *
-     * @param response
-     */
-    public void onEventMainThread(ResponseEventInfo response) {
-
-    }
-
     protected ProgressDialog mProgressDialog = null;
 
     protected void showProgressDialog(String msg, boolean ifDismiss) {
@@ -170,6 +251,49 @@ public class BaseActivity extends Activity implements Consts {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) return;
         mProgressDialog.setMessage(msg);
     }
+
+    protected void log(String msg) {
+        AppLogger.e("---------------- " + msg + " ----------------");
+    }
+
+    public void logState() {
+        int state = mActivityUpdateState;
+        if (state == ACTIVITY_STATE_NOT_UPDATE) {
+            log("状态：暂未更新");
+        } else if (state == ACTIVITY_STATE_GETTING_DATA) {
+            log("状态：正在获取数据...");
+        } else if (state == ACTIVITY_STATE_GET_DATA_SUCCESS) {
+            log("状态：获取数据成功");
+        } else if (state == ACTIVITY_STATE_GET_DATA_FAILED) {
+            log("状态：获取数据失败");
+        } else if (state == ACTIVITY_STATE_NEED_UPDATE) {
+            log("状态：需要更新界面");
+        } else if (state == ACTIVITY_STATE_HAVE_UPDATED) {
+            log("状态：界面已经更新");
+        } else if (state == ACTIVITY_STATE_UPDATING) {
+            log("状态：正在更新界面");
+        } else {
+            log("状态：未知...请核实");
+        }
+    }
+
+    public int getUpdateState() {
+        return mActivityUpdateState;
+    }
+
+    public boolean isHome() {
+        return mIsHome;
+    }
+
+    private class UpdateReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onUpdateReceive(context, intent);
+        }
+    }
+
+    public void onUpdateReceive(Context context, Intent intent) {}
 }
 
 /**

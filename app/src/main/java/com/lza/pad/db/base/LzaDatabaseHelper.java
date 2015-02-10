@@ -11,7 +11,7 @@ import com.lza.pad.support.db.AbstractDatabaseHelper;
  */
 public class LzaDatabaseHelper extends AbstractDatabaseHelper {
 
-    public static final String DB_NAME = "lza_weixin.db";
+    public static final String DB_NAME = "lza_pad.db";
     public static final int DB_VERSION = 1;
 
     public LzaDatabaseHelper(Context c) {
