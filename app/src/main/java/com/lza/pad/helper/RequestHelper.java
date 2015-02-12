@@ -63,7 +63,7 @@ public class RequestHelper implements Consts {
         return new RequestHelper(c, listener);
     }
 
-    public synchronized static RequestHelper getInstance(Context c, OnRequestListener listener, String url) {
+    public synchronized static RequestHelper getInstance(Context c, String url, OnRequestListener listener) {
         return new RequestHelper(c, listener, url);
     }
 
@@ -102,6 +102,10 @@ public class RequestHelper implements Consts {
         mRequestUrl = url;
         mRequest = createRequest(url);
         send();
+    }
+
+    public void send(Context c, String url, OnRequestListener listener) {
+        getInstance(c, url, listener).send();
     }
 
     private void handleError(VolleyError error) {

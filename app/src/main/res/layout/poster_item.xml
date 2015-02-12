@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="40sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:id="@+id/splash_text"
+        android:scaleType="fitCenter"
+        android:contentDescription="海报"
+        android:id="@+id/poster_item_img"
         />
 </LinearLayout>

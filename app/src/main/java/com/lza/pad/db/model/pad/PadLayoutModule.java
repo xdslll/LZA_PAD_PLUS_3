@@ -25,6 +25,10 @@ public class PadLayoutModule implements Parcelable {
 
     String module_name;
 
+    String keyword;
+
+    String subject;
+
     public String getId() {
         return id;
     }
@@ -81,6 +85,22 @@ public class PadLayoutModule implements Parcelable {
         this.module_name = module_name;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -95,6 +115,8 @@ public class PadLayoutModule implements Parcelable {
         dest.writeString(layout_icon);
         dest.writeString(layout_icon2);
         dest.writeString(module_name);
+        dest.writeString(keyword);
+        dest.writeString(subject);
     }
 
     public PadLayoutModule() {
@@ -109,6 +131,8 @@ public class PadLayoutModule implements Parcelable {
         layout_icon = src.readString();
         layout_icon2 = src.readString();
         module_name = src.readString();
+        keyword = src.readString();
+        subject = src.readString();
     }
 
     public static final Creator<PadLayoutModule> CREATOR = new Creator<PadLayoutModule>() {
@@ -132,6 +156,9 @@ public class PadLayoutModule implements Parcelable {
                 ", layout_id='" + layout_id + '\'' +
                 ", layout_icon='" + layout_icon + '\'' +
                 ", layout_icon2='" + layout_icon2 + '\'' +
+                ", module_name='" + module_name + '\'' +
+                ", keyword='" + keyword + '\'' +
+                ", subject='" + subject + '\'' +
                 '}';
     }
 }

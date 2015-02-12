@@ -90,7 +90,7 @@ public interface Consts {
     public static final String KEY_COMMON_RESPONSE = "common_response";
     public static final String API_PARAM_TYPE_COMMON = "Common";
 
-    public static final String CACHE_IMG_PATH = "/lza/weixin";
+    public static final String CACHE_IMG_PATH = "/lza/pad";
 
     public static final long ONE_DAY = 24 * 60 * 60 * 1000;
     public static final long ONE_HOUR = 60 * 60 * 1000;
@@ -98,6 +98,7 @@ public interface Consts {
     public static final long ONE_SECOND = 1000;
 
     public static final String SP_NAME = "lza_pad_plus_pref";
+    public static final String SP_UI_NAME = "lza_pad_plus_ui_pref";
     public static final int SP_MODE = Activity.MODE_PRIVATE;
     String ACTION_START_SERVER = "start_server";
     String ACTION_STOP_SERVER = "stop_server";

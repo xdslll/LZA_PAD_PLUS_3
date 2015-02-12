@@ -703,6 +703,60 @@ public final class RuntimeUtility implements Consts {
         return value;
     }
 
+
+    /**
+     * 存储Ui数据
+     *
+     * @param context
+     * @param key
+     * @param defaultValue
+     */
+    public static void putToUiSP(Context context, String key, Object defaultValue) {
+        putToSP(context, SP_UI_NAME, SP_MODE, key, defaultValue);
+    }
+
+    public static String getFromUiSP(Context context, String key, String defaultValue) {
+        return getStringFromSP(context, SP_UI_NAME, SP_MODE, key, defaultValue);
+    }
+
+    public static boolean clearUiSp(Context context) {
+        return clearSp(context, SP_UI_NAME, SP_MODE);
+    }
+
+    /**
+     * 通用方法，存储SharedPreferences数据
+     *
+     * @param context
+     * @param spName
+     * @param spMode
+     * @param key
+     * @param value
+     */
+    public static void putToSP(Context context, String spName, int spMode, String key, Object value) {
+        SharedPreferences preferences = context.getSharedPreferences(spName, spMode);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        if (value instanceof String) {
+            editor.putString(key, (String) value);
+        } else if (value instanceof Boolean){
+            editor.putBoolean(key, (Boolean) value);
+        } else if (value instanceof Integer) {
+            editor.putInt(key, (Integer) value);
+        }
+        editor.apply();
+    }
+
+    public static String getStringFromSP(Context context, String spName, int spMode, String key, String defaultValue) {
+        SharedPreferences preferences = context.getSharedPreferences(spName, spMode);
+        return preferences.getString(key, defaultValue);
+    }
+
+    public static boolean clearSp(Context context, String spName, int spMode) {
+        SharedPreferences preferences = context.getSharedPreferences(spName, spMode);
+        SharedPreferences.Editor editor = preferences.edit();
+        return editor.clear().commit();
+    }
+
     /**
      * 生成带参数的文本
      *

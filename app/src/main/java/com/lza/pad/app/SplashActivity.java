@@ -104,7 +104,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                 getDeviceInfo();
             } else if (msg.what == REQUEST_SEND_GET_DEVICE_INFO) {
                 String url = (String) msg.obj;
-                RequestHelper.getInstance(mCtx, SplashActivity.this, url).send();
+                RequestHelper.getInstance(mCtx, url, SplashActivity.this).send();
             } else if (msg.what == REQUEST_INIT) {
                 checkWifi();
             }
@@ -228,12 +228,14 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                gotoHomeActivity(deviceInfo);
+                //发送更新启动状态的请求
+                requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
             }
         });
     }
 
     private void gotoHomeActivity(PadDeviceInfo deviceInfo) {
+        dismissProgressDialog();
         Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
         intent.putExtra(KEY_PAD_DEVICE_INFO, deviceInfo);
         startActivity(intent);
@@ -267,23 +269,23 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                     wifiApAdmin.startWifiAp(wifiApName, wifiApPassword, new WifiApAdmin.OnWifiApStartListener() {
                         @Override
                         public void onWifiApSuccess() {
-                            dismissProgressDialog();
                             ToastUtils.showLong(mCtx, "[" + wifiApName + "]热点启动成功！");
-                            //前往首页
-                            gotoHomeActivity(deviceInfo);
+                            log("[" + wifiApName + "]热点启动成功！");
+                            //发送更新启动状态的请求
+                            requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                         }
 
                         @Override
                         public void onWifiApFailed() {
-                            dismissProgressDialog();
-                            ToastUtils.showLong(mCtx, "[" + wifiApName + "]热点启动成功！");
-                            //前往首页
-                            gotoHomeActivity(deviceInfo);
+                            ToastUtils.showLong(mCtx, "[" + wifiApName + "]热点启动失败！");
+                            log("[" + wifiApName + "]热点启动失败！");
+                            //发送更新启动状态的请求
+                            requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                         }
                     });
                 } else {
-                    //前往首页
-                    gotoHomeActivity(deviceInfo);
+                    //发送更新启动状态的请求
+                    requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                 }
             } else if (state.equals(ResponseData.RESPONSE_STATE_NO_LAYOUT)) {
                 UniversalUtility.showDialog(this, "提示", message,
@@ -307,5 +309,15 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                         });
             }
         }
+    }
+
+    @Override
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
+        gotoHomeActivity(deviceInfo);
+    }
+
+    @Override
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
+        gotoHomeActivity(deviceInfo);
     }
 }

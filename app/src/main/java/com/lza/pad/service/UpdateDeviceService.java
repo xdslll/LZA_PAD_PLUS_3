@@ -26,7 +26,7 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 15/2/10.
  */
-public class UpdateService extends IntentService implements Consts, RequestHelper.OnRequestListener {
+public class UpdateDeviceService extends IntentService implements Consts, RequestHelper.OnRequestListener {
 
     private PadDeviceInfo mDeviceInfo;
     private Context mContext;
@@ -43,7 +43,7 @@ public class UpdateService extends IntentService implements Consts, RequestHelpe
      */
     private static int mUpdateTime = 5 * 1000;
 
-    public UpdateService() {
+    public UpdateDeviceService() {
         super("UpdateService");
     }
 
@@ -64,7 +64,9 @@ public class UpdateService extends IntentService implements Consts, RequestHelpe
     protected void onHandleIntent(Intent intent) {
         log("正在启动服务");
         mHandler.sendEmptyMessageDelayed(REQUEST_UPDATE_STATE, mUpdateTime);
-        EventBus.getDefault().register(UpdateService.this);
+        if (!EventBus.getDefault().isRegistered(UpdateDeviceService.this)) {
+            EventBus.getDefault().register(UpdateDeviceService.this);
+        }
     }
 
     public static final int REQUEST_UPDATE_STATE = 0x01;
@@ -74,7 +76,9 @@ public class UpdateService extends IntentService implements Consts, RequestHelpe
         public void handleMessage(Message msg) {
             if (!mIsRunning) {
                 log("正在停止服务");
-                EventBus.getDefault().unregister(UpdateService.this);
+                if (EventBus.getDefault().isRegistered(UpdateDeviceService.this)) {
+                    EventBus.getDefault().unregister(UpdateDeviceService.this);
+                }
                 return;
             }
             synchronized (mLock) {
@@ -87,7 +91,7 @@ public class UpdateService extends IntentService implements Consts, RequestHelpe
                         //如果没有生成请求，则先生成请求
                         if (TextUtils.isEmpty(mRequestUrl)) mRequestUrl = createUrl();
                         //发送请求
-                        RequestHelper.getInstance(mContext, UpdateService.this, mRequestUrl).send();
+                        RequestHelper.getInstance(mContext, mRequestUrl, UpdateDeviceService.this).send();
                     }
                 }
             }
@@ -124,6 +128,7 @@ public class UpdateService extends IntentService implements Consts, RequestHelpe
                         mIsUpdating = true;
                     } else {
                         //不允许自动更新
+                        log("不允许自动更新，界面将不会更新");
                     }
                 } else if (mUpdateTag.equals(PadDeviceInfo.TAG_HAVE_UDPATE)) {
                     log("已经更新");

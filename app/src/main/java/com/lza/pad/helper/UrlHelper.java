@@ -29,7 +29,7 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_UPDATE_TAG = "update_tag";
 
-    public static final String PAR_DEVICE_ID = "bh";
+    public static final String PAR_DEVICE_CODE = "bh";
 
 
 
@@ -100,12 +100,21 @@ public class UrlHelper implements Consts {
         par.put(PAR_CONTROL, CONTROL_UPDATE_DEVICE_INFO);
         par.put(PAR_UPDATE_TAG, deviceInfo.getUpdate_tag());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
-        par.put(PAR_DEVICE_ID, deviceInfo.getBh());
+        par.put(PAR_DEVICE_CODE, deviceInfo.getBh());
         return par;
     }
 
     public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo) {
         return generateUrl(updateDeviceInfoPar(deviceInfo));
+    }
+
+    public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo, String key, String value) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_UPDATE_DEVICE_INFO);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_DEVICE_CODE, deviceInfo.getBh());
+        par.put(key, value);
+        return generateUrl(par);
     }
 
     /**

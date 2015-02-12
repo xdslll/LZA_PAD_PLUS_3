@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -18,8 +20,13 @@ import com.lza.pad.app.socket.admin.server.OnServerIoAdapter;
 import com.lza.pad.app.socket.admin.server.ServerMessageHandler;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.service.MinaServiceHelper;
+import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.helper.CommonRequestListener;
 import com.lza.pad.helper.GsonHelper;
-import com.lza.pad.service.UpdateService;
+import com.lza.pad.helper.RequestHelper;
+import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.service.UpdateDeviceService;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 
@@ -128,12 +135,14 @@ public class BaseActivity extends Activity implements Consts {
             //启动界面自动更新服务
             mIntentService = new Intent(ACTION_UPDATE_DEVICE_SERVICE);
             startService(mIntentService);
-            //如果是首页，则开始监听更新的状况
-            log("注册UpdateReceiver");
-            mUpdateReceiver = new UpdateReceiver();
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(ACTION_UPDATE_DEVICE_RECEIVER);
-            registerReceiver(mUpdateReceiver, filter);
+            if (mUpdateReceiver == null) {
+                //如果是首页，则开始监听更新的状况
+                log("注册UpdateReceiver");
+                mUpdateReceiver = new UpdateReceiver();
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(ACTION_UPDATE_DEVICE_RECEIVER);
+                registerReceiver(mUpdateReceiver, filter);
+            }
         }
     }
 
@@ -153,7 +162,7 @@ public class BaseActivity extends Activity implements Consts {
         EventBus.getDefault().unregister(this);
         if (mIsHome) {
             //回传给更新界面服务，使之停止运行
-            UpdateService.UpdateCallback callback = new UpdateService.UpdateCallback();
+            UpdateDeviceService.UpdateCallback callback = new UpdateDeviceService.UpdateCallback();
             callback.isRunning = false;
             EventBus.getDefault().post(callback);
             //停止监听
@@ -225,7 +234,7 @@ public class BaseActivity extends Activity implements Consts {
 
     protected ProgressDialog mProgressDialog = null;
 
-    protected void showProgressDialog(String msg, boolean ifDismiss) {
+    protected void showProgressDialog(final String msg, boolean ifDismiss) {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setIndeterminate(true);
@@ -237,7 +246,7 @@ public class BaseActivity extends Activity implements Consts {
         mProgressDialog.show();
     }
 
-    protected void showProgressDialog(String msg) {
+    protected void showProgressDialog(final String msg) {
         showProgressDialog(msg, true);
     }
 
@@ -247,7 +256,7 @@ public class BaseActivity extends Activity implements Consts {
         }
     }
 
-    protected void updateProgressDialog(String msg) {
+    protected void updateProgressDialog(final String msg) {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) return;
         mProgressDialog.setMessage(msg);
     }
@@ -285,6 +294,9 @@ public class BaseActivity extends Activity implements Consts {
         return mIsHome;
     }
 
+    /**
+     * 接收更新设备信息的服务，如果设备信息有更新，需要启动该Receiver去接收
+     */
     private class UpdateReceiver extends BroadcastReceiver {
 
         @Override
@@ -294,6 +306,38 @@ public class BaseActivity extends Activity implements Consts {
     }
 
     public void onUpdateReceive(Context context, Intent intent) {}
+
+    /**
+     * 发送请求给服务器，更新设备信息
+     *
+     * @param deviceInfo
+     */
+    protected void requestUpdateDeviceInfo(final PadDeviceInfo deviceInfo, String key, String value) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                updateProgressDialog("正在更新设备状态");
+            }
+        });
+
+        String url = UrlHelper.updateDeviceInfoUrl(deviceInfo, key, value);
+        RequestHelper.getInstance(mCtx, url, new CommonRequestListener() {
+            @Override
+            public void handleResponseSuccess() {
+                log("设备状态更新成功");
+                onDeviceUpdateSuccess(deviceInfo);
+            }
+
+            @Override
+            public void onResponseStateError(ResponseData response) {
+                log("设备状态更新失败");
+                onDeviceUpdateFailed(deviceInfo);
+            }
+        }).send();
+    }
+
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
 }
 
 /**

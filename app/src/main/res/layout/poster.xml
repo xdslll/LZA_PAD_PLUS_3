@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/org.taptwo.android.widget"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <org.taptwo.android.widget.ViewFlow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:sizebuffer="3"
+        android:id="@+id/poster_viewflow"
+        />
+    <org.taptwo.android.widget.CircleFlowIndicator
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        app:fadeOut="1000"
+        app:inactiveType="stroke"
+        android:id="@+id/poster_viewflow_indicator"
+        />
+</FrameLayout>

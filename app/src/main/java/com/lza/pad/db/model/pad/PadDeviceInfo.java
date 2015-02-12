@@ -20,6 +20,9 @@ public class PadDeviceInfo implements Parcelable {
     public static final String TAG_HOTSPOT_ON = "1";
     public static final String TAG_HOTSPOT_OFF = "0";
 
+    public static final String TAG_STATE_ON = "1";
+    public static final String TAG_STATE_OFF = "0";
+
     String id;
 
     String bh;
@@ -47,6 +50,8 @@ public class PadDeviceInfo implements Parcelable {
     String hotspot_password;
 
     String hotspot_switch;
+
+    String state;
 
     public String getId() {
         return id;
@@ -160,6 +165,14 @@ public class PadDeviceInfo implements Parcelable {
         this.hotspot_switch = hotspot_switch;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -181,6 +194,7 @@ public class PadDeviceInfo implements Parcelable {
         dest.writeString(update_time);
         dest.writeString(hotspot_password);
         dest.writeString(hotspot_switch);
+        dest.writeString(state);
     }
 
     public PadDeviceInfo() {
@@ -202,6 +216,7 @@ public class PadDeviceInfo implements Parcelable {
         update_time = src.readString();
         hotspot_password = src.readString();
         hotspot_switch = src.readString();
+        state = src.readString();
     }
 
     public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {
@@ -231,6 +246,7 @@ public class PadDeviceInfo implements Parcelable {
                 "\n自动更新：\'" + (Integer.valueOf(auto_update) == 0 ? "否" : "是") + '\'' +
                 "\n更新频率：\'" + update_time + "秒" + "\'" +
                 "\n热点密码：\'" + hotspot_password + "秒" + "\'" +
-                "\n热点开关：\'" + (Integer.valueOf(hotspot_switch) == 0 ? "关" : "开") + '\'';
+                "\n热点开关：\'" + (Integer.valueOf(hotspot_switch) == 0 ? "关" : "开") + '\'' +
+                "\n设备状态：\'" + (Integer.valueOf(state) == 0 ? "关" : "开") + '\'';
     }
 }

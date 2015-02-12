@@ -22,7 +22,7 @@ import com.lza.pad.event.state.ResponseEventTag;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
-import com.lza.pad.service.UpdateService;
+import com.lza.pad.service.UpdateDeviceService;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.RuntimeUtility;
 import com.lza.pad.support.utils.ToastUtils;
@@ -112,7 +112,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 logState();
                 dismissProgressDialog();
                 //回传给更新界面服务，界面更新成功
-                UpdateService.UpdateCallback callback = new UpdateService.UpdateCallback();
+                UpdateDeviceService.UpdateCallback callback = new UpdateDeviceService.UpdateCallback();
                 callback.isRunning = true;
                 callback.isUpdating = false;
                 EventBus.getDefault().post(callback);
@@ -134,6 +134,28 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
         stopUpdateLayout();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        requestUpdateDeviceInfo(mDeviceInfo, "state", PadDeviceInfo.TAG_STATE_OFF);
+    }
+
+    @Override
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
+        log("设置设备关闭状态成功");
+    }
+
+    private int mUpdateDeviceRetryCount = 0;
+    private int MAX_RETRY_COUNT = 3;
+
+    @Override
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
+        log("设置设备关闭状态失败");
+        if (mUpdateDeviceRetryCount > MAX_RETRY_COUNT) return;
+        mUpdateDeviceRetryCount++;
+        requestUpdateDeviceInfo(mDeviceInfo, "state", PadDeviceInfo.TAG_STATE_OFF);
+    }
+
     private void initLayout() {
         String updateTag = mDeviceInfo.getUpdate_tag();
         if (updateTag.equals(PadDeviceInfo.TAG_NEED_UDPATE)) {
@@ -149,7 +171,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             mActivityUpdateState = ACTIVITY_STATE_GETTING_DATA;
             logState();
             //本地有更新数据，直接从json中加载界面
-            mJsonLayoutModules = RuntimeUtility.getFromSP(mCtx, JSON_LAYOUT_MODULE, "");
+            mJsonLayoutModules = RuntimeUtility.getFromUiSP(mCtx, JSON_LAYOUT_MODULE, "");
             log(mJsonLayoutModules);
             if (TextUtils.isEmpty(mJsonLayoutModules)) {
                 mDeviceInfo.setUpdate_tag(PadDeviceInfo.TAG_NEED_UDPATE);
@@ -176,7 +198,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
     }
 
     private void requestLayoutModule(String url) {
-        RequestHelper.getInstance(mCtx, HomeActivity.this, url).send();
+        RequestHelper.getInstance(mCtx, url, HomeActivity.this).send();
     }
 
     /**
@@ -184,7 +206,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
      */
     private void requestModuleControls(PadLayoutModule deviceLayout) {
         String url = UrlHelper.getModuleControlUrl(mDeviceInfo, deviceLayout);
-        RequestHelper.getInstance(mCtx, HomeActivity.this, url).send();
+        RequestHelper.getInstance(mCtx, url, HomeActivity.this).send();
     }
 
     /**
@@ -244,6 +266,8 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 subContainer.setId(id);
                 mMainContainer.addView(subContainer);
                 launchFragment(frg, id);
+
+                AppLogger.e("w=" + W + ",H=" + H / mHomeControlSize * controlHeight);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (InstantiationException e) {
@@ -271,7 +295,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 //保存布局下的所有模块数据
                 mJsonLayoutModules = response.getResponseData();
                 //保存Json文件
-                RuntimeUtility.putToSP(mCtx, JSON_LAYOUT_MODULE, mJsonLayoutModules);
+                RuntimeUtility.putToUiSP(mCtx, JSON_LAYOUT_MODULE, mJsonLayoutModules);
 
                 handleLayoutModuleJson(mJsonLayoutModules, PadDeviceInfo.TAG_NEED_UDPATE);
             } else {
@@ -342,7 +366,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
         mJsonModuleControls.clear();
         for (int i = 0; i < mModuleSize; i++) {
             //从SP中获取Json
-            String json = RuntimeUtility.getFromSP(mCtx, JSON_MODULE_CONTROL + i, "");
+            String json = RuntimeUtility.getFromUiSP(mCtx, JSON_MODULE_CONTROL + i, "");
             mJsonModuleControls.add(json);
             log(json);
             //解析Json
@@ -377,7 +401,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             AppLogger.e(mMoudleControls.toString());
             //将控件数据保存到SharedPreferences
             for (int i = 0; i < mJsonModuleControls.size(); i++) {
-                RuntimeUtility.putToSP(mCtx, JSON_MODULE_CONTROL + i, mJsonModuleControls.get(i));
+                RuntimeUtility.putToUiSP(mCtx, JSON_MODULE_CONTROL + i, mJsonModuleControls.get(i));
             }
             //向服务器更新设备状态
             updateDeviceUpdateTag();
@@ -396,7 +420,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 handleUpdateTagRequest(response);
             }
         };
-        RequestHelper.getInstance(mCtx, listener, url).send();
+        RequestHelper.getInstance(mCtx, url, listener).send();
     }
 
     private void handleUpdateTagRequest(ResponseEventInfo response) {
@@ -430,12 +454,22 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             mDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
             if (mDeviceInfo == null) return;
             log("准备重新更新界面");
-            //将数据进行初始化
+            //初始化数据
+            //删除保存的模块数据
             mLayoutsModules.clear();
+            //删除保存的控件数据
             mMoudleControls.clear();
+            //重置模块数
             mModuleSize = -1;
+            //重置当前模块编号
             mCurrentModuleIndex = -1;
+            //重置首页控件数目
             mHomeControlSize = -1;
+            //移除所有布局
+            mMainContainer.removeAllViews();
+            //移除存储的布局数据
+            RuntimeUtility.clearUiSp(mCtx);
+
             //重新加载界面
             initLayout();
         }

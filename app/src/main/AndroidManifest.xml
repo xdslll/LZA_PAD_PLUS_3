@@ -54,7 +54,7 @@
             </intent-filter>
         </service>
 
-        <service android:name=".service.UpdateService" android:enabled="true">
+        <service android:name=".service.UpdateDeviceService" android:enabled="true">
             <intent-filter>
                 <action android:name="LZA_PAD_UPDATE_SERIVCE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
