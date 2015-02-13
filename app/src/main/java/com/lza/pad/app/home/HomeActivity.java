@@ -66,6 +66,16 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
      */
     private int W, H;
 
+    /**
+     * 模块的Json数据
+     */
+    private String mJsonLayoutModules = "";
+
+    /**
+     * 控件的Json数据
+     */
+    private List<String> mJsonModuleControls = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,6 +169,10 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
     private void initLayout() {
         String updateTag = mDeviceInfo.getUpdate_tag();
         if (updateTag.equals(PadDeviceInfo.TAG_NEED_UDPATE)) {
+            //如果需要更新，先清除存储的布局数据
+            boolean result = RuntimeUtility.clearUiSp(mCtx);
+            if (result) log("清除布局数据成功！");
+            else log("清除布局数据失败！");
             //未存储更新数据，开始更新
             mActivityUpdateState = ACTIVITY_STATE_NOT_UPDATE;
             logState();
@@ -277,9 +291,6 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             }
         }
     }
-
-    private String mJsonLayoutModules = "";
-    private List<String> mJsonModuleControls = new ArrayList<String>();
 
     @Override
     public void onResponse(ResponseEventInfo response) {
@@ -454,7 +465,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             mDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
             if (mDeviceInfo == null) return;
             log("准备重新更新界面");
-            //初始化数据
+            /* 初始化数据 */
             //删除保存的模块数据
             mLayoutsModules.clear();
             //删除保存的控件数据
@@ -467,8 +478,9 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             mHomeControlSize = -1;
             //移除所有布局
             mMainContainer.removeAllViews();
-            //移除存储的布局数据
-            RuntimeUtility.clearUiSp(mCtx);
+            //清空Json数据
+            mJsonModuleControls.clear();
+            mJsonLayoutModules = "";
 
             //重新加载界面
             initLayout();

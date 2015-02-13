@@ -20,22 +20,46 @@ public class JsonParseHelper {
      * Sample Code
      */
     public static ResponseData parseSimpleResponse(String json) {
-        Type type = new TypeToken<ResponseData>(){}.getType();
-        return GsonHelper.instance().fromJson(json, type);
+        try {
+            Type type = new TypeToken<ResponseData>() {
+            }.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     public static ResponseData<PadDeviceInfo> parseDeviceInfoResponse(String json) {
-        Type type = new TypeToken<ResponseData<PadDeviceInfo>>(){}.getType();
-        return GsonHelper.instance().fromJson(json, type);
+        try {
+            Type type = new TypeToken<ResponseData<PadDeviceInfo>>() {
+            }.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     public static ResponseData<PadLayoutModule> parseDeviceLayoutResponse(String json) {
-        Type type = new TypeToken<ResponseData<PadLayoutModule>>(){}.getType();
-        return GsonHelper.instance().fromJson(json, type);
+        try {
+            Type type = new TypeToken<ResponseData<PadLayoutModule>>() {
+            }.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     public static ResponseData<PadModuleControl> parseModuleControlResponse(String json) {
-        Type type = new TypeToken<ResponseData<PadModuleControl>>(){}.getType();
-        return GsonHelper.instance().fromJson(json, type);
+        try {
+            Type type = new TypeToken<ResponseData<PadModuleControl>>() {
+            }.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 }

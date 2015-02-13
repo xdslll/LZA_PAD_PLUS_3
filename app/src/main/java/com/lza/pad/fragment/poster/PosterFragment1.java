@@ -37,6 +37,11 @@ public class PosterFragment1 extends BaseFragment {
     private ViewFlow mViewFlow;
     private CircleFlowIndicator mIndicator;
 
+    /**
+     * 判断系统是否退出，如果退出，则停止轮播
+     */
+    private boolean mIsPause = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +50,19 @@ public class PosterFragment1 extends BaseFragment {
         //mViews.add(createView(2));
         //mViews.add(createView(3));
         //mViews.add(createView(4));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIsPause = false;
+        mHandler.sendEmptyMessageDelayed(REQUEST_NEXT, TURN_TO_PAGE_DELAY);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mIsPause = true;
     }
 
     /**
@@ -90,14 +108,6 @@ public class PosterFragment1 extends BaseFragment {
         mViewFlow.setAdapter(new ViewFlowAdapter(mActivity));
         mViewFlow.setFlowIndicator(mIndicator);
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mHandler.sendEmptyMessageDelayed(REQUEST_NEXT, TURN_TO_PAGE_DELAY);
-
         mViewFlow.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -108,6 +118,13 @@ public class PosterFragment1 extends BaseFragment {
                 return false;
             }
         });
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     int mCurrentSelection = 0;
@@ -126,12 +143,12 @@ public class PosterFragment1 extends BaseFragment {
                 }
                 mViewFlow.setSelection(mCurrentSelection);
                 mCurrentSelection++;
-                mHandler.sendEmptyMessageDelayed(REQUEST_NEXT, TURN_TO_PAGE_DELAY);
+                if (!mIsPause) {
+                    mHandler.sendEmptyMessageDelayed(REQUEST_NEXT, TURN_TO_PAGE_DELAY);
+                }
             }
         }
     };
-
-
 
     private class ViewFlowAdapter extends BaseAdapter {
 

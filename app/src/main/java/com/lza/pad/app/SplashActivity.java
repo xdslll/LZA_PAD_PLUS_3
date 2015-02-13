@@ -253,6 +253,16 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
         if (tag == ResponseEventTag.ON_RESONSE) {
             String json = response.getResponseData();
             final ResponseData<PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
+            if (data == null) {
+                dismissProgressDialog();
+                UniversalUtility.showDialog(mCtx, "提示", "服务器异常，点击确定重试", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mMainHandler.sendEmptyMessageDelayed(REQUEST_INIT, 2000);
+                    }
+                });
+                return;
+            }
             String state = data.getState();
             String message = data.getMessage();
             if (state.equals(ResponseData.RESPONSE_STATE_OK)) {

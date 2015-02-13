@@ -24,7 +24,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/19/15.
  */
-public class EbookNormalListFragment extends BaseEbookListFragment<String> {
+public class EbookFragment3 extends BaseEbookListFragment<String> {
 
     private int[][] DATAS = new int[][] {
             new int[] {R.drawable.test_cover1, R.drawable.test_cover2, R.drawable.test_cover3, R.drawable.test_cover4},

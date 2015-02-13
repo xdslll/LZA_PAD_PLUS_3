@@ -23,7 +23,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/20/15.
  */
-public class NewbookListFragment extends BaseEbookListFragment<String> {
+public class NewFragment2 extends BaseEbookListFragment<String> {
 
     @Override
     protected void onMoreButtonClick() {
