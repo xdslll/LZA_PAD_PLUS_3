@@ -1,11 +1,9 @@
 package com.lza.pad.app.news;
 
 import android.app.Fragment;
-import android.os.Bundle;
 
 import com.lza.pad.app.base.BaseContentActivity;
 import com.lza.pad.fragment.news.NewsContentFragment;
-import com.lza.pad.support.utils.RuntimeUtility;
 
 /**
  * Say something about this class
@@ -22,23 +20,8 @@ public class NewsContentActivity extends BaseContentActivity {
 
     @Override
     protected Fragment getFragment() {
-        NewsContentFragment fragment = new NewsContentFragment();
-        Bundle arg = new Bundle();
-        arg.putInt(KEY_FRAGMENT_WIDTH, RuntimeUtility.getScreenWidth(this));
-        arg.putInt(KEY_FRAGMENT_HEIGHT, RuntimeUtility.getScreenHeight(this));
-        fragment.setArguments(arg);
-        return fragment;
+        return new NewsContentFragment();
     }
-
-    /*private _MainApplication.OnSensorShakeListener mListener = new _MainApplication.OnSensorShakeListener() {
-        @Override
-        public File onShake() {
-            ToastUtils.showShort(NewsContentActivity.this, "新闻模块，接收到用户摇一摇！");
-            File dir = Environment.getExternalStorageDirectory();
-            File file = new File(dir, "spring.pdf");
-            return file;
-        }
-    };*/
 
     @Override
     protected void onResume() {
@@ -51,4 +34,14 @@ public class NewsContentActivity extends BaseContentActivity {
         super.onPause();
         //mApp.unRegisterSensorShake();
     }
+
+    /*private _MainApplication.OnSensorShakeListener mListener = new _MainApplication.OnSensorShakeListener() {
+        @Override
+        public File onShake() {
+            ToastUtils.showShort(NewsContentActivity.this, "新闻模块，接收到用户摇一摇！");
+            File dir = Environment.getExternalStorageDirectory();
+            File file = new File(dir, "spring.pdf");
+            return file;
+        }
+    };*/
 }

@@ -84,4 +84,12 @@
     <!-- panoramic_view.xml -->
     <dimen name="panoramic_view_title_size">32sp</dimen>
     <dimen name="panoramic_view_title_func_size">22sp</dimen>
+
+    <!-- IrregularNews.java -->
+    <dimen name="irregular_news_title_size">28sp</dimen>
+    <dimen name="irregular_news_abstract_size">24sp</dimen>
+
+    <!-- news_content.xml -->
+    <dimen name="content_min_width">1000dp</dimen>
+    <dimen name="content_min_height">600dp</dimen>
 </resources>

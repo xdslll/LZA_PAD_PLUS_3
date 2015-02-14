@@ -25,11 +25,44 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_LAYOUT_ID = "layout_id";
 
-    public static final String PAR_MODULE_ID = "model_id";
+    public static final String PAR_MODEL_ID = "model_id";
 
     public static final String PAR_UPDATE_TAG = "update_tag";
 
     public static final String PAR_DEVICE_CODE = "bh";
+
+    public static final String PAR_SCHOOL_CODE = "school_bh";
+
+    public static final String PAR_ID = "id";
+
+    public static final String PAR_MODULE_ID = "module_id";
+
+    public static final String PAR_MODULE_NAME = "module_name";
+
+    public static final String PAR_PX = "px";
+
+    public static final String PAR_KEYWORD = "keyword";
+
+    public static final String PAR_SUBJECT = "subject";
+
+    public static final String PAR_WIDGETS_ID = "widgets_id";
+
+    public static final String PAR_SOURCE_TYPE = "source_type";
+
+    public static final String PAR_TITLE = "title";
+
+    public static final String PAR_CONTROL_TYPE = "control_type";
+
+    public static final String PAR_CONTROL_INDEX = "control_index";
+
+    public static final String PAR_CONTROL_HEIGHT = "control_height";
+
+    public static final String PAR_CONTROL_NAME = "control_name";
+
+    public static final String PAR_PAGE_SIZE = "pagesize";
+
+    public static final String PAR_PAGE = "page";
+
 
 
 
@@ -79,7 +112,7 @@ public class UrlHelper implements Consts {
     public static Map<String, String> getModuleControlPar(PadDeviceInfo deviceInfo, PadLayoutModule deviceLayout) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MODULE_CONTROL);
-        par.put(PAR_MODULE_ID, deviceLayout.getModule_id());
+        par.put(PAR_MODEL_ID, deviceLayout.getModule_id());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return par;
     }
@@ -114,6 +147,16 @@ public class UrlHelper implements Consts {
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         par.put(PAR_DEVICE_CODE, deviceInfo.getBh());
         par.put(key, value);
+        return generateUrl(par);
+    }
+
+    public static String getResourcesUrl(PadDeviceInfo deviceInfo, String sourceType, String pageSize, String page) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_MESSAGE);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_PAGE, page);
+        par.put(PAR_PAGE_SIZE, pageSize);
+        par.put(PAR_SOURCE_TYPE, sourceType);
         return generateUrl(par);
     }
 

@@ -131,15 +131,15 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
     };
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         //启动更新
         initLayout();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         //停止更新
         stopUpdateLayout();
     }
@@ -247,6 +247,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
         mHomeControlSize = homeControls.size();
         W = RuntimeUtility.getScreenWidth(this);
         H = RuntimeUtility.getScreenHeight(this);
+        log("屏幕尺寸：" + W + "*" + H);
         for (int i = 0; i < homeControls.size(); i++) {
             log("正在绘制第" + (i + 1) + "个控件");
             PadModuleControl control = homeControls.get(i);
@@ -271,17 +272,26 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             AppLogger.e("文件名：" + buffer.toString());
 
             try {
+                int width = W;
+                int height = H / mHomeControlSize * controlHeight;
                 Class clazz = Class.forName(buffer.toString());
                 Fragment frg = (Fragment) clazz.newInstance();
+                Bundle arg = new Bundle();
+                arg.putParcelable(KEY_PAD_DEVICE_INFO, mDeviceInfo);
+                arg.putParcelable(KEY_PAD_CONTROL_INFO, control);
+                arg.putInt(KEY_FRAGMENT_WIDTH, width);
+                arg.putInt(KEY_FRAGMENT_HEIGHT, height);
+                frg.setArguments(arg);
+
                 int id = (i + 1) << (i + 1);
                 FrameLayout subContainer = new FrameLayout(this);
                 subContainer.setLayoutParams(new
-                        ViewGroup.LayoutParams(W, H / mHomeControlSize * controlHeight));
+                        ViewGroup.LayoutParams(width, height));
                 subContainer.setId(id);
                 mMainContainer.addView(subContainer);
                 launchFragment(frg, id);
 
-                AppLogger.e("w=" + W + ",H=" + H / mHomeControlSize * controlHeight);
+                AppLogger.e("width=" + width + ",height=" + height);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (InstantiationException e) {

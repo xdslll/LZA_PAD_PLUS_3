@@ -5,6 +5,7 @@ import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad.PadResource;
 
 import java.lang.reflect.Type;
 
@@ -21,8 +22,7 @@ public class JsonParseHelper {
      */
     public static ResponseData parseSimpleResponse(String json) {
         try {
-            Type type = new TypeToken<ResponseData>() {
-            }.getType();
+            Type type = new TypeToken<ResponseData>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -32,8 +32,7 @@ public class JsonParseHelper {
 
     public static ResponseData<PadDeviceInfo> parseDeviceInfoResponse(String json) {
         try {
-            Type type = new TypeToken<ResponseData<PadDeviceInfo>>() {
-            }.getType();
+            Type type = new TypeToken<ResponseData<PadDeviceInfo>>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -43,8 +42,7 @@ public class JsonParseHelper {
 
     public static ResponseData<PadLayoutModule> parseDeviceLayoutResponse(String json) {
         try {
-            Type type = new TypeToken<ResponseData<PadLayoutModule>>() {
-            }.getType();
+            Type type = new TypeToken<ResponseData<PadLayoutModule>>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -54,8 +52,17 @@ public class JsonParseHelper {
 
     public static ResponseData<PadModuleControl> parseModuleControlResponse(String json) {
         try {
-            Type type = new TypeToken<ResponseData<PadModuleControl>>() {
-            }.getType();
+            Type type = new TypeToken<ResponseData<PadModuleControl>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadResource> parseResourceResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadResource>>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();

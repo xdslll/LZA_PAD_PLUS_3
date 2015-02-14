@@ -44,7 +44,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     private static int mUpdateTime = 5 * 1000;
 
     public UpdateDeviceService() {
-        super("UpdateService");
+        super("UpdateDeviceService");
     }
 
     @Override
@@ -53,6 +53,9 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         mContext = getBaseContext();
         String macAddress = UniversalUtility.getMacAddress(this);
         mRequestUrl = UrlHelper.getDeviceUrl(macAddress);
+        if (!EventBus.getDefault().isRegistered(UpdateDeviceService.this)) {
+            EventBus.getDefault().register(UpdateDeviceService.this);
+        }
     }
 
     @Override
@@ -64,9 +67,6 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     protected void onHandleIntent(Intent intent) {
         log("正在启动服务");
         mHandler.sendEmptyMessageDelayed(REQUEST_UPDATE_STATE, mUpdateTime);
-        if (!EventBus.getDefault().isRegistered(UpdateDeviceService.this)) {
-            EventBus.getDefault().register(UpdateDeviceService.this);
-        }
     }
 
     public static final int REQUEST_UPDATE_STATE = 0x01;
@@ -105,11 +105,22 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
 
     @Override
     public void onResponse(ResponseEventInfo response) {
-        if (response == null) return;
+        if (response == null) {
+            mHandler.sendEmptyMessageDelayed(REQUEST_UPDATE_STATE, mUpdateTime);
+            return;
+        }
         if (response.getTag() == ResponseEventTag.ON_RESONSE) {
             String json = response.getResponseData();
             final ResponseData<PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
+            if (data == null) {
+                mHandler.sendEmptyMessageDelayed(REQUEST_UPDATE_STATE, mUpdateTime);
+                return;
+            }
             String state = data.getState();
+            if (state == null) {
+                mHandler.sendEmptyMessageDelayed(REQUEST_UPDATE_STATE, mUpdateTime);
+                return;
+            }
             if (state.equals(ResponseData.RESPONSE_STATE_OK)) {
                 if (data.getContent() == null || data.getContent().size() <= 0) return;
                 mDeviceInfo = data.getContent().get(0);

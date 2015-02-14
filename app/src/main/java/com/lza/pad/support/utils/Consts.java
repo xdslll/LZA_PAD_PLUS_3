@@ -51,14 +51,22 @@ public interface Consts {
      */
     public static final String CONTROL_UPDATE_DEVICE_INFO = "update_device_info";
 
+    /**
+     * 重要接口：获取数据源
+     */
+    public static final String CONTROL_GET_MESSAGE = "get_message";
 
+    public static final String KEY_PAD_RESOURCE_INFO = "key_pad_resource";
+    public static final String KEY_PAD_CONTROL_INFO = "key_pad_control";
+    public static final String KEY_PAD_MODULE_INFO = "key_pad_module";
+    public static final String KEY_PAD_SCHOOL = "key_pad_school";
     public static final String KEY_PAD_DEVICE_INFO = "key_pad_device";
     public static final String KEY_DEVICE_IS_UPDATING = "key_device_is_updating";
     public static final String KEY_UPDATE_DEVICE_IS_RUNNING = "key_update_device_is_running";
 
     public static final String ACTION_UPDATE_DEVICE_CALLBACK = "LZA_PAD_UPDATE_CALLBACK";
-    public static final String ACTION_UPDATE_DEVICE_RECEIVER = "LZA_PAD_UPDATE_RECEIVER";
-    public static final String ACTION_UPDATE_DEVICE_SERVICE = "LZA_PAD_UPDATE_SERIVCE";
+    public static final String ACTION_UPDATE_DEVICE_RECEIVER = "LZA_PAD_UPDATE_DEVICE_RECEIVER";
+    public static final String ACTION_UPDATE_DEVICE_SERVICE = "LZA_PAD_UPDATE_DEVICE_SERIVCE";
     public static final String ACTION_MINA_SERVICE = "LZA_PAD_MINA_SERVICE";
     public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
 

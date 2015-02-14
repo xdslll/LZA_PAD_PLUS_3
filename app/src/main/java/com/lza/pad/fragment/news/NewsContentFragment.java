@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.fragment.base.BaseFragment;
@@ -17,12 +19,32 @@ import com.lza.pad.fragment.base.BaseFragment;
  */
 public class NewsContentFragment extends BaseFragment {
 
-    private LinearLayout mLayout;
+    TextView mTxtTitle, mTxtDate;
+    WebView mWebView;
+    WebSettings mWebSettings;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_content, container, false);
-        //mLayout = (LinearLayout) view.findViewById(R.id.news_content);
+        mTxtTitle = (TextView) view.findViewById(R.id.news_content_title);
+        mTxtDate = (TextView) view.findViewById(R.id.news_content_date);
+        mWebView = (WebView) view.findViewById(R.id.news_content_text);
+
+        if (mPadResourceInfo != null) {
+            mTxtTitle.setText(mPadResourceInfo.getTitle());
+            mTxtDate.setText(mPadResourceInfo.getPubdate());
+
+            // 设置支持JavaScript等
+            mWebSettings = mWebView.getSettings();
+            mWebSettings.setJavaScriptEnabled(true);
+            mWebSettings.setBuiltInZoomControls(true);
+            mWebSettings.setLightTouchEnabled(true);
+            mWebSettings.setSupportZoom(true);
+            mWebSettings.setTextZoom(120);
+            mWebView.setHapticFeedbackEnabled(false);
+
+            mWebView.loadDataWithBaseURL(null, mPadResourceInfo.getContents(), "text/html", "UTF-8", null);
+        }
 
         return view;
     }

@@ -5,6 +5,11 @@ import android.app.Fragment;
 import android.os.Bundle;
 
 import com.lza.pad.app.socket.model.MinaClient;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad.PadResource;
+import com.lza.pad.helper.RequestHelper;
+import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 
 import de.greenrobot.event.EventBus;
@@ -21,6 +26,9 @@ public class BaseFragment extends Fragment implements Consts {
     protected boolean mIfHome = true;
     protected Bundle mArg;
     protected int W, H;
+    protected PadDeviceInfo mPadDeviceInfo;
+    protected PadModuleControl mPadControlInfo;
+    protected PadResource mPadResourceInfo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,6 +39,9 @@ public class BaseFragment extends Fragment implements Consts {
             mIfHome = getArguments().getBoolean(KEY_IF_HOME);
             W = getArguments().getInt(KEY_FRAGMENT_WIDTH);
             H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
+            mPadDeviceInfo = getArguments().getParcelable(KEY_PAD_DEVICE_INFO);
+            mPadControlInfo = getArguments().getParcelable(KEY_PAD_CONTROL_INFO);
+            mPadResourceInfo = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
         }
 
         EventBus.getDefault().register(this);
@@ -48,5 +59,13 @@ public class BaseFragment extends Fragment implements Consts {
 
     public void onEventMainThread(MinaClient client) {
 
+    }
+
+    protected void log(String msg) {
+        AppLogger.e("=============== " + msg + " ===============" );
+    }
+
+    protected void send(String url, RequestHelper.OnRequestListener listener) {
+        RequestHelper.getInstance(mActivity, url, listener).send();
     }
 }
