@@ -10,8 +10,9 @@ import android.widget.GridView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.ebook.EbookActivity;
-import com.lza.pad.app.ebook.EbookContentActivity;
-import com.lza.pad.fragment.base.BaseEbookListFragment;
+import com.lza.pad.app.ebook._EbookContentActivity;
+import com.lza.pad.db.model.pad.PadResource;
+import com.lza.pad.fragment.base.BaseResourceListFragment;
 import com.lza.pad.widget.DefaultEbookCover;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/20/15.
  */
-public class NewFragment2 extends BaseEbookListFragment<String> {
+public class NewFragment2 extends BaseResourceListFragment {
 
     @Override
     protected void onMoreButtonClick() {
@@ -36,23 +37,23 @@ public class NewFragment2 extends BaseEbookListFragment<String> {
     }
 
     @Override
-    protected List<String> getPageDatas() {
-        return new ArrayList<String>();
+    protected String getUrl() {
+        return null;
     }
 
     @Override
     protected List<View> getPageViews() {
         List<View> views = new ArrayList<View>();
-        views.add(generateGridView(0));
-        views.add(generateGridView(1));
-        views.add(generateGridView(2));
-        views.add(generateGridView(3));
-        views.add(generateGridView(4));
+        views.add(generateGridView(0, null));
+        views.add(generateGridView(1, null));
+        views.add(generateGridView(2, null));
+        views.add(generateGridView(3, null));
+        views.add(generateGridView(4, null));
         return views;
     }
 
     @Override
-    protected BaseAdapter getAdapter(int index) {
+    protected BaseAdapter getAdapter(int index, List<PadResource> data) {
         return new BaseNewbookAdapter(index);
     }
 
@@ -92,7 +93,7 @@ public class NewFragment2 extends BaseEbookListFragment<String> {
             holder.layout.setLayoutParams(new GridView.LayoutParams(w, h));
             int paddingHor, paddingVer;
             //水平垂直边距,如果不在首页，则拉大间距，保持界面美观
-            if (mIfHome) {
+            if (mIsHome) {
                 paddingHor = (int) getResources().getDimension(R.dimen.newbook_list_book_padding_hor);
                 paddingVer = (int) getResources().getDimension(R.dimen.newbook_list_book_padding_ver);
             } else {
@@ -120,6 +121,6 @@ public class NewFragment2 extends BaseEbookListFragment<String> {
 
     @Override
     protected void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(mActivity, EbookContentActivity.class));
+        startActivity(new Intent(mActivity, _EbookContentActivity.class));
     }
 }

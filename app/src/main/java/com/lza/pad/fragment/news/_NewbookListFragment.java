@@ -46,7 +46,7 @@ public class _NewbookListFragment extends BaseFragment {
             }
         });
 
-        if (!mIfHome) {
+        if (!mIsHome) {
             mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list2_title);
             mLayoutPages = (LinearLayout) view.findViewById(R.id.ebook_list_pages);
             mLayoutTitle.setVisibility(View.INVISIBLE);

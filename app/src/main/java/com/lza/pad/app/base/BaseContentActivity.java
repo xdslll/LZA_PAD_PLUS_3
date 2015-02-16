@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lza.pad.R;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.support.utils.RuntimeUtility;
 
@@ -19,6 +20,7 @@ public abstract class BaseContentActivity extends BaseActivity {
 
     private TextView mTxtClose, mTxtTitle;
     protected PadResource mPadResource;
+    protected PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public abstract class BaseContentActivity extends BaseActivity {
         setContentView(R.layout.common_content_container);
 
         if (getIntent() != null) {
+            mPadDeviceInfo = getIntent().getParcelableExtra(KEY_PAD_DEVICE_INFO);
             mPadResource = getIntent().getParcelableExtra(KEY_PAD_RESOURCE_INFO);
         }
 

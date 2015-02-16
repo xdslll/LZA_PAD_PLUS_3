@@ -145,6 +145,18 @@ public class PadModuleControl implements Parcelable {
         control_height = src.readString();
     }
 
+    private static final Creator<PadModuleControl> CREATOR = new Creator<PadModuleControl>() {
+        @Override
+        public PadModuleControl createFromParcel(Parcel source) {
+            return new PadModuleControl(source);
+        }
+
+        @Override
+        public PadModuleControl[] newArray(int size) {
+            return new PadModuleControl[size];
+        }
+    };
+
     @Override
     public String toString() {
         return "PadModuleControl{" +

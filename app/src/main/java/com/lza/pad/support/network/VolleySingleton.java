@@ -12,6 +12,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.lza.pad.db.facade.CacheImageFacade;
 import com.lza.pad.db.model.CacheImage;
+import com.lza.pad.helper.ImageHelper;
 import com.lza.pad.support.file.FileTools;
 
 import java.io.File;
@@ -74,6 +75,7 @@ public class VolleySingleton {
     }
 
     public ImageLoader getImageLoader(String type) {
+
         mCacheImageType = type;
         mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
 
@@ -104,6 +106,56 @@ public class VolleySingleton {
                             if (cacheFile.createNewFile()) {
                                 FileOutputStream fos = new FileOutputStream(cacheFile);
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                fos.flush();
+                                fos.close();
+                            }
+                        } catch (java.io.IOException e) {
+                            e.printStackTrace();
+                        }
+                        //保存缓存文件url和文件路径到数据库
+                        CacheImage data = new CacheImage();
+                        data.setType(mCacheImageType);
+                        data.setKey(url);
+                        data.setValue(cacheFile.getAbsolutePath());
+                        CacheImageFacade.createOrUpdateData(mCtx, data);
+                    }
+                }
+            }
+        });
+        return mImageLoader;
+    }
+
+    public ImageLoader getImageLoader(String type, final int outWidth, final int outHeight) {
+
+        mCacheImageType = type;
+        mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
+
+            @Override
+            public Bitmap getBitmap(String url) {
+                //从数据库获取缓存文件路径
+                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheImageType, url);
+                //实例化Bitmap对象
+                return ImageHelper.compressBitmap(filePath, outWidth, outHeight);
+            }
+
+            @Override
+            public void putBitmap(String url, Bitmap bitmap) {
+                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheImageType, url);
+                if (TextUtils.isEmpty(filePath)) {
+                    //获取缓存文件夹路径
+                    File cacheDir = FileTools.createCacheFile(mCacheImageType);
+                    //获取文件名
+                    //String fileName = FileTools.getFileNameFromUrl(url);
+                    String fileName = String.valueOf(System.currentTimeMillis() + ".jpg");
+                    //将url作为文件名
+                    //String fileName = url;
+                    File cacheFile = new File(cacheDir, fileName);
+                    if (!cacheFile.exists()) {
+                        //保存图片到文件路径
+                        try {
+                            if (cacheFile.createNewFile()) {
+                                FileOutputStream fos = new FileOutputStream(cacheFile);
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
                                 fos.flush();
                                 fos.close();
                             }

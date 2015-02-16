@@ -1,6 +1,7 @@
 package com.lza.pad.fragment.ebook;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -9,14 +10,17 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.lza.pad.R;
 import com.lza.pad.app.ebook.EbookActivity;
-import com.lza.pad.app.ebook._EbookContentActivity;
+import com.lza.pad.app.ebook.EbookContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base.BaseResourceListFragment;
+import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.network.VolleySingleton;
 import com.lza.pad.widget.DefaultEbookCover;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,15 +29,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/19/15.
  */
-@Deprecated
-public class EbookFragment3 extends BaseResourceListFragment {
-
-    private int[][] DATAS = new int[][] {
-            new int[] {R.drawable.test_cover1, R.drawable.test_cover2, R.drawable.test_cover3, R.drawable.test_cover4},
-            new int[] {R.drawable.test_cover5, R.drawable.test_cover6, R.drawable.test_cover7, R.drawable.test_cover8},
-            new int[] {R.drawable.test_cover9, R.drawable.test_cover10, R.drawable.test_cover11, R.drawable.test_cover12},
-            new int[] {R.drawable.test_cover13, R.drawable.test_cover14, R.drawable.test_cover15, R.drawable.test_cover16}
-    };
+public class EbookFragment4 extends BaseResourceListFragment {
 
     @Override
     protected void onMoreButtonClick() {
@@ -47,40 +43,37 @@ public class EbookFragment3 extends BaseResourceListFragment {
 
     @Override
     protected String getUrl() {
-        return null;
-    }
-
-    @Override
-    protected List<View> getPageViews() {
-        List<View> views = new ArrayList<View>();
-        views.add(generateGridView(0, null));
-        views.add(generateGridView(1, null));
-        views.add(generateGridView(2, null));
-        views.add(generateGridView(3, null));
-        return views;
+        return UrlHelper.getResourcesUrl(mPadDeviceInfo, PadResource.RESOURCE_EBOOK, mDefaultPageSize, mDefaultPage);
     }
 
     @Override
     protected BaseAdapter getAdapter(int index, List<PadResource> data) {
-        return new BaseEbookAdapter(index);
+        return new BaseEbookAdapter(index, data);
     }
 
     private class BaseEbookAdapter extends BaseAdapter {
 
-        private int index;
+        List<PadResource> datas;
+        int index;
+        ImageLoader imgLoader;
+        int layoutWidth, layoutHeight;
 
-        public BaseEbookAdapter(int index) {
+        public BaseEbookAdapter(int index, List<PadResource> data) {
             this.index = index;
+            this.datas = data;
+            this.layoutWidth = getBookAreaWidth() / getCount();
+            this.layoutHeight = getBookAreaHeight();
+            this.imgLoader = VolleySingleton.getInstance(mActivity).getImageLoader("temp", layoutWidth, layoutHeight);
         }
 
         @Override
         public int getCount() {
-            return DATAS.length;
+            return datas.size();
         }
 
         @Override
-        public Object getItem(int position) {
-            return "";
+        public PadResource getItem(int position) {
+            return datas.get(position);
         }
 
         @Override
@@ -90,6 +83,7 @@ public class EbookFragment3 extends BaseResourceListFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            final PadResource data = datas.get(position);
             final ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
@@ -102,9 +96,10 @@ public class EbookFragment3 extends BaseResourceListFragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.layout.setLayoutParams(new GridView.LayoutParams(W / getGridNumColumns(), mBookAreaHeight));
-            int paddingHor, paddingVer;
+            holder.layout.setLayoutParams(new GridView.LayoutParams(layoutWidth, layoutHeight));
+
             //水平垂直边距,如果不在首页，则拉大间距，保持界面美观
+            int paddingHor, paddingVer;
             if (mIsHome) {
                 paddingHor = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_hor);
                 paddingVer = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_ver);
@@ -114,13 +109,35 @@ public class EbookFragment3 extends BaseResourceListFragment {
             }
             holder.layout.setPadding(paddingHor, paddingVer, paddingHor, paddingVer);
 
-            holder.book.setVisibility(View.GONE);
-            holder.bookImg.setImageResource(DATAS[index][position]);
+            //默认显示自定义封面
+            holder.book.setCoverTitle(data.getTitle());
+            holder.book.setCoverAuthor(data.getAuthor());
+            holder.book.setVisibility(View.VISIBLE);
+            holder.bookImg.setVisibility(View.GONE);
+
+            imgLoader.get(data.getIco(), new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    Bitmap bm = response.getBitmap();
+                    if (bm == null) return;
+
+                    holder.bookImg.setImageBitmap(bm);
+                    holder.bookImg.setVisibility(View.VISIBLE);
+                    holder.book.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    holder.bookImg.setVisibility(View.GONE);
+                    holder.book.setVisibility(View.VISIBLE);
+                }
+            });
+
             return convertView;
         }
     }
 
-    private static class ViewHolder {
+    private class ViewHolder {
         RelativeLayout layout;
         DefaultEbookCover book;
         ImageView bookImg;
@@ -133,7 +150,10 @@ public class EbookFragment3 extends BaseResourceListFragment {
 
     @Override
     protected void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {
-        startActivity(new Intent(mActivity, _EbookContentActivity.class));
+        Intent intent = new Intent(mActivity, EbookContentActivity.class);
+        intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+        intent.putExtra(KEY_PAD_RESOURCE_INFO, mPadResources.get(position));
+        startActivity(intent);
     }
 }
 /*

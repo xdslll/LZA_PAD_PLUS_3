@@ -1,4 +1,4 @@
-package com.lza.develop.weixin.db.config;
+package com.lza.pad.db.config;
 
 import com.j256.ormlite.android.apptools.OrmLiteConfigUtil;
 

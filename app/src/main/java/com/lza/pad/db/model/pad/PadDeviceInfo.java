@@ -53,6 +53,8 @@ public class PadDeviceInfo implements Parcelable {
 
     String state;
 
+    String last_connect_time;
+
     public String getId() {
         return id;
     }
@@ -173,6 +175,14 @@ public class PadDeviceInfo implements Parcelable {
         this.state = state;
     }
 
+    public String getLast_connect_time() {
+        return last_connect_time;
+    }
+
+    public void setLast_connect_time(String last_connect_time) {
+        this.last_connect_time = last_connect_time;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -195,6 +205,7 @@ public class PadDeviceInfo implements Parcelable {
         dest.writeString(hotspot_password);
         dest.writeString(hotspot_switch);
         dest.writeString(state);
+        dest.writeString(last_connect_time);
     }
 
     public PadDeviceInfo() {
@@ -217,6 +228,7 @@ public class PadDeviceInfo implements Parcelable {
         hotspot_password = src.readString();
         hotspot_switch = src.readString();
         state = src.readString();
+        last_connect_time = src.readString();
     }
 
     public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {

@@ -29,7 +29,7 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
                 return;
             }
             String state = data.getState();
-            if (!state.equals(ResponseData.RESPONSE_STATE_OK)) {
+            if (state == null || !state.equals(ResponseData.RESPONSE_STATE_OK)) {
                 onResponseStateError(data);
                 return;
             }

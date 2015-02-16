@@ -36,4 +36,6 @@ dependencies {
     compile files('libs/AMapPanoramaSDK1.0.jar')
     compile files('libs/slf4j-android-1.6.1-RC1.jar')
     compile files('libs/mina-core-2.0.9.jar')
+    compile project(':actionbarsherlock')
+    compile project(':pullToRefreshLibrary')
 }

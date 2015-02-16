@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.ebook.EbookActivity;
-import com.lza.pad.app.ebook.EbookContentActivity;
+import com.lza.pad.app.ebook._EbookContentActivity;
 import com.lza.pad.fragment.base.BaseFragment;
 import com.lza.pad.widget.DefaultEbookCover;
 
@@ -44,7 +44,7 @@ public class EbookFragment2 extends BaseFragment {
             }
         });
 
-        if (!mIfHome) {
+        if (!mIsHome) {
             mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list2_title);
             mLayoutPages = (LinearLayout) view.findViewById(R.id.ebook_list_pages);
             mLayoutTitle.setVisibility(View.INVISIBLE);
@@ -55,7 +55,7 @@ public class EbookFragment2 extends BaseFragment {
         mEbookCover1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity, EbookContentActivity.class));
+                startActivity(new Intent(mActivity, _EbookContentActivity.class));
             }
         });
 

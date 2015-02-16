@@ -281,6 +281,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 arg.putParcelable(KEY_PAD_CONTROL_INFO, control);
                 arg.putInt(KEY_FRAGMENT_WIDTH, width);
                 arg.putInt(KEY_FRAGMENT_HEIGHT, height);
+                arg.putBoolean(KEY_IF_HOME, mIsHome);
                 frg.setArguments(arg);
 
                 int id = (i + 1) << (i + 1);

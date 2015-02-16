@@ -23,7 +23,7 @@ import de.greenrobot.event.EventBus;
 public class BaseFragment extends Fragment implements Consts {
 
     protected Activity mActivity;
-    protected boolean mIfHome = true;
+    protected boolean mIsHome = true;
     protected Bundle mArg;
     protected int W, H;
     protected PadDeviceInfo mPadDeviceInfo;
@@ -36,7 +36,7 @@ public class BaseFragment extends Fragment implements Consts {
         mActivity = getActivity();
         mArg = getArguments();
         if (mArg != null) {
-            mIfHome = getArguments().getBoolean(KEY_IF_HOME);
+            mIsHome = getArguments().getBoolean(KEY_IF_HOME);
             W = getArguments().getInt(KEY_FRAGMENT_WIDTH);
             H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
             mPadDeviceInfo = getArguments().getParcelable(KEY_PAD_DEVICE_INFO);

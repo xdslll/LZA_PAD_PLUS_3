@@ -13,8 +13,16 @@
         app:cover_author_size="@dimen/ebook_list2_book_cover_author_size"
         app:cover_title_margin="@dimen/ebook_list_book_cover_title_margin"
         app:cover_author_margin="@dimen/ebook_list_book_cover_author_margin"
+        android:visibility="gone"
         android:id="@+id/ebook_list_item_book"
         />
+    <!--<com.android.volley.toolbox.NetworkImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        android:id="@+id/ebook_list_item_book_img"
+        />-->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -30,6 +30,9 @@ public class DefaultEbookCover extends View {
     private BitmapDrawable mDrawable;
     private Paint mPaint;
 
+    private final int DEFAULT_TITLE_SIZE = 5;
+    private final int DEFAULT_AUTHOR_SIZE = 5;
+
     public DefaultEbookCover(Context context) {
         this(context, null, 0);
     }
@@ -71,16 +74,51 @@ public class DefaultEbookCover extends View {
         mPaint.setTextSize(mCoverTitleSize);
         mPaint.setColor(Color.WHITE);
         if (!TextUtils.isEmpty(mCoverTitle)) {
-            float titleWidth = mPaint.measureText(mCoverTitle, 0, 5);
+            int titleLength = mCoverTitle.length();
+            if (titleLength > DEFAULT_TITLE_SIZE) {
+                titleLength = DEFAULT_TITLE_SIZE;
+            }
+            float titleWidth = mPaint.measureText(mCoverTitle, 0, titleLength);
             float x = (W - titleWidth) / 2;
-            canvas.drawText(mCoverTitle, 0, 5, x, mCoverTitleMargin, mPaint);
+            canvas.drawText(mCoverTitle, 0, titleLength, x, mCoverTitleMargin, mPaint);
         }
         if (!TextUtils.isEmpty(mCoverAuthor)) {
+            int authorLength = mCoverAuthor.length();
+            if (authorLength > DEFAULT_AUTHOR_SIZE) {
+                authorLength = DEFAULT_AUTHOR_SIZE;
+            }
             mPaint.setTextSize(mCoverAuthorSize);
-            float authorWidth = mPaint.measureText(mCoverAuthor);
+            float authorWidth = mPaint.measureText(mCoverAuthor, 0, authorLength);
             float x = (W - authorWidth) / 2;
             canvas.drawText(mCoverAuthor, x, H - mCoverAuthorMargin, mPaint);
         }
     }
 
+    public void setCoverTitle(String coverTitle) {
+        this.mCoverTitle = coverTitle;
+    }
+
+    public void setCoverAuthor(String coverAuthor) {
+        this.mCoverAuthor = coverAuthor;
+    }
+
+    public void setCoverTitleSize(float coverTitleSize) {
+        this.mCoverTitleSize = coverTitleSize;
+    }
+
+    public void setCoverAuthorSize(float coverAuthorSize) {
+        this.mCoverAuthorSize = coverAuthorSize;
+    }
+
+    public void setCoverTitleMargin(float coverTitleMargin) {
+        this.mCoverTitleMargin = coverTitleMargin;
+    }
+
+    public void setCoverAuthorMargin(float coverAuthorMargin) {
+        this.mCoverAuthorMargin = coverAuthorMargin;
+    }
+
+    public void setDrawable(BitmapDrawable drawable) {
+        this.mDrawable = drawable;
+    }
 }

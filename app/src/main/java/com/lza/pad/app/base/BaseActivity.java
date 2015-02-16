@@ -381,7 +381,7 @@ public class BaseActivity extends Activity implements Consts {
 
         if (bmp != null) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 10, bos);
+            bmp.compressQuality(Bitmap.CompressFormat.JPEG, 10, bos);
             return bos.toByteArray();
         } else {
             return null;

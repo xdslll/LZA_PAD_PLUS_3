@@ -20,7 +20,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.lza.pad.R;
+import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadResource;
+import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
 
 import java.util.ArrayList;
@@ -32,7 +37,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/7/15.
  */
-public abstract class BaseEbookListFragment<T> extends BaseFragment {
+public abstract class BaseResourceListFragment extends BaseFragment {
 
     protected TextView mTxtMore, mTxtTitle;
     protected LinearLayout mLayoutTitle;
@@ -43,7 +48,7 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
 
     protected LayoutInflater mInflater;
 
-    protected List<T> mPageDatas;
+    protected List<PadResource> mPadResources;
     protected List<View> mPageViews;
     protected List<String> mPageTitles;
     protected List<Integer> mRadPageIds = new ArrayList<Integer>();
@@ -64,11 +69,27 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
     protected int mBottomImgHeight = 0;
 
     /**
-     * 图书显示区域的高度
+     * 图书显示区域的宽度和高度
      */
+    protected int mBookAreaWidth = 0;
     protected int mBookAreaHeight = 0;
 
     protected int mGridNumColumns = 0;
+
+    /**
+     * 请求总数据量
+     */
+    protected String mDefaultPageSize = "20";
+
+    /**
+     * 总页数
+     */
+    protected String mDefaultEveryPageSize = "4";
+
+    /**
+     * 默认请求页数
+     */
+    protected String mDefaultPage = "1";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,8 +97,8 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
         mInflater = LayoutInflater.from(mActivity);
 
         //生成ViewPager的数据源
-        mPageViews = getPageViews();
-        mPageTitles = getPageTitles();
+        //mPageViews = getPageViews();
+        //mPageTitles = getPageTitles();
 
         //获取每行的数据量
         if (mArg != null) {
@@ -103,14 +124,11 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
         mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list_title);
         mRadPages = (RadioGroup) view.findViewById(R.id.ebook_list_pages);
         //如果不在首页显示，则隐藏标题和翻页按钮
-        if (!mIfHome) {
+        if (!mIsHome) {
             mLayoutTitle.setVisibility(View.GONE);
             mRadPages.setVisibility(View.GONE);
             mTitleHeight = 0;
             mPagesHeight = 0;
-        } else {
-            generateTitleView();
-            generateRaidoButton();
         }
 
         mImgBottom = (ImageView) view.findViewById(R.id.ebook_list_bottom_img);
@@ -132,7 +150,7 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
         mViewPagerTab.setVisibility(View.GONE);
         //默认显示第一页
         mViewPager.setCurrentItem(0);
-        mViewPager.setAdapter(new EbookListPagerAdapter());
+        //mViewPager.setAdapter(new EbookListPagerAdapter());
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -157,6 +175,38 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        send(getUrl(), mResourceListener);
+    }
+
+    private CommonRequestListener<PadResource> mResourceListener = new CommonRequestListener<PadResource>() {
+
+        @Override
+        public void handleRespone(List<PadResource> content) {
+            //生成ViewPager的数据源
+            mPadResources = content;
+            mPageViews = getPageViews();
+            mPageTitles = getPageTitles();
+            mViewPager.setAdapter(new EbookListPagerAdapter());
+
+            if (mIsHome) {
+                generateTitleView();
+                generateRaidoButton();
+            }
+        }
+
+        @Override
+        public void handleRespone(VolleyError error) {
+
+        }
+
+        @Override
+        public ResponseData<PadResource> parseJson(String json) {
+            return JsonParseHelper.parseResourceResponse(json);
+        }
+    };
+
     /**
      * 实现更多按钮的点击事件
      */
@@ -179,11 +229,11 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
     }
 
     /**
-     * 获取GridView的数据源
+     * 获取请求数据的Url
      *
      * @return
      */
-    protected abstract List<T> getPageDatas();
+    protected abstract String getUrl();
 
     /**
      * 获取翻页按钮文本
@@ -204,14 +254,29 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
      *
      * @return
      */
-    protected abstract List<View> getPageViews();
+    protected List<View> getPageViews() {
+        if (mPadResources == null) return null;
+        int everyPageSize = Integer.parseInt(mDefaultEveryPageSize);
+        int totalSize = mPadResources.size();
+        List<View> views = new ArrayList<View>();
+        for (int i = 0; i < totalSize; i++) {
+            int start = i * everyPageSize;
+            int end = start + everyPageSize;
+            if (start >= totalSize) break;
+            if (end > totalSize) end = totalSize;
+            List<PadResource> subData = mPadResources.subList(start, end);
+            views.add(generateGridView(i, subData));
+            //views.add(generateGridView(i, mPageDatas));
+        }
+        return views;
+    }
 
     /**
      * GridView的Adapter
      *
      * @return
      */
-    protected BaseAdapter getAdapter(int index) {
+    protected BaseAdapter getAdapter(int index, List<PadResource> data) {
         return null;
     }
 
@@ -229,13 +294,14 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
      *
      * @return
      */
-    protected View generateGridView(int index) {
+    protected View generateGridView(int index, List<PadResource> data) {
         View view = mInflater.inflate(R.layout.common_grid, null);
         GridView grid = (GridView) view.findViewById(R.id.common_grid);
         mGridNumColumns = getGridNumColumns();
         grid.setNumColumns(mGridNumColumns);
-        mPageDatas = getPageDatas();
-        BaseAdapter adapter = getAdapter(index);
+        //mPageDatas = getPageDatas();
+        //mPageDatas = data;
+        BaseAdapter adapter = getAdapter(index, data);
         if (adapter != null) {
             grid.setAdapter(adapter);
             grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -314,7 +380,16 @@ public abstract class BaseEbookListFragment<T> extends BaseFragment {
     }
 
     private void calcBook() {
+        mBookAreaWidth = W;
         mBookAreaHeight = H - mTitleHeight - mPagesHeight - mBottomImgHeight;
+    }
+
+    protected int getBookAreaWidth() {
+        return mBookAreaWidth;
+    }
+
+    protected int getBookAreaHeight() {
+        return mBookAreaHeight;
     }
 
     /**
