@@ -3,6 +3,9 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Say something about this class
  *
@@ -10,6 +13,41 @@ import android.os.Parcelable;
  * @Date 15/2/14.
  */
 public class PadResource implements Parcelable {
+
+    /**
+     * 资源类型：电子书
+     */
+    public static final String RESOURCE_EBOOK = "1";
+
+    /**
+     * 资源类型：电子教参
+     */
+    public static final String RESOURCE_EBOOK_JC = "2";
+
+    /**
+     * 资源类型：电子期刊
+     */
+    public static final String RESOURCE_JOURNAL = "3";
+
+    /**
+     * 资源类型：图片
+     */
+    public static final String RESOURCE_IMG = "4";
+
+    /**
+     * 资源类型：新闻
+     */
+    public static final String RESOURCE_NEWS = "5";
+
+    /**
+     * 资源类型：新书通知
+     */
+    public static final String RESOURCE_NEW_BOOK = "6";
+
+    /**
+     * 资源类型：热门借阅
+     */
+    public static final String RESOURCE_HOT_BOOK = "7";
 
     /**
      * 主键ID
@@ -85,6 +123,11 @@ public class PadResource implements Parcelable {
      * 资源特有的编号
      */
     private String bh;
+
+    /**
+     * 资源的详细内容
+     */
+    private List<PadResourceDetail> mr = new ArrayList<PadResourceDetail>();
 
     public String getId() {
         return id;
@@ -206,25 +249,15 @@ public class PadResource implements Parcelable {
         this.bh = bh;
     }
 
-    public PadResource() {}
-
-    public PadResource(Parcel src) {
-        id = src.readString();
-        title = src.readString();
-        school_bh = src.readString();
-        source_type = src.readString();
-        author = src.readString();
-        pubdate = src.readString();
-        contents = src.readString();
-        clc = src.readString();
-        url = src.readString();
-        ico = src.readString();
-        imgs = src.readString();
-        isbn = src.readString();
-        press = src.readString();
-        fulltext = src.readString();
-        bh = src.readString();
+    public List<PadResourceDetail> getMr() {
+        return mr;
     }
+
+    public void setMr(List<PadResourceDetail> mr) {
+        this.mr = mr;
+    }
+
+    public PadResource() {}
 
     @Override
     public int describeContents() {
@@ -233,68 +266,50 @@ public class PadResource implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(title);
-        dest.writeString(school_bh);
-        dest.writeString(source_type);
-        dest.writeString(author);
-        dest.writeString(pubdate);
-        dest.writeString(contents);
-        dest.writeString(clc);
-        dest.writeString(url);
-        dest.writeString(ico);
-        dest.writeString(imgs);
-        dest.writeString(isbn);
-        dest.writeString(press);
-        dest.writeString(fulltext);
-        dest.writeString(bh);
+        dest.writeString(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.school_bh);
+        dest.writeString(this.source_type);
+        dest.writeString(this.author);
+        dest.writeString(this.pubdate);
+        dest.writeString(this.contents);
+        dest.writeString(this.clc);
+        dest.writeString(this.url);
+        dest.writeString(this.ico);
+        dest.writeString(this.imgs);
+        dest.writeString(this.isbn);
+        dest.writeString(this.press);
+        dest.writeString(this.fulltext);
+        dest.writeString(this.bh);
+        dest.writeTypedList(mr);
+    }
+
+    private PadResource(Parcel in) {
+        this.id = in.readString();
+        this.title = in.readString();
+        this.school_bh = in.readString();
+        this.source_type = in.readString();
+        this.author = in.readString();
+        this.pubdate = in.readString();
+        this.contents = in.readString();
+        this.clc = in.readString();
+        this.url = in.readString();
+        this.ico = in.readString();
+        this.imgs = in.readString();
+        this.isbn = in.readString();
+        this.press = in.readString();
+        this.fulltext = in.readString();
+        this.bh = in.readString();
+        in.readTypedList(mr, PadResourceDetail.CREATOR);
     }
 
     public static final Creator<PadResource> CREATOR = new Creator<PadResource>() {
-        @Override
         public PadResource createFromParcel(Parcel source) {
             return new PadResource(source);
         }
 
-        @Override
         public PadResource[] newArray(int size) {
             return new PadResource[size];
         }
     };
-
-    /**
-     * 资源类型：电子书
-     */
-    public static final String RESOURCE_EBOOK = "1";
-
-    /**
-     * 资源类型：电子教参
-     */
-    public static final String RESOURCE_EBOOK_JC = "2";
-
-    /**
-     * 资源类型：电子期刊
-     */
-    public static final String RESOURCE_JOURNAL = "3";
-
-    /**
-     * 资源类型：图片
-     */
-    public static final String RESOURCE_IMG = "4";
-
-    /**
-     * 资源类型：新闻
-     */
-    public static final String RESOURCE_NEWS = "5";
-
-    /**
-     * 资源类型：新书通知
-     */
-    public static final String RESOURCE_NEW_BOOK = "6";
-
-    /**
-     * 资源类型：热门借阅
-     */
-    public static final String RESOURCE_HOT_BOOK = "7";
-
 }

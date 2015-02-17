@@ -11,6 +11,9 @@ import android.os.Parcelable;
  */
 public class PadModuleControl implements Parcelable {
 
+    public static final String BOOLEAN_SHOW_SLIDE = "1";
+    public static final String BOOLEAN_NOT_SHOW_SLIDE = "0";
+
     private String id;
 
     private String title;
@@ -30,6 +33,18 @@ public class PadModuleControl implements Parcelable {
     private String control_index;
 
     private String control_height;
+
+    private String control_data_size;
+
+    private String control_data_each;
+
+    private String contents;
+
+    private String if_show_slide;
+
+    private String slide_show_time;
+
+    private String slide_show_period;
 
     public String getId() {
         return id;
@@ -111,6 +126,54 @@ public class PadModuleControl implements Parcelable {
         this.control_name = control_name;
     }
 
+    public String getControl_data_size() {
+        return control_data_size;
+    }
+
+    public void setControl_data_size(String control_data_size) {
+        this.control_data_size = control_data_size;
+    }
+
+    public String getControl_data_each() {
+        return control_data_each;
+    }
+
+    public void setControl_data_each(String control_data_each) {
+        this.control_data_each = control_data_each;
+    }
+
+    public String getContents() {
+        return contents;
+    }
+
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
+
+    public String getIf_show_slide() {
+        return if_show_slide;
+    }
+
+    public void setIf_show_slide(String if_show_slide) {
+        this.if_show_slide = if_show_slide;
+    }
+
+    public String getSlide_show_time() {
+        return slide_show_time;
+    }
+
+    public void setSlide_show_time(String slide_show_time) {
+        this.slide_show_time = slide_show_time;
+    }
+
+    public String getSlide_show_period() {
+        return slide_show_period;
+    }
+
+    public void setSlide_show_period(String slide_show_period) {
+        this.slide_show_period = slide_show_period;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -128,6 +191,12 @@ public class PadModuleControl implements Parcelable {
         dest.writeString(control_name);
         dest.writeString(control_index);
         dest.writeString(control_height);
+        dest.writeString(control_data_size);
+        dest.writeString(control_data_each);
+        dest.writeString(contents);
+        dest.writeString(if_show_slide);
+        dest.writeString(slide_show_time);
+        dest.writeString(slide_show_period);
     }
 
     public PadModuleControl() {}
@@ -143,9 +212,15 @@ public class PadModuleControl implements Parcelable {
         control_name = src.readString();
         control_index = src.readString();
         control_height = src.readString();
+        control_data_size = src.readString();
+        control_data_each = src.readString();
+        contents = src.readString();
+        if_show_slide = src.readString();
+        slide_show_time = src.readString();
+        slide_show_period = src.readString();
     }
 
-    private static final Creator<PadModuleControl> CREATOR = new Creator<PadModuleControl>() {
+    public static final Creator<PadModuleControl> CREATOR = new Creator<PadModuleControl>() {
         @Override
         public PadModuleControl createFromParcel(Parcel source) {
             return new PadModuleControl(source);
@@ -166,6 +241,13 @@ public class PadModuleControl implements Parcelable {
                 ", widgets_id='" + widgets_id + '\'' +
                 ", px='" + px + '\'' +
                 ", source_type='" + source_type + '\'' +
+                ", control_type='" + control_type + '\'' +
+                ", control_name='" + control_name + '\'' +
+                ", control_index='" + control_index + '\'' +
+                ", control_height='" + control_height + '\'' +
+                ", control_data_size='" + control_data_size + '\'' +
+                ", control_data_each='" + control_data_each + '\'' +
+                ", contents='" + contents + '\'' +
                 '}';
     }
 }

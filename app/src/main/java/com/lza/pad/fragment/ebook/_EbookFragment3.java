@@ -26,7 +26,7 @@ import java.util.List;
  * @Date 1/19/15.
  */
 @Deprecated
-public class EbookFragment3 extends BaseResourceListFragment {
+public class _EbookFragment3 extends BaseResourceListFragment {
 
     private int[][] DATAS = new int[][] {
             new int[] {R.drawable.test_cover1, R.drawable.test_cover2, R.drawable.test_cover3, R.drawable.test_cover4},

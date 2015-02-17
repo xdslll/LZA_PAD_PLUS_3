@@ -27,6 +27,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
+        android:visibility="gone"
         android:id="@+id/ebook_list_item_book_img"
         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_blue"
+        android:visibility="gone"
+        android:gravity="center"
+        android:id="@+id/ebook_list_item_news_layout">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/irregular_news_title_size"
+            android:textColor="@color/white"
+            android:singleLine="false"
+            android:maxLines="5"
+            android:lineSpacingExtra="3dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center"
+            android:id="@+id/ebook_list_item_news"
+            />
+    </LinearLayout>
 </RelativeLayout>

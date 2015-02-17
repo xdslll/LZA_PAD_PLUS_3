@@ -3,6 +3,7 @@ package com.lza.pad.fragment.base;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -28,7 +29,7 @@ public class BaseFragment extends Fragment implements Consts {
     protected int W, H;
     protected PadDeviceInfo mPadDeviceInfo;
     protected PadModuleControl mPadControlInfo;
-    protected PadResource mPadResourceInfo;
+    protected PadResource mPadResource;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class BaseFragment extends Fragment implements Consts {
             H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
             mPadDeviceInfo = getArguments().getParcelable(KEY_PAD_DEVICE_INFO);
             mPadControlInfo = getArguments().getParcelable(KEY_PAD_CONTROL_INFO);
-            mPadResourceInfo = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
+            mPadResource = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
         }
 
         EventBus.getDefault().register(this);
@@ -67,5 +68,9 @@ public class BaseFragment extends Fragment implements Consts {
 
     protected void send(String url, RequestHelper.OnRequestListener listener) {
         RequestHelper.getInstance(mActivity, url, listener).send();
+    }
+
+    protected String wrap(String value, String defaultValue) {
+        return TextUtils.isEmpty(value) ? defaultValue : value;
     }
 }

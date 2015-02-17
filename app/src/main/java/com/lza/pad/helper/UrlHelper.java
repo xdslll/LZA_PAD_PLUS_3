@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.lza.pad.app.base.MainApplication;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
+import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
 
@@ -63,7 +64,7 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_PAGE = "page";
 
-
+    public static final String PAR_BH = "bh";
 
 
     public static String generateUrl(Map<String, String> par) {
@@ -150,13 +151,21 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String getResourcesUrl(PadDeviceInfo deviceInfo, String sourceType, String pageSize, String page) {
+    public static String getResourcesUrl(PadDeviceInfo deviceInfo, String sourceType, int pageSize, int page) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MESSAGE);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
-        par.put(PAR_PAGE, page);
-        par.put(PAR_PAGE_SIZE, pageSize);
+        par.put(PAR_PAGE, String.valueOf(page));
+        par.put(PAR_PAGE_SIZE, String.valueOf(pageSize));
         par.put(PAR_SOURCE_TYPE, sourceType);
+        return generateUrl(par);
+    }
+
+    public static String getResourceDetailUrl(PadDeviceInfo deviceInfo, PadResource resource) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_OPAC_SEARCH_DETAIL);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_BH, resource.getBh());
         return generateUrl(par);
     }
 
@@ -176,6 +185,39 @@ public class UrlHelper implements Consts {
                 control = control.split("&")[0];
         }
         return control;
+    }
+
+    /**
+     * 豆瓣API
+     */
+    public static final String DOUBAN_URL_BOOK_BY_ISBN = "https://api.douban.com/v2/book/isbn/%s?apikey=022b1e3243fbff4a06815a96cbf3fdde";
+    public static final String DOUBAN_URL_BOOK_BY_TAG = "https://api.douban.com/v2/book/search?%s&apikey=022b1e3243fbff4a06815a96cbf3fdde";
+    public static final String DOUBAN_URL_BOOK_REVIEWS_BY_ISBN = "https://api.douban.com/v2/book/isbn/%s/reviews?apikey=022b1e3243fbff4a06815a96cbf3fdde";
+    public static final String DOUBAN_URL_BOOK_TAGS_BY_ISBN = "https://api.douban.com/v2/book/isbn/%s/tags?apikey=022b1e3243fbff4a06815a96cbf3fdde";
+    public static final String DOUBAN_EXCEPTION_BOOK_NOT_FOUND = "book_not_found";
+    public static final String DOUBAN_EXCEPTION_REVIEW_NOT_FOUND = "review_not_found";
+    public static final String DOUBAN_IMAGE = "Douban";
+
+    /**
+     * 豆瓣读书接口
+     */
+    public static String createDoubanBookByIsbnUrl(PadResource data) {
+        String isbn = data.getIsbn();
+        String url = String.format(DOUBAN_URL_BOOK_BY_ISBN, isbn);
+        return url;
+    }
+
+    public static String createDoubanReviewsByIsbnUrl(PadResource data) {
+        String isbn = data.getIsbn();
+        String url = String.format(DOUBAN_URL_BOOK_REVIEWS_BY_ISBN, isbn);
+        return url;
+    }
+
+    public static String createDoubanReviewsByIsbnUrl(PadResource data, String start, String count) {
+        String isbn = data.getIsbn();
+        String url = String.format(DOUBAN_URL_BOOK_REVIEWS_BY_ISBN, isbn);
+        url = url + "?start=" + start + "&count=" + count;
+        return url;
     }
 
 }

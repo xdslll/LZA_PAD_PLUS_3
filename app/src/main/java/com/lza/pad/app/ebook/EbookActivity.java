@@ -8,8 +8,8 @@ import android.widget.LinearLayout;
 
 import com.lza.pad.app.SubjectActivity;
 import com.lza.pad.app.base.BaseModuleActivity;
-import com.lza.pad.fragment.ebook.EbookFragment1;
-import com.lza.pad.fragment.ebook.EbookFragment3;
+import com.lza.pad.fragment.ebook._EbookFragment4;
+import com.lza.pad.fragment.ebook._EbookFragment3;
 
 /**
  * Say something about this class
@@ -43,10 +43,10 @@ public class EbookActivity extends BaseModuleActivity {
             container.addView(subContainer);
 
             if (i == 0) {
-                EbookFragment1 fragment = new EbookFragment1();
+                _EbookFragment4 fragment = new _EbookFragment4();
                 launchFragment(fragment, id, w, h / size, false);
             } else {
-                EbookFragment3 fragment = new EbookFragment3();
+                _EbookFragment3 fragment = new _EbookFragment3();
                 launchFragment(fragment, id, w, h / size, false);
             }
         }

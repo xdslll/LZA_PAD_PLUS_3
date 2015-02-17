@@ -21,7 +21,7 @@ import com.lza.pad.widget.DefaultEbookCover;
  * @Date 1/7/15.
  */
 @Deprecated
-public class EbookFragment2 extends BaseFragment {
+public class _EbookFragment5 extends BaseFragment {
 
     private TextView mTxtMore;
     private LinearLayout mLayoutTitle, mLayoutPages;

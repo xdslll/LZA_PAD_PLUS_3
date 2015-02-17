@@ -326,12 +326,16 @@ public class BaseActivity extends Activity implements Consts {
             public void handleResponseSuccess() {
                 log("设备状态更新成功");
                 onDeviceUpdateSuccess(deviceInfo);
+                //终止进程
+                System.exit(0);
             }
 
             @Override
             public void onResponseStateError(ResponseData response) {
                 log("设备状态更新失败");
                 onDeviceUpdateFailed(deviceInfo);
+                //终止进程
+                System.exit(0);
             }
         }).send();
     }

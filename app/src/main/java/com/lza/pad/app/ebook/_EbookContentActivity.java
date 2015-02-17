@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.base.BaseActivity;
-import com.lza.pad.fragment.ebook.EbookContentFragment;
+import com.lza.pad.fragment.ebook._EbookContentFragment;
 
 /**
  * Say something about this class
@@ -31,7 +31,7 @@ public class _EbookContentActivity extends BaseActivity {
             }
         });
 
-        launchFragment(new EbookContentFragment(), R.id.ebook_content_container);
+        launchFragment(new _EbookContentFragment(), R.id.ebook_content_container);
     }
 
     @Override

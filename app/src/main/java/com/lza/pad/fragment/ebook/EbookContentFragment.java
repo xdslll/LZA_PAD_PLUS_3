@@ -1,14 +1,39 @@
 package com.lza.pad.fragment.ebook;
 
+import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.lza.pad.R;
+import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.douban.DoubanBook;
+import com.lza.pad.db.model.pad.PadResource;
+import com.lza.pad.db.model.pad.PadResourceDetail;
+import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.network.VolleySingleton;
+import com.lza.pad.widget.DefaultEbookCover;
+import com.lza.pad.widget.PagerSlidingTabStrip;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Say something about this class
@@ -18,102 +43,275 @@ import com.lza.pad.fragment.base.BaseFragment;
  */
 public class EbookContentFragment extends BaseFragment {
 
-    private TextView mTxtLabIntro, mTxtLabList, mTxtLabRead, mTxtLabCol, mTxtIntro;
-    private FrameLayout mLayoutSubContainer;
+    DefaultEbookCover mEbookCover;
+    TextView mTxtTitle, mTxtAuthor, mTxtPubdate, mTxtPress, mTxtIsbn,
+        mTxtTotalPages, mTxtBinding, mTxtPrice;
+    PagerSlidingTabStrip mPagerTab;
+    ViewPager mViewPager;
 
-    private static final int LAB_INTRO = 1;
-    private static final int LAB_LIST = 2;
-    private static final int LAB_READ = 3;
-    private static final int LAB_COL = 4;
+    ArrayList<String> mTitles = new ArrayList<String>();
+    ArrayList<View> mViews = new ArrayList<View>();
+    ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
 
-    private int COLOR_BLUE, COLOR_RED;
+    public static final int INDEX_OVERVIEW = 0;
+    public static final int INDEX_ABSTRACT = 1;
+    public static final int INDEX_CONTENTS = 2;
+    public static final int INDEX_COMMENTS = 3;
+    public static final int INDEX_COLLECTIONS = 4;
+
+    LayoutInflater mInflater;
+    ImageLoader mImgLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        COLOR_BLUE = mActivity.getResources().getColor(R.color.common_blue);
-        COLOR_RED = mActivity.getResources().getColor(R.color.red);
+        mInflater = LayoutInflater.from(mActivity);
+        mTitles.add("概要");
+        mTitles.add("简介");
+        mTitles.add("目录");
+        mTitles.add("豆瓣书评");
+        mTitles.add("馆藏");
+        mViews.add(createView());
+        mViews.add(createView());
+        mViews.add(createView());
+        mViews.add(createView());
+        mViews.add(createView());
+
+        mImgLoader = VolleySingleton.getInstance(mActivity).getImageLoader(TEMP_IMAGE_LOADER);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.ebook_content, container, false);
+        View view = inflater.inflate(R.layout.ebook_content2, container, false);
 
-        mTxtLabIntro = (TextView) view.findViewById(R.id.ebook_content_lab_intro);
-        mTxtLabList = (TextView) view.findViewById(R.id.ebook_content_lab_list);
-        mTxtLabRead = (TextView) view.findViewById(R.id.ebook_content_lab_read);
-        mTxtLabCol = (TextView) view.findViewById(R.id.ebook_content_lab_col);
-        mTxtIntro = (TextView) view.findViewById(R.id.ebook_content_intro);
+        mEbookCover = (DefaultEbookCover) view.findViewById(R.id.ebook_content_book_cover);
+        mTxtTitle = (TextView) view.findViewById(R.id.ebook_content_title);
+        mTxtAuthor = (TextView) view.findViewById(R.id.ebook_content_author);
+        mTxtPubdate = (TextView) view.findViewById(R.id.ebook_content_pubdate);
+        mTxtPress = (TextView) view.findViewById(R.id.ebook_content_press);
+        mTxtIsbn = (TextView) view.findViewById(R.id.ebook_content_isbn);
+        mTxtTotalPages = (TextView) view.findViewById(R.id.ebook_content_total_pages);
+        mTxtBinding = (TextView) view.findViewById(R.id.ebook_content_binding);
+        mTxtPrice = (TextView) view.findViewById(R.id.ebook_content_price);
 
-        mLayoutSubContainer = (FrameLayout) view.findViewById(R.id.ebook_content_sub_container);
+        mPagerTab = (PagerSlidingTabStrip) view.findViewById(R.id.ebook_content_pager_tab);
+        mPagerTab.setTextSize(getResources().getDimensionPixelSize(R.dimen.ebook_content_pager_tab_text_size));
+        mViewPager = (ViewPager) view.findViewById(R.id.ebook_content_view_pager);
 
-        mTxtLabIntro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setClickState(LAB_INTRO);
-                mTxtIntro.setText(TEXT_INTRO);
-            }
-        });
-        mTxtLabList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setClickState(LAB_LIST);
-                mTxtIntro.setText(TEXT_LIST);
-            }
-        });
-        mTxtLabRead.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setClickState(LAB_READ);
-                mTxtIntro.setText(TEXT_READ);
-            }
-        });
-        mTxtLabCol.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setClickState(LAB_COL);
-                mTxtIntro.setText(TEXT_COL);
-            }
-        });
+        mViewPager.setAdapter(new EbookContentAdapter());
+        mPagerTab.setViewPager(mViewPager);
+
         return view;
     }
 
-    private void setClickState(int index) {
-        mTxtLabIntro.setTextColor(COLOR_BLUE);
-        mTxtLabList.setTextColor(COLOR_BLUE);
-        mTxtLabRead.setTextColor(COLOR_BLUE);
-        mTxtLabCol.setTextColor(COLOR_BLUE);
-        if (index == LAB_INTRO) {
-            mTxtLabIntro.setTextColor(COLOR_RED);
-        } else if (index == LAB_LIST) {
-            mTxtLabList.setTextColor(COLOR_RED);
-        } else if (index == LAB_READ) {
-            mTxtLabRead.setTextColor(COLOR_RED);
-        } else if (index == LAB_COL) {
-            mTxtLabCol.setTextColor(COLOR_RED);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        //先向豆瓣获取，如果没有数据，则向服务器请求数据
+        String doubanUrl = UrlHelper.createDoubanBookByIsbnUrl(mPadResource);
+        send(doubanUrl, mDoubanListener);
+        //String url = UrlHelper.getResourceDetailUrl(mPadDeviceInfo, mPadResource);
+        //send(url, mListener);
+    }
+
+    /**
+     * 不通过豆瓣显示图书信息
+     */
+    private void showBookFromPadResource() {
+        mTxtTitle.setText(mPadResource.getTitle());
+        mTxtAuthor.setText(mPadResource.getAuthor());
+        mTxtPress.setText(mPadResource.getPress());
+        mTxtPubdate.setText(mPadResource.getPubdate());
+        mTxtIsbn.setText(mPadResource.getIsbn());
+    }
+
+    private void requestCoverFromPadResource() {
+        //显示封面
+        String imgUrl = mPadResource.getIco();
+        if (!TextUtils.isEmpty(imgUrl)) {
+            mImgLoader.get(imgUrl, new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                    if (imageContainer == null) return;
+                    Bitmap bm = imageContainer.getBitmap();
+                    if (bm == null) return;
+                    mEbookCover.setDrawable(new BitmapDrawable(getResources(), bm));
+                    mEbookCover.setCoverTitle("");
+                    mEbookCover.setCoverAuthor("");
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
         }
     }
 
-    private static final String TEXT_INTRO = "騎著青蛙翻閱安地斯山，在低音大提琴盒裡藏侏儒屍體，戴著毛皮面具吃肉的狼人，以玩具槍、鋸子聲響、狂歡派對不斷出招的高校女生……種種奇詭色彩的情節，盡在寺山修司的書海漫遊之間。\n日本知名的劇場與電影導演暨詩人寺山修司，暢談胴人、賭馬、拷問、娼妓、變形漫畫等怪誕的閱讀主題，展現他一貫敏銳、感傷又不失幽默的異想風格。這是寺山修司第一本在台問世的作品，透過寺山修司的私閱讀，讀者將可一窺這位素以大膽前衛著稱的創作者的靈感源頭。";
-    private static final String TEXT_LIST = "1關於頭髮的趣味事典\n" +
-            "2.成為青蛙學者的愉快百科\n" +
-            "3.當男人擁有後宮時\n" +
-            "4.怪物們的嘉年華\n" +
-            "5.奧茲魔法師的剪貼簿\n" +
-            "6.黑人的真實畫報\n" +
-            "7.關於娼妓的黑暗畫報\n" +
-            "8.邊睡邊讀的趣味寢台書\n" +
-            "9.鞋子民俗學的閱讀方法\n" +
-            "10.關於書的百科\n" +
-            "11.推理小說中描繪的女人肖像\n" +
-            "12.愛馬的知識畫報\n" +
-            "13.受虐狂的電影民俗學\n" +
-            "14.少年時代是個獵奇雜誌迷\n" +
-            "15.蒐集狂們的謎樣情報交換誌\n" +
-            "16.失眠夜晚的拷問博物誌\n" +
-            "17.月夜下獨自閱讀的狼人入門書\n" +
-            "18.聖特利妮安女學生的叛亂\n" +
-            "19.格蘭威爾的發狂漫畫集";
-    private static final String TEXT_READ = "[试读部分，暂未实现，敬请期待]";
-    private static final String TEXT_COL = "[馆藏地查询，暂未实现，敬请期待]";
+    private void showBookFromDouban(DoubanBook book) {
+        String title = book.getTitle();
+        String author = "";
+        if (book.getAuthor() != null && book.getAuthor().length > 0)
+            author = book.getAuthor()[0];
+        String publisher = book.getPublisher();
+        String pubdate = book.getPubdate();
+        String isbn = book.getIsbn13();
+        String price = book.getPrice();
+        String binding = book.getBinding();
+        String pages = book.getPages();
+
+        if (TextUtils.isEmpty(title))
+            title = mPadResource.getTitle();
+        if (TextUtils.isEmpty(author))
+            author = mPadResource.getAuthor();
+        if (TextUtils.isEmpty(publisher))
+            publisher = mPadResource.getPress();
+        if (TextUtils.isEmpty(isbn))
+            isbn = mPadResource.getIsbn();
+        if (TextUtils.isEmpty(pubdate))
+            pubdate = mPadResource.getPubdate();
+
+        mTxtTitle.setText(wrap(title));
+        mTxtAuthor.setText(wrap(author));
+        mTxtPress.setText(wrap(publisher));
+        mTxtPubdate.setText(wrap(pubdate));
+        mTxtIsbn.setText(wrap(isbn));
+        mTxtPrice.setText(wrap(price));
+        mTxtBinding.setText(wrap(binding));
+        mTxtTotalPages.setText(wrap(pages));
+
+        /*DoubanBookImage imgs = book.getImages();
+        String imgUrl = imgs.getLarge();
+        if (TextUtils.isEmpty(imgUrl)) imgUrl = imgs.getMedium();*/
+        String imgUrl = book.getImageUrl();
+        if (TextUtils.isEmpty(imgUrl)) requestCoverFromPadResource();
+        else requestCoverFromDouban(imgUrl);
+    }
+
+    private void requestCoverFromDouban(String url) {
+        mImgLoader.get(url, new ImageLoader.ImageListener() {
+            @Override
+            public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                if (imageContainer == null) return;
+                if (imageContainer.getBitmap() == null) return;
+                Bitmap bm = imageContainer.getBitmap();
+                BitmapDrawable drawable = new BitmapDrawable(getResources(), bm);
+                mEbookCover.setDrawable(drawable);
+                mEbookCover.setCoverTitle("");
+                mEbookCover.setCoverAuthor("");
+                mEbookCover.postInvalidate();
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                requestCoverFromPadResource();
+            }
+        });
+    }
+
+    private CommonRequestListener<DoubanBook> mDoubanListener = new CommonRequestListener<DoubanBook>() {
+
+        @Override
+        public boolean handlerJson(String json) {
+            DoubanBook book = JsonParseHelper.parseDoubanBook(json);
+            if (book == null) {
+                showBookFromPadResource();
+                return true;
+            }
+            showBookFromDouban(book);
+            return true;
+        }
+
+        @Override
+        public void handleRespone(VolleyError error) {
+            showBookFromPadResource();
+        }
+
+        @Override
+        public void handleUnknownRespone(ResponseEventInfo response) {
+            showBookFromPadResource();
+        }
+    };
+
+    private CommonRequestListener<PadResource> mListener = new CommonRequestListener<PadResource>() {
+        @Override
+        public ResponseData<PadResource> parseJson(String json) {
+            return JsonParseHelper.parseResourceResponse(json);
+        }
+
+        @Override
+        public void handleRespone(List<PadResource> content) {
+            if (content != null) {
+                PadResource resource = content.get(0);
+                List<PadResourceDetail> resouceDetail = resource.getMr();
+                Collections.sort(resouceDetail, new SortById());
+                if (resouceDetail != null) {
+                    View view = mViews.get(INDEX_CONTENTS);
+                    TextView text = (TextView) view.findViewById(R.id.ebook_content_text);
+                    for (int i = 0; i < resouceDetail.size(); i++) {
+                        Spanned sp = Html.fromHtml(resouceDetail.get(i).getTitle());
+                        text.append(sp);
+                        text.append("\n");
+                    }
+                }
+            }
+        }
+
+        class SortById implements Comparator<PadResourceDetail> {
+
+            @Override
+            public int compare(PadResourceDetail o1, PadResourceDetail o2) {
+                try {
+                    int id1 = Integer.parseInt(o1.getId());
+                    int id2 = Integer.parseInt(o2.getId());
+                    if (id1 < id2) {
+                        return -1;
+                    } else if (id1 == id2) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                } catch (Exception ex) {
+
+                }
+                return o1.getId().compareTo(o2.getId());
+            }
+        }
+    };
+
+    private View createView() {
+        return mInflater.inflate(R.layout.ebook_content2_item, null);
+    }
+
+    private class EbookContentAdapter extends PagerAdapter {
+
+        @Override
+        public int getCount() {
+            return mTitles.size();
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            container.addView(mViews.get(position));
+            return mViews.get(position);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView(mViews.get(position));
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTitles.get(position);
+        }
+    }
+
+    private String wrap(String value) {
+        return TextUtils.isEmpty(value) ? "-" : value;
+    }
 }

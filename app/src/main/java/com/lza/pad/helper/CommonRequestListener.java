@@ -23,11 +23,13 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
         }
         if (response.getTag() == ResponseEventTag.ON_RESONSE) {
             String json = response.getResponseData();
+            if (handlerJson(json)) return;
             ResponseData<T> data = parseJson(json);
             if (data == null) {
                 onResponseParseFailed(json);
                 return;
             }
+            if (handlerResponse(data)) return;
             String state = data.getState();
             if (state == null || !state.equals(ResponseData.RESPONSE_STATE_OK)) {
                 onResponseStateError(data);
@@ -46,6 +48,10 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
         }
     }
 
+    public boolean handlerResponse(ResponseData<T> data) {
+        return false;
+    }
+
     /**
      * 解析Json，需要子类继承，否则将返回NULL
      * 主要重写的方法，如果不重写该方法，将很有可能引发异常
@@ -59,6 +65,10 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    public boolean handlerJson(String json) {
+        return false;
     }
 
     /**

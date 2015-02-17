@@ -56,6 +56,7 @@ public abstract class BaseContentActivity extends BaseActivity {
         arg.putInt(KEY_FRAGMENT_WIDTH, RuntimeUtility.getScreenWidth(this));
         arg.putInt(KEY_FRAGMENT_HEIGHT, RuntimeUtility.getScreenHeight(this));
         arg.putParcelable(KEY_PAD_RESOURCE_INFO, mPadResource);
+        arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         return arg;
     }
 }

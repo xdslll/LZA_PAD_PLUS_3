@@ -14,6 +14,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @author xiads
  * @Date 15/2/7.
  */
+@Deprecated
 public class _EbookFragment1 extends BaseFragment {
 
     @Override

@@ -25,7 +25,7 @@ public class DefaultEbookCover extends View {
     private String mCoverTitle = "";
     private String mCoverAuthor = "";
     private float mCoverTitleSize, mCoverAuthorSize, mCoverTitleMargin, mCoverAuthorMargin;
-
+    private int mCoverImageRes, mCoverTitleColor, mCoverAuthorColor;
 
     private BitmapDrawable mDrawable;
     private Paint mPaint;
@@ -51,6 +51,8 @@ public class DefaultEbookCover extends View {
         mCoverAuthorSize = ta.getDimension(R.styleable.DefaultEbookCover_cover_author_size, 25);
         mCoverTitleMargin = ta.getDimension(R.styleable.DefaultEbookCover_cover_title_margin, 60);
         mCoverAuthorMargin = ta.getDimension(R.styleable.DefaultEbookCover_cover_author_margin, 30);
+        mCoverTitleColor = ta.getColor(R.styleable.DefaultEbookCover_cover_title_color, Color.WHITE);
+        mCoverAuthorColor = ta.getColor(R.styleable.DefaultEbookCover_cover_author_color, Color.WHITE);
         ta.recycle();
 
         mPaint = new Paint();
@@ -72,7 +74,7 @@ public class DefaultEbookCover extends View {
         canvas.drawBitmap(newBitmap, 0, 0, mPaint);
 
         mPaint.setTextSize(mCoverTitleSize);
-        mPaint.setColor(Color.WHITE);
+        mPaint.setColor(mCoverTitleColor);
         if (!TextUtils.isEmpty(mCoverTitle)) {
             int titleLength = mCoverTitle.length();
             if (titleLength > DEFAULT_TITLE_SIZE) {
@@ -88,6 +90,7 @@ public class DefaultEbookCover extends View {
                 authorLength = DEFAULT_AUTHOR_SIZE;
             }
             mPaint.setTextSize(mCoverAuthorSize);
+            mPaint.setColor(mCoverAuthorColor);
             float authorWidth = mPaint.measureText(mCoverAuthor, 0, authorLength);
             float x = (W - authorWidth) / 2;
             canvas.drawText(mCoverAuthor, x, H - mCoverAuthorMargin, mPaint);
@@ -120,5 +123,13 @@ public class DefaultEbookCover extends View {
 
     public void setDrawable(BitmapDrawable drawable) {
         this.mDrawable = drawable;
+    }
+
+    public void setCoverTitleColor(int coverTitleColor) {
+        this.mCoverTitleColor = coverTitleColor;
+    }
+
+    public void setCoverAuthorColor(int coverAuthorColor) {
+        this.mCoverAuthorColor = coverAuthorColor;
     }
 }

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 自定义电子书封面 -->
     <declare-styleable name="DefaultEbookCover">
         <attr name="cover_title" format="string"/>
         <attr name="cover_author" format="string"/>
-        <attr name="cover_img" format="reference"/>
+        <attr name="cover_img" format="integer"/>
         <attr name="cover_title_size" format="dimension"/>
         <attr name="cover_author_size" format="dimension"/>
         <attr name="cover_title_margin" format="dimension"/>
         <attr name="cover_author_margin" format="dimension"/>
+        <attr name="cover_title_color" format="dimension"/>
+        <attr name="cover_author_color" format="dimension"/>
     </declare-styleable>
 
     <declare-styleable name="ViewFlow">
@@ -43,5 +46,19 @@
         <attr name="footerColor" format="color" />
         <attr name="footerTriangleHeight" format="dimension" />
         <attr name="customTypeface" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color" />
+        <attr name="pstsUnderlineColor" format="color" />
+        <attr name="pstsDividerColor" format="color" />
+        <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsDividerPadding" format="dimension" />
+        <attr name="pstsTabPaddingLeftRight" format="dimension" />
+        <attr name="pstsScrollOffset" format="dimension" />
+        <attr name="pstsTabBackground" format="reference" />
+        <attr name="pstsShouldExpand" format="boolean" />
+        <attr name="pstsTextAllCaps" format="boolean" />
     </declare-styleable>
 </resources>

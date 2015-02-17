@@ -92,6 +92,9 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
 
         setContentView(R.layout.common_main_container);
         mMainContainer = (LinearLayout) findViewById(R.id.home);
+
+        //启动更新
+        initLayout();
     }
 
     private static final int REQUEST_INIT = 0x01;
@@ -133,20 +136,29 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
     @Override
     protected void onStart() {
         super.onStart();
-        //启动更新
-        initLayout();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        //停止更新
-        stopUpdateLayout();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //停止更新
+        stopUpdateLayout();
+        //发送停止请求
         requestUpdateDeviceInfo(mDeviceInfo, "state", PadDeviceInfo.TAG_STATE_OFF);
     }
 

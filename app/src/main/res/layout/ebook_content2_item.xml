@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/white" android:scrollbars="vertical">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ebook_content_container">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/ebook_content_author_text_size"
+            android:textColor="@color/common_gray"
+            android:padding="15dp"
+            android:id="@+id/ebook_content_text"
+            />
+    </FrameLayout>
+
+</ScrollView>

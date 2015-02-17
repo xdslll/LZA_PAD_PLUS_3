@@ -2,192 +2,269 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@color/white">
+    android:layout_height="match_parent" android:background="@color/white"
+    android:minWidth="@dimen/content_min_width" android:minHeight="@dimen/content_min_height">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <com.lza.pad.widget.DefaultEbookCover
-            android:layout_width="@dimen/ebook_list2_book_width"
-            android:layout_height="@dimen/ebook_list2_book_height"
-            app:cover_img="@drawable/test_ebook_cover"
-            app:cover_title_size="@dimen/ebook_list2_book_cover_title_size"
-            app:cover_author_size="@dimen/ebook_list2_book_cover_author_size"
-            app:cover_title_margin="@dimen/ebook_list_book_cover_title_margin"
-            app:cover_author_margin="@dimen/ebook_list_book_cover_author_margin"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:id="@+id/ebook_list2_book1"
-            />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <com.lza.pad.widget.DefaultEbookCover
+                android:layout_width="@dimen/ebook_list2_book_width"
+                android:layout_height="@dimen/ebook_list2_book_height"
+                app:cover_img="@drawable/default_ebook_cover"
+                app:cover_title_size="@dimen/ebook_list2_book_cover_title_size"
+                app:cover_author_size="@dimen/ebook_list2_book_cover_author_size"
+                app:cover_title_margin="@dimen/ebook_list_book_cover_title_margin"
+                app:cover_author_margin="@dimen/ebook_list_book_cover_author_margin"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:id="@+id/ebook_content_book_cover"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="豆瓣评分"
+                android:textSize="16sp"
+                android:textColor="@color/gray"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:id="@+id/ebook_content_rating_avg"
+                />
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="0"
+                android:stepSize="0.1"
+                android:isIndicator="true"
+                style="?android:ratingBarStyleSmall"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/ebook_content_rating"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="（0人评分）"
+                android:textSize="16sp"
+                android:textColor="@color/gray"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="2dp"
+                android:id="@+id/ebook_content_rating_number"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="1">
+            android:layout_weight="1.0">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="幻想图书馆"
                 android:textColor="@color/common_dark_gray"
-                android:textSize="36dp"
+                android:textSize="@dimen/ebook_content_title_text_size"
                 android:textStyle="bold"
-                android:layout_marginTop="5dp"
                 android:minWidth="600dp"
+                android:id="@+id/ebook_content_title"
                 />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="[日]寺山修司"
                 android:textColor="@color/common_blue"
-                android:textSize="24dp"
+                android:textSize="@dimen/ebook_content_content_size"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
+                android:id="@+id/ebook_content_author"
                 />
-            <TextView
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="出版社：边城"
-                android:textColor="@color/common_gray"
-                android:textSize="24dp"
-                android:layout_marginTop="15dp"
-                />
-            <TextView
-                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_gray"
+                    android:textSize="@dimen/ebook_content_title_size"
+                    android:singleLine="true"
+                    android:text="出版社："
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_dark_gray"
+                    android:textSize="@dimen/ebook_content_content_size"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:id="@+id/ebook_content_press"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="出版年：2005-8-25"
-                android:textColor="@color/common_gray"
-                android:textSize="24dp"
-                android:layout_marginTop="2dp"
-                />
-            <TextView
-                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_gray"
+                    android:textSize="@dimen/ebook_content_title_size"
+                    android:singleLine="true"
+                    android:text="出版年份："
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_dark_gray"
+                    android:textSize="@dimen/ebook_content_content_size"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:id="@+id/ebook_content_pubdate"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ISBN:9789572991596"
-                android:textColor="@color/common_gray"
-                android:textSize="24dp"
-                android:layout_marginTop="2dp"
-                />
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_gray"
+                    android:textSize="@dimen/ebook_content_title_size"
+                    android:singleLine="true"
+                    android:text="页数："
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_dark_gray"
+                    android:textSize="@dimen/ebook_content_content_size"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:id="@+id/ebook_content_total_pages"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_gray"
+                    android:textSize="@dimen/ebook_content_title_size"
+                    android:singleLine="true"
+                    android:text="装帧："
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_dark_gray"
+                    android:textSize="@dimen/ebook_content_content_size"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:id="@+id/ebook_content_binding"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_gray"
+                    android:textSize="@dimen/ebook_content_title_size"
+                    android:singleLine="true"
+                    android:text="定价："
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_dark_gray"
+                    android:textSize="@dimen/ebook_content_content_size"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:id="@+id/ebook_content_price"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_gray"
+                    android:textSize="@dimen/ebook_content_title_size"
+                    android:singleLine="true"
+                    android:text="ISBN："
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/common_dark_gray"
+                    android:textSize="@dimen/ebook_content_content_size"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:id="@+id/ebook_content_isbn"
+                    />
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="right">
+            android:gravity="center"
+            android:layout_marginRight="5dp">
             <ImageView
-                android:layout_width="@dimen/ebook_list2_book_width"
-                android:layout_height="@dimen/ebook_list2_book_width"
+                android:layout_width="@dimen/ebook_content_qcode_width"
+                android:layout_height="@dimen/ebook_content_qcode_width"
                 android:src="@drawable/test_qc_code"
                 android:scaleType="fitXY"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 />
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="扫描二维码\n阅读精彩好书"
                 android:textColor="@color/common_gray"
-                android:textSize="22dp"
+                android:textSize="@dimen/ebook_content_qcode_text_size"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="25dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:gravity="center"
                 />
         </LinearLayout>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:background="@color/common_light_gray"
         />
-    <!--<LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"
-        android:layout_marginLeft="20dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="简介"
-                android:textColor="@color/red"
-                android:textSize="24dp"
-                android:id="@+id/ebook_content_lab_intro"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="|"
-                android:textColor="@color/common_light_gray"
-                android:textSize="24dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="目录"
-                android:textColor="@color/common_blue"
-                android:textSize="24dp"
-                android:id="@+id/ebook_content_lab_list"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="|"
-                android:textColor="@color/common_light_gray"
-                android:textSize="24dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="试读"
-                android:textColor="@color/common_blue"
-                android:textSize="24dp"
-                android:id="@+id/ebook_content_lab_read"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="|"
-                android:textColor="@color/common_light_gray"
-                android:textSize="24dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="馆藏地"
-                android:textColor="@color/common_blue"
-                android:textSize="24dp"
-                android:id="@+id/ebook_content_lab_col"
-                />
-        </LinearLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:minHeight="700dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:id="@+id/ebook_content_sub_container">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="騎著青蛙翻閱安地斯山，在低音大提琴盒裡藏侏儒屍體，戴著毛皮面具吃肉的狼人，以玩具槍、鋸子聲響、狂歡派對不斷出招的高校女生……種種奇詭色彩的情節，盡在寺山修司的書海漫遊之間。\n日本知名的劇場與電影導演暨詩人寺山修司，暢談胴人、賭馬、拷問、娼妓、變形漫畫等怪誕的閱讀主題，展現他一貫敏銳、感傷又不失幽默的異想風格。這是寺山修司第一本在台問世的作品，透過寺山修司的私閱讀，讀者將可一窺這位素以大膽前衛著稱的創作者的靈感源頭。"
-                android:textColor="@color/common_gray"
-                android:textSize="24dp"
-                android:id="@+id/ebook_content_intro"
-                />
-        </FrameLayout>
-    </LinearLayout>-->
 
+    <com.lza.pad.widget.PagerSlidingTabStrip
+        android:layout_width="match_parent"
+        android:layout_height="48dip"
+        android:background="@drawable/background_tab"
+        app:pstsIndicatorColor="@color/common_blue"
+        android:id="@+id/ebook_content_pager_tab"
+        />
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ebook_content_view_pager"
+        />
 </LinearLayout>

@@ -4,11 +4,14 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,13 +26,18 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.CommonRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
+import com.lza.pad.support.utils.UniversalUtility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 页面基本框架，包含一个ViewPager，ViewPager中默认包含一个GridView，GridView下可以填充各种Adapter
@@ -52,6 +60,11 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     protected List<View> mPageViews;
     protected List<String> mPageTitles;
     protected List<Integer> mRadPageIds = new ArrayList<Integer>();
+
+    /**
+     * 当前翻到第几页
+     */
+    protected int mCurrentPageNumber = 0;
 
     /**
      * 头部的高度
@@ -79,17 +92,23 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     /**
      * 请求总数据量
      */
-    protected String mDefaultPageSize = "20";
+    protected int mDefaultPageSize = 20;
 
     /**
-     * 总页数
+     * 默认请求的数据量
      */
-    protected String mDefaultEveryPageSize = "4";
+    protected int mDefaultEveryPageSize = 4;
 
     /**
      * 默认请求页数
      */
-    protected String mDefaultPage = "1";
+    protected int mDefaultPage = 1;
+
+    protected boolean mIfSlideShow = true;
+
+    protected int mSlideShowTime = 0;
+
+    protected int mSlideShowPeriod = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +122,22 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         //获取每行的数据量
         if (mArg != null) {
             mGridNumColumns = mArg.getInt(KEY_EBOOK_NUM_COLUMNS);
+        }
+        if (mGridNumColumns <= 0) {
+            //mGridNumColumns = getGridNumColumns();
+            int eachData = getGridNumColumns();
+            setGridNumColumns(eachData);
+        }
+        mDefaultPageSize = getGridDataSize();
+        if (mPadControlInfo != null) {
+            String ifSlideShow = UniversalUtility.wrap(mPadControlInfo.getIf_show_slide(), "0");
+            if (ifSlideShow.equals(PadModuleControl.BOOLEAN_SHOW_SLIDE)) {
+                mIfSlideShow = true;
+            } else if (ifSlideShow.equals(PadModuleControl.BOOLEAN_NOT_SHOW_SLIDE)) {
+                mIfSlideShow = false;
+            }
+            mSlideShowTime = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_time(), "0"));
+            mSlideShowPeriod = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_period(), "0"));
         }
     }
 
@@ -164,11 +199,23 @@ public abstract class BaseResourceListFragment extends BaseFragment {
                     int checkId = mRadPageIds.get(position);
                     mRadPages.check(checkId);
                 }
+                mCurrentPageNumber = position;
+                log("[" + mPadControlInfo.getTitle() + "]当前页数：" + mCurrentPageNumber);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (mSlideShowService != null) {
+                    mSlideShowService.initSlideCurrentDelay();
+                }
+                return false;
             }
         });
 
@@ -179,6 +226,16 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         send(getUrl(), mResourceListener);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mSlideShowService != null)
+            mSlideShowService.stopSlideShowService();
+    }
+
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    SlideShowService mSlideShowService;
 
     private CommonRequestListener<PadResource> mResourceListener = new CommonRequestListener<PadResource>() {
 
@@ -194,6 +251,24 @@ public abstract class BaseResourceListFragment extends BaseFragment {
                 generateTitleView();
                 generateRaidoButton();
             }
+
+            mSlideShowService = new SlideShowService(mSlideShowTime, mSlideShowPeriod, mIfSlideShow) {
+                @Override
+                public void show() {
+                    log("开始展示幻灯片");
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCurrentPageNumber++;
+                            if (mCurrentPageNumber >= mViewPager.getAdapter().getCount()) {
+                                mCurrentPageNumber = 0;
+                            }
+                            mViewPager.setCurrentItem(mCurrentPageNumber);
+                        }
+                    });
+                }
+            };
+            mSlideShowService.startSlideShowService();
         }
 
         @Override
@@ -256,12 +331,11 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      */
     protected List<View> getPageViews() {
         if (mPadResources == null) return null;
-        int everyPageSize = Integer.parseInt(mDefaultEveryPageSize);
         int totalSize = mPadResources.size();
         List<View> views = new ArrayList<View>();
         for (int i = 0; i < totalSize; i++) {
-            int start = i * everyPageSize;
-            int end = start + everyPageSize;
+            int start = i * mGridNumColumns;
+            int end = start + mGridNumColumns;
             if (start >= totalSize) break;
             if (end > totalSize) end = totalSize;
             List<PadResource> subData = mPadResources.subList(start, end);
@@ -286,7 +360,24 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      * @return
      */
     protected int getGridNumColumns() {
-        return mGridNumColumns == 0 ? 2 : mGridNumColumns;
+        return mDefaultEveryPageSize;
+    }
+
+    /**
+     * 设置每行显示的数据量
+     * @param eachData
+     */
+    private void setGridNumColumns(int eachData) {
+        if (eachData < 0) mGridNumColumns = 0;
+        else mGridNumColumns = eachData;
+    }
+
+    /**
+     * 总数据量
+     * @return
+     */
+    protected int getGridDataSize() {
+        return mDefaultPageSize;
     }
 
     /**
@@ -297,7 +388,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     protected View generateGridView(int index, List<PadResource> data) {
         View view = mInflater.inflate(R.layout.common_grid, null);
         GridView grid = (GridView) view.findViewById(R.id.common_grid);
-        mGridNumColumns = getGridNumColumns();
+
         grid.setNumColumns(mGridNumColumns);
         //mPageDatas = getPageDatas();
         //mPageDatas = data;
@@ -307,7 +398,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
             grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    onGridItemClick(parent, view, position, id);
+                    onGridItemClick(parent, view, mGridNumColumns * mCurrentPageNumber + position, id);
                 }
             });
         }
@@ -422,5 +513,88 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         public CharSequence getPageTitle(int position) {
             return mPageTitles.get(position);
         }
+    }
+
+    protected abstract class SlideShowService {
+
+        /**
+         * 多久没人操作时触发幻灯片播放
+         */
+        int SLIDE_SHOW_START = 20;
+
+        /**
+         * 多久切换一次幻灯片
+         */
+        int SLIDE_SHOW_DELAY = 5;
+
+        /**
+         * 当前多久没人操作
+         */
+        int mSlideCurrentDelay = 0;
+
+        /**
+         * 是否可以展示幻灯片
+         */
+        boolean mCanSlideShow = true;
+
+        /**
+         * 是否可以开始展示幻灯片
+         */
+        boolean mCanSlideShowNow = false;
+
+        ScheduledExecutorService mService;
+
+        public void startSlideShowService() {
+            //先判断是否可以展示幻灯片
+            if (!mCanSlideShow || SLIDE_SHOW_DELAY <= 0 || SLIDE_SHOW_START <= 0) return;
+            //如果服务已经启动，先停止服务
+            if (mService != null)
+                mService.shutdownNow();
+            //初始化服务
+            mService = Executors.newSingleThreadScheduledExecutor();
+            mService.scheduleAtFixedRate(new Runnable() {
+                @Override
+                public void run() {
+                    //如果可以开始展示，则进行展示
+                    if (mSlideCurrentDelay >= SLIDE_SHOW_START) {
+                        try {
+                            show();
+                        } catch (Exception ex) {
+
+                        }
+                    } else {
+                        mSlideCurrentDelay += SLIDE_SHOW_DELAY;
+                        log("当前幻灯片等待时间：" + mSlideCurrentDelay);
+                    }
+                }
+            }, 0, SLIDE_SHOW_DELAY, TimeUnit.SECONDS);
+        }
+
+        public void stopSlideShowService() {
+            if (mService != null)
+                mService.shutdownNow();
+        }
+
+        public void initSlideCurrentDelay() {
+            mSlideCurrentDelay = 0;
+        }
+
+        public abstract void show();
+
+        public void setSlideShowStart(int slideShowStart) {
+            SLIDE_SHOW_START = slideShowStart;
+        }
+
+        public void setSlideShowDelay(int slideShowDelay) {
+            SLIDE_SHOW_DELAY = slideShowDelay;
+        }
+
+        public SlideShowService(int slideShowStart, int slideShowDelay, boolean canShow) {
+            setSlideShowStart(slideShowStart);
+            setSlideShowDelay(slideShowDelay);
+            mCanSlideShow = canShow;
+        }
+
+        public SlideShowService() {}
     }
 }

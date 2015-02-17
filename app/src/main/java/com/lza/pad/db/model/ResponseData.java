@@ -47,6 +47,14 @@ public class ResponseData<T> {
 
     private String message;
 
+    private String page;
+
+    private String pagesize;
+
+    private String total_nums;
+
+    private String pages;
+
     public String getState() {
         return state;
     }
@@ -69,5 +77,37 @@ public class ResponseData<T> {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    public String getPagesize() {
+        return pagesize;
+    }
+
+    public void setPagesize(String pagesize) {
+        this.pagesize = pagesize;
+    }
+
+    public String getTotal_nums() {
+        return total_nums;
+    }
+
+    public void setTotal_nums(String total_nums) {
+        this.total_nums = total_nums;
+    }
+
+    public String getPages() {
+        return pages;
+    }
+
+    public void setPages(String pages) {
+        this.pages = pages;
     }
 }

@@ -14,6 +14,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 
@@ -457,5 +458,9 @@ public class UniversalUtility {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
         return info.getMacAddress();
+    }
+
+    public static String wrap(String value, String defaultValue) {
+        return TextUtils.isEmpty(value) ? defaultValue : value;
     }
 }

@@ -30,9 +30,9 @@ public class NewsContentFragment extends BaseFragment {
         mTxtDate = (TextView) view.findViewById(R.id.news_content_date);
         mWebView = (WebView) view.findViewById(R.id.news_content_text);
 
-        if (mPadResourceInfo != null) {
-            mTxtTitle.setText(mPadResourceInfo.getTitle());
-            mTxtDate.setText(mPadResourceInfo.getPubdate());
+        if (mPadResource != null) {
+            mTxtTitle.setText(mPadResource.getTitle());
+            mTxtDate.setText(mPadResource.getPubdate());
 
             // 设置支持JavaScript等
             mWebSettings = mWebView.getSettings();
@@ -43,7 +43,7 @@ public class NewsContentFragment extends BaseFragment {
             mWebSettings.setTextZoom(120);
             mWebView.setHapticFeedbackEnabled(false);
 
-            mWebView.loadDataWithBaseURL(null, mPadResourceInfo.getContents(), "text/html", "UTF-8", null);
+            mWebView.loadDataWithBaseURL(null, mPadResource.getContents(), "text/html", "UTF-8", null);
         }
 
         return view;

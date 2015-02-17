@@ -33,11 +33,11 @@ import java.util.List;
  */
 public class NewsFragment1 extends BaseFragment {
 
-    TextView mTxtMore;
+    TextView mTxtTitle, mTxtMore;
     IrregularNews mIrregularNews;
 
-    String DEFAULT_PAGE_SIZE = "6";
-    String DEFAULT_PAGE = "1";
+    int DEFAULT_PAGE_SIZE = 6;
+    int DEFAULT_PAGE = 1;
 
     ImageLoader mImageLoader;
     List<PadResource> mPadResources;
@@ -46,12 +46,19 @@ public class NewsFragment1 extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mImageLoader = VolleySingleton.getInstance(mActivity).getImageLoader();
+        mImageLoader = VolleySingleton.getInstance(mActivity).getImageLoader(TEMP_IMAGE_LOADER);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news, container, false);
+        mTxtTitle = (TextView) view.findViewById(R.id.news_home_title);
+        if (mPadControlInfo != null) {
+            mTxtTitle.setText(mPadControlInfo.getTitle());
+        } else {
+            mTxtTitle.setText("新闻动态");
+        }
+
         mTxtMore = (TextView) view.findViewById(R.id.news_home_more);
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override

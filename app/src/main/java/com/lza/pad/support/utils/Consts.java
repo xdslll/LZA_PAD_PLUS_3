@@ -56,6 +56,13 @@ public interface Consts {
      */
     public static final String CONTROL_GET_MESSAGE = "get_message";
 
+    /**
+     * 获取数据源的详细内容
+     */
+    public static final String CONTROL_OPAC_SEARCH_DETAIL = "opac_search_detail";
+
+
+
     public static final String KEY_PAD_RESOURCE_INFO = "key_pad_resource";
     public static final String KEY_PAD_CONTROL_INFO = "key_pad_control";
     public static final String KEY_PAD_MODULE_INFO = "key_pad_module";
@@ -110,4 +117,6 @@ public interface Consts {
     public static final int SP_MODE = Activity.MODE_PRIVATE;
     String ACTION_START_SERVER = "start_server";
     String ACTION_STOP_SERVER = "stop_server";
+
+    public static final String TEMP_IMAGE_LOADER = "temp";
 }
