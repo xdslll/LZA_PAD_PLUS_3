@@ -13,7 +13,8 @@ import com.lza.pad.R;
  * @author xiads
  * @Date 1/18/15.
  */
-public abstract class BaseModuleActivity extends BaseActivity {
+@Deprecated
+public abstract class _BaseModuleActivity extends BaseActivity {
 
     private LinearLayout mMainContainer;
     private TextView mTxtBack, mTxtSubject, mTxtSearch, mTxtModName;

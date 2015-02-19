@@ -56,7 +56,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
         mTxtSplash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                //startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                 finish();
             }
         });
@@ -87,7 +87,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                     mMainHandler.sendEmptyMessageDelayed(REQUEST_HANDLE_OPEN_WIFI_STATE, DEFAULT_REQUEST_DELAY);
                 } else {
                     ToastUtils.showShort(mCtx, "Wifi设备启动失败，正在重试...");
-                    mMainHandler.sendEmptyMessageDelayed(REQUEST_OPEN_WIFI, DEFAULT_REQUEST_DELAY);
+                    mMainHandler.sendEmptyMessageDelayed(REQUEST_OPEN_WIFI, DEFAULT_RESTART_DELAY);
                 }
             } else if (msg.what == REQUEST_HANDLE_OPEN_WIFI_STATE) {
                 handleWifiOpenState();

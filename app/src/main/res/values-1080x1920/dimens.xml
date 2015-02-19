@@ -101,11 +101,20 @@
     <dimen name="ebook_content_pubdate_text_size">24sp</dimen>
     <dimen name="ebook_content_isbn_text_size">24sp</dimen>
     <dimen name="ebook_content_pager_tab_text_size">20sp</dimen>
-    <dimen name="ebook_content_title_size">22sp</dimen>
-    <dimen name="ebook_content_content_size">24sp</dimen>
+    <dimen name="ebook_content_key_size">22sp</dimen>
+    <dimen name="ebook_content_value_size">24sp</dimen>
+    <dimen name="ebook_content_tip_size">18sp</dimen>
     <dimen name="ebook_content_qcode_width">240dp</dimen>
 
     <!-- common_content_container.xml -->
     <dimen name="content_container_title_size">34sp</dimen>
     <dimen name="content_container_close_size">28sp</dimen>
+
+    <!-- title_menu_item.xml -->
+    <dimen name="title_menu_item_ico_width">60dp</dimen>
+
+    <!-- title.xml -->
+    <dimen name="title_calendar_date_size">50sp</dimen>
+    <dimen name="title_calendar_time_size">32sp</dimen>
+
 </resources>

@@ -7,11 +7,14 @@ import android.text.TextUtils;
 
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
+
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -30,6 +33,7 @@ public class BaseFragment extends Fragment implements Consts {
     protected PadDeviceInfo mPadDeviceInfo;
     protected PadModuleControl mPadControlInfo;
     protected PadResource mPadResource;
+    protected List<PadLayoutModule> mPadModuleInfos;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,7 @@ public class BaseFragment extends Fragment implements Consts {
             mPadDeviceInfo = getArguments().getParcelable(KEY_PAD_DEVICE_INFO);
             mPadControlInfo = getArguments().getParcelable(KEY_PAD_CONTROL_INFO);
             mPadResource = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
+            mPadModuleInfos = getArguments().getParcelableArrayList(KEY_PAD_MODULE_INFOS);
         }
 
         EventBus.getDefault().register(this);

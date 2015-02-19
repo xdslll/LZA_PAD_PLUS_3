@@ -98,6 +98,7 @@
     <orderEntry type="library" exported="" name="slf4j-android-1.6.1-RC1" level="project" />
     <orderEntry type="library" exported="" name="AndroidEasingFunctions-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="NineOldAndroid-2.4.0" level="project" />
+    <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
     <orderEntry type="module" module-name="pullToRefreshLibrary" exported="" />
     <orderEntry type="module" module-name="actionbarsherlock" exported="" />
   </component>

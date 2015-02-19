@@ -1,6 +1,7 @@
 package com.lza.pad.app.base;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -12,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -31,6 +33,8 @@ import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 
 import org.apache.mina.core.session.IoSession;
+
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -88,6 +92,11 @@ public class BaseActivity extends Activity implements Consts {
      * 请求的延迟
      */
     protected static final int DEFAULT_REQUEST_DELAY = 0;
+
+    /**
+     * 重试的延迟
+     */
+    protected static final int DEFAULT_RESTART_DELAY = 2000;
 
     public static final int DEFAULT_SIZE = 4;
 
@@ -326,22 +335,28 @@ public class BaseActivity extends Activity implements Consts {
             public void handleResponseSuccess() {
                 log("设备状态更新成功");
                 onDeviceUpdateSuccess(deviceInfo);
-                //终止进程
-                System.exit(0);
             }
 
             @Override
             public void onResponseStateError(ResponseData response) {
                 log("设备状态更新失败");
                 onDeviceUpdateFailed(deviceInfo);
-                //终止进程
-                System.exit(0);
             }
         }).send();
     }
 
     protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
     protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
+
+    protected String getTopActivity() {
+        ActivityManager manager = (ActivityManager) mCtx.getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = manager.getRunningTasks(1);
+        if (runningTasks == null || runningTasks.size() == 0) return null;
+        String className = runningTasks.get(0).topActivity.getShortClassName();
+        if (TextUtils.isEmpty(className) || !className.contains(".")) return null;
+        int index = className.lastIndexOf(".");
+        return className.substring(index + 1, className.length());
+    }
 }
 
 /**

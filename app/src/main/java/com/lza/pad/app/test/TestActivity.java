@@ -1,4 +1,4 @@
-package com.lza.pad.app;
+package com.lza.pad.app.test;
 
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -16,6 +16,7 @@ import com.lza.pad.widget.TestView;
  * @author xiads
  * @Date 15/1/23.
  */
+@Deprecated
 public class TestActivity extends BaseActivity {
 
     SeekBar mSeekBar;

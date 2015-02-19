@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="正在加载..."
-                android:textSize="50sp"
+                android:textSize="@dimen/title_calendar_date_size"
                 android:textStyle="bold"
                 android:textColor="@color/common_blue"
                 android:id="@+id/title_time_text"
@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="正在加载..."
-                android:textSize="30sp"
+                android:textSize="@dimen/title_calendar_time_size"
                 android:textColor="@color/common_blue"
                 android:id="@+id/title_date_text"
                 />
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="提供免费Wifi"
-                android:textSize="30sp"
+                android:textSize="@dimen/ebook_content_title_text_size"
                 android:textColor="@color/common_gray"
                 android:layout_marginLeft="10dp"
                 />
@@ -76,7 +76,15 @@
         android:layout_marginRight="30dp"
         android:background="@color/common_blue"
         />
-    <LinearLayout
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchMode="columnWidth"
+        android:numColumns="6"
+        android:background="@color/white"
+        android:id="@+id/title_grid"
+        />
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -233,7 +241,7 @@
                 android:textColor="@color/common_blue"
                 />
         </LinearLayout>
-    </LinearLayout>
+    </LinearLayout>-->
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"

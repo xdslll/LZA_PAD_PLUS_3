@@ -41,6 +41,12 @@ public abstract class BaseContentActivity extends BaseActivity {
         });
         mTxtTitle = (TextView) findViewById(R.id.ebook_content_title);
         mTxtTitle.setText(getModName());
+        mTxtTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         Fragment frg = getFragment();
         frg.setArguments(getArgument());

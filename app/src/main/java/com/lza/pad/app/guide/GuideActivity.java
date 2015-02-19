@@ -2,7 +2,7 @@ package com.lza.pad.app.guide;
 
 import android.widget.LinearLayout;
 
-import com.lza.pad.app.base.BaseModuleActivity;
+import com.lza.pad.app.base._BaseModuleActivity;
 import com.lza.pad.fragment.guide.LibraryMapFragment;
 
 /**
@@ -11,7 +11,7 @@ import com.lza.pad.fragment.guide.LibraryMapFragment;
  * @author xiads
  * @Date 15/1/24.
  */
-public class GuideActivity extends BaseModuleActivity {
+public class GuideActivity extends _BaseModuleActivity {
 
     @Override
     protected String getModName() {

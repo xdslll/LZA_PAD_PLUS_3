@@ -216,8 +216,12 @@ public class UrlHelper implements Consts {
     public static String createDoubanReviewsByIsbnUrl(PadResource data, String start, String count) {
         String isbn = data.getIsbn();
         String url = String.format(DOUBAN_URL_BOOK_REVIEWS_BY_ISBN, isbn);
-        url = url + "?start=" + start + "&count=" + count;
-        return url;
+        return new StringBuilder().append(url)
+                .append("&start=").append(start)
+                .append("&count=").append(count)
+                .toString();
+        //url = url + "&start=" + start + "&count=" + count;
+        //return url;
     }
 
 }

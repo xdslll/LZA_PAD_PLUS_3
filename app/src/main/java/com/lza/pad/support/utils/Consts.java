@@ -63,9 +63,12 @@ public interface Consts {
 
 
 
+    public static final String KEY_FRAGMENT_INDEX = "key_fragment_index";
+    public static final String KEY_DOUBAN_BOOK = "key_douban_book";
     public static final String KEY_PAD_RESOURCE_INFO = "key_pad_resource";
     public static final String KEY_PAD_CONTROL_INFO = "key_pad_control";
     public static final String KEY_PAD_MODULE_INFO = "key_pad_module";
+    public static final String KEY_PAD_MODULE_INFOS = "key_pad_modules";
     public static final String KEY_PAD_SCHOOL = "key_pad_school";
     public static final String KEY_PAD_DEVICE_INFO = "key_pad_device";
     public static final String KEY_DEVICE_IS_UPDATING = "key_device_is_updating";
@@ -119,4 +122,9 @@ public interface Consts {
     String ACTION_STOP_SERVER = "stop_server";
 
     public static final String TEMP_IMAGE_LOADER = "temp";
+
+    public static final int MAX_DOUBAN_RATING = 5;
+
+    public static final String IMG_JPEG = "jpg";
+    public static final String IMG_PNG = "png";
 }

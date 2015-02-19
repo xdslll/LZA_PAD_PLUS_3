@@ -1,7 +1,6 @@
 package com.lza.pad.app.ebook;
 
 import android.app.Fragment;
-import android.os.Bundle;
 
 import com.lza.pad.app.base.BaseContentActivity;
 import com.lza.pad.fragment.ebook.EbookContentFragment;
@@ -21,11 +20,12 @@ public class EbookContentActivity extends BaseContentActivity {
 
     @Override
     protected Fragment getFragment() {
-        EbookContentFragment frg = new EbookContentFragment();
+        /*EbookContentFragment frg = new EbookContentFragment();
         Bundle arg = new Bundle();
         arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         arg.putParcelable(KEY_PAD_RESOURCE_INFO, mPadResource);
         frg.setArguments(arg);
-        return frg;
+        return frg;*/
+        return new EbookContentFragment();
     }
 }

@@ -369,5 +369,6 @@
     <color name="common_light_gray">#e8e8e8</color>
     <color name="common_dark_gray">#242424</color>
     <color name="common_grey">#616161</color>
+    <color name="common_tiny_gray">#9bf5f5f5</color>
 
 </resources>

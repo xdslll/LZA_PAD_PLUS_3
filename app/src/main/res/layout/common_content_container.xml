@@ -20,12 +20,13 @@
             android:id="@+id/ebook_content_title"
             />
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
             android:text="关闭"
             android:textSize="@dimen/content_container_close_size"
             android:textColor="@color/common_gray"
             android:background="@drawable/common_bg"
+            android:gravity="right"
             android:id="@+id/ebook_content_close"
             />
     </LinearLayout>

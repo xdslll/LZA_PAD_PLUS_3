@@ -228,6 +228,16 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mSlideShowService != null)
@@ -251,24 +261,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
                 generateTitleView();
                 generateRaidoButton();
             }
-
-            mSlideShowService = new SlideShowService(mSlideShowTime, mSlideShowPeriod, mIfSlideShow) {
-                @Override
-                public void show() {
-                    log("开始展示幻灯片");
-                    mMainHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCurrentPageNumber++;
-                            if (mCurrentPageNumber >= mViewPager.getAdapter().getCount()) {
-                                mCurrentPageNumber = 0;
-                            }
-                            mViewPager.setCurrentItem(mCurrentPageNumber);
-                        }
-                    });
-                }
-            };
-            mSlideShowService.startSlideShowService();
+            startSlideShowService();
         }
 
         @Override
@@ -281,6 +274,26 @@ public abstract class BaseResourceListFragment extends BaseFragment {
             return JsonParseHelper.parseResourceResponse(json);
         }
     };
+
+    private void startSlideShowService() {
+        mSlideShowService = new SlideShowService(mSlideShowTime, mSlideShowPeriod, mIfSlideShow) {
+            @Override
+            public void show() {
+                log("开始展示幻灯片");
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCurrentPageNumber++;
+                        if (mCurrentPageNumber >= mViewPager.getAdapter().getCount()) {
+                            mCurrentPageNumber = 0;
+                        }
+                        mViewPager.setCurrentItem(mCurrentPageNumber);
+                    }
+                });
+            }
+        };
+        mSlideShowService.startSlideShowService();
+    }
 
     /**
      * 实现更多按钮的点击事件
@@ -418,6 +431,8 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mTitleHeight);
         mLayoutTitle.setLayoutParams(params);
         mLayoutTitle.setPadding(paddingHor, 0, paddingHor, 0);
+        mTxtTitle.setVisibility(View.VISIBLE);
+        mTxtMore.setVisibility(View.VISIBLE);
     }
 
     /**

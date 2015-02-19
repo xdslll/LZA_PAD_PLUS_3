@@ -183,65 +183,9 @@ public class PadDeviceInfo implements Parcelable {
         this.last_connect_time = last_connect_time;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(bh);
-        dest.writeString(school_bh);
-        dest.writeString(module_ids);
-        dest.writeString(update_tag);
-        dest.writeString(mac_add);
-        dest.writeString(name);
-        dest.writeString(area);
-        dest.writeString(end_pubdate);
-        dest.writeString(intime);
-        dest.writeString(auto_update);
-        dest.writeString(update_time);
-        dest.writeString(hotspot_password);
-        dest.writeString(hotspot_switch);
-        dest.writeString(state);
-        dest.writeString(last_connect_time);
-    }
-
     public PadDeviceInfo() {
 
     }
-
-    public PadDeviceInfo(Parcel src) {
-        id = src.readString();
-        bh = src.readString();
-        school_bh = src.readString();
-        module_ids = src.readString();
-        update_tag = src.readString();
-        mac_add = src.readString();
-        name = src.readString();
-        area = src.readString();
-        end_pubdate = src.readString();
-        intime = src.readString();
-        auto_update = src.readString();
-        update_time = src.readString();
-        hotspot_password = src.readString();
-        hotspot_switch = src.readString();
-        state = src.readString();
-        last_connect_time = src.readString();
-    }
-
-    public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {
-        @Override
-        public PadDeviceInfo createFromParcel(Parcel source) {
-            return new PadDeviceInfo(source);
-        }
-
-        @Override
-        public PadDeviceInfo[] newArray(int size) {
-            return new PadDeviceInfo[size];
-        }
-    };
 
     @Override
     public String toString() {
@@ -261,4 +205,58 @@ public class PadDeviceInfo implements Parcelable {
                 "\n热点开关：\'" + (Integer.valueOf(hotspot_switch) == 0 ? "关" : "开") + '\'' +
                 "\n设备状态：\'" + (Integer.valueOf(state) == 0 ? "关" : "开") + '\'';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.bh);
+        dest.writeString(this.school_bh);
+        dest.writeString(this.module_ids);
+        dest.writeString(this.update_tag);
+        dest.writeString(this.mac_add);
+        dest.writeString(this.name);
+        dest.writeString(this.area);
+        dest.writeString(this.end_pubdate);
+        dest.writeString(this.intime);
+        dest.writeString(this.auto_update);
+        dest.writeString(this.update_time);
+        dest.writeString(this.hotspot_password);
+        dest.writeString(this.hotspot_switch);
+        dest.writeString(this.state);
+        dest.writeString(this.last_connect_time);
+    }
+
+    private PadDeviceInfo(Parcel in) {
+        this.id = in.readString();
+        this.bh = in.readString();
+        this.school_bh = in.readString();
+        this.module_ids = in.readString();
+        this.update_tag = in.readString();
+        this.mac_add = in.readString();
+        this.name = in.readString();
+        this.area = in.readString();
+        this.end_pubdate = in.readString();
+        this.intime = in.readString();
+        this.auto_update = in.readString();
+        this.update_time = in.readString();
+        this.hotspot_password = in.readString();
+        this.hotspot_switch = in.readString();
+        this.state = in.readString();
+        this.last_connect_time = in.readString();
+    }
+
+    public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {
+        public PadDeviceInfo createFromParcel(Parcel source) {
+            return new PadDeviceInfo(source);
+        }
+
+        public PadDeviceInfo[] newArray(int size) {
+            return new PadDeviceInfo[size];
+        }
+    };
 }

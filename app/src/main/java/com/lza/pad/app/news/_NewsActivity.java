@@ -15,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseModuleActivity;
+import com.lza.pad.app.base._BaseModuleActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,8 @@ import java.util.List;
  * @author xiads
  * @Date 1/21/15.
  */
-public class NewsActivity extends BaseModuleActivity {
+@Deprecated
+public class _NewsActivity extends _BaseModuleActivity {
 
     private LayoutInflater mInflater;
 
@@ -53,7 +54,7 @@ public class NewsActivity extends BaseModuleActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(NewsActivity.this, NewsContentActivity.class));
+                startActivity(new Intent(_NewsActivity.this, NewsContentActivity.class));
             }
         });
         container.addView(list);

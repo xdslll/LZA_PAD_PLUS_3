@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.lza.pad.app.SubjectActivity;
-import com.lza.pad.app.base.BaseModuleActivity;
+import com.lza.pad.app.base._BaseModuleActivity;
 import com.lza.pad.fragment.ebook._EbookFragment4;
 import com.lza.pad.fragment.ebook._EbookFragment3;
 
@@ -17,7 +17,7 @@ import com.lza.pad.fragment.ebook._EbookFragment3;
  * @author xiads
  * @Date 1/18/15.
  */
-public class EbookActivity extends BaseModuleActivity {
+public class EbookActivity extends _BaseModuleActivity {
 
     private static final int REQUEST_SUBJECT = 0x001;
     private int mCurrentSubject = 0;

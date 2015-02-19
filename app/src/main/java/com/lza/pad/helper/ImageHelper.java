@@ -112,7 +112,7 @@ public class ImageHelper {
         try {
             fs = new FileInputStream(tempFile);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             fs = null;
         }
         Bitmap bmp = null;

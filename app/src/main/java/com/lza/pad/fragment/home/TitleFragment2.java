@@ -1,6 +1,5 @@
 package com.lza.pad.fragment.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,18 +8,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookActivity;
-import com.lza.pad.app.guide.GuideActivity;
-import com.lza.pad.app.news.NewsActivity;
-import com.lza.pad.app.socket.MinaServerActivity;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.service.MinaServiceHelper;
-import com.lza.pad.app.wifi.WifiApActivity;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.fragment.base.BaseFragment;
 
@@ -41,7 +34,7 @@ public class TitleFragment2 extends BaseFragment {
 
     private Calendar mCalendar;
     private TextView mTxtTime, mTxtDate, mTxtConnectUser;
-    private ImageButton mImgNavEbook, mImgNavNews, mImgNavMore, mImgNavGuide, mImgNavNewbook;
+    //private ImageButton mImgNavEbook, mImgNavNews, mImgNavMore, mImgNavGuide, mImgNavNewbook;
     private LinearLayout mLayoutFreeWifi;
 
     @Override
@@ -53,7 +46,7 @@ public class TitleFragment2 extends BaseFragment {
         mTxtDate = (TextView) view.findViewById(R.id.title_date_text);
         mLayoutFreeWifi = (LinearLayout) view.findViewById(R.id.title_free_wifi);
 
-        mImgNavEbook = (ImageButton) view.findViewById(R.id.title_nav_ebook);
+        /*mImgNavEbook = (ImageButton) view.findViewById(R.id.title_nav_ebook);
         mImgNavEbook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +58,7 @@ public class TitleFragment2 extends BaseFragment {
         mImgNavNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity, NewsActivity.class));
+                startActivity(new Intent(mActivity, _NewsActivity.class));
             }
         });
 
@@ -91,7 +84,7 @@ public class TitleFragment2 extends BaseFragment {
             public void onClick(View v) {
                 startActivity(new Intent(mActivity, WifiApActivity.class));
             }
-        });
+        });*/
 
         return view;
     }

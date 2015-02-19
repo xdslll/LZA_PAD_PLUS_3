@@ -291,6 +291,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 Bundle arg = new Bundle();
                 arg.putParcelable(KEY_PAD_DEVICE_INFO, mDeviceInfo);
                 arg.putParcelable(KEY_PAD_CONTROL_INFO, control);
+                arg.putParcelableArrayList(KEY_PAD_MODULE_INFOS, (ArrayList<PadLayoutModule>) mLayoutsModules);
                 arg.putInt(KEY_FRAGMENT_WIDTH, width);
                 arg.putInt(KEY_FRAGMENT_HEIGHT, height);
                 arg.putBoolean(KEY_IF_HOME, mIsHome);
@@ -487,6 +488,12 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             if (intent == null) return;
             mDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
             if (mDeviceInfo == null) return;
+            //判断当前Activity是否在栈顶，如果不在栈顶，不能更新
+            String topActivity = getTopActivity();
+            String currentActivity = HomeActivity.class.getSimpleName();
+            log("top activity : " + topActivity);
+            log("current activity : " + currentActivity);
+            if (!topActivity.equals(currentActivity)) return;
             log("准备重新更新界面");
             /* 初始化数据 */
             //删除保存的模块数据

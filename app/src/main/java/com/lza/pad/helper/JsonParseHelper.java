@@ -3,6 +3,7 @@ package com.lza.pad.helper;
 import com.google.gson.reflect.TypeToken;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.douban.DoubanBook;
+import com.lza.pad.db.model.douban.DoubanReview;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
@@ -74,6 +75,16 @@ public class JsonParseHelper {
     public static DoubanBook parseDoubanBook(String json) {
         try {
             Type type = new TypeToken<DoubanBook>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static DoubanReview parseDoubanReviews(String json) {
+        try {
+            Type type = new TypeToken<DoubanReview>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -1,6 +1,5 @@
 package com.lza.pad.fragment.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,20 +8,20 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookActivity;
-import com.lza.pad.app.guide.GuideActivity;
-import com.lza.pad.app.news.NewsActivity;
-import com.lza.pad.app.socket.MinaServerActivity;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.service.MinaServiceHelper;
-import com.lza.pad.app.wifi.WifiApActivity;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
+import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.support.network.VolleySingleton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,8 +40,20 @@ public class TitleFragment1 extends BaseFragment {
 
     private Calendar mCalendar;
     private TextView mTxtTime, mTxtDate, mTxtConnectUser;
-    private ImageButton mImgNavEbook, mImgNavNews, mImgNavMore, mImgNavGuide, mImgNavNewbook;
+    //private ImageButton mImgNavEbook, mImgNavNews, mImgNavMore, mImgNavGuide, mImgNavNewbook;
     private LinearLayout mLayoutFreeWifi;
+    private GridView mGridModules;
+    private LayoutInflater mInflater;
+    private ImageLoader mImgLoader;
+
+    private int MAX_GRID_SIZE = 6;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mInflater = LayoutInflater.from(mActivity);
+        mImgLoader = VolleySingleton.getInstance(mActivity).getImageLoader(TEMP_IMAGE_LOADER, IMG_PNG);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,8 +63,9 @@ public class TitleFragment1 extends BaseFragment {
         mTxtTime = (TextView) view.findViewById(R.id.title_time_text);
         mTxtDate = (TextView) view.findViewById(R.id.title_date_text);
         mLayoutFreeWifi = (LinearLayout) view.findViewById(R.id.title_free_wifi);
+        mGridModules = (GridView) view.findViewById(R.id.title_grid);
 
-        mImgNavEbook = (ImageButton) view.findViewById(R.id.title_nav_ebook);
+        /*mImgNavEbook = (ImageButton) view.findViewById(R.id.title_nav_ebook);
         mImgNavEbook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +77,7 @@ public class TitleFragment1 extends BaseFragment {
         mImgNavNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity, NewsActivity.class));
+                startActivity(new Intent(mActivity, _NewsActivity.class));
             }
         });
 
@@ -91,18 +103,95 @@ public class TitleFragment1 extends BaseFragment {
             public void onClick(View v) {
                 startActivity(new Intent(mActivity, WifiApActivity.class));
             }
-        });
+        });*/
 
+        if (mPadModuleInfos != null) {
+            int size = mPadModuleInfos.size();
+            if (size < MAX_GRID_SIZE) {
+                mGridModules.setNumColumns(size);
+            } else {
+                mGridModules.setNumColumns(MAX_GRID_SIZE);
+            }
+            mGridModules.setAdapter(new TitleMenuAdapter());
+        }
         return view;
     }
 
-    ScheduledExecutorService mService = null;
+    private class TitleMenuAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return mPadModuleInfos.size();
+        }
+
+        @Override
+        public PadLayoutModule getItem(int position) {
+            return mPadModuleInfos.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) convertView = mInflater.inflate(R.layout.title_menu_item, null);
+            final ViewHolder holder = getHolder(convertView);
+            PadLayoutModule data = getItem(position);
+            String imgUrl = data.getLayout_icon();
+            holder.img.setImageUrl(imgUrl, mImgLoader);
+            //holder.img.setImageUrl("http://114.212.7.87/book_center/upload/widgets//nav_ebook.png", mImgLoader);
+            holder.img.setDefaultImageResId(R.drawable.nav_ebook);
+            holder.text.setText(data.getModule_name());
+            /*mImgLoader.get(data.getLayout_icon(), new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                    if (imageContainer == null) return;
+                    if (imageContainer.getBitmap() == null) return;
+                    Bitmap bm = imageContainer.getBitmap();
+                    holder.img.setImageBitmap(bm);
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    holder.img.setImageResource(R.drawable.nav_ebook);
+                }
+            });*/
+            return convertView;
+        }
+
+        private ViewHolder getHolder(View view) {
+            ViewHolder holder = (ViewHolder) view.getTag();
+            if (holder == null) {
+                holder = new ViewHolder(view);
+                view.setTag(holder);
+            }
+            return holder;
+        }
+    }
+
+    private class ViewHolder {
+        TextView text;
+        NetworkImageView img;
+        //ImageView img;
+
+        ViewHolder(View view) {
+            text = (TextView) view.findViewById(R.id.title_menu_item_text);
+            img = (NetworkImageView) view.findViewById(R.id.title_menu_item_ico);
+        }
+    }
+
+    /**
+     * 自定义时钟服务
+     */
+    ScheduledExecutorService mCalendarService = null;
 
     @Override
     public void onResume() {
         super.onResume();
-        mService = Executors.newSingleThreadScheduledExecutor();
-        mService.scheduleAtFixedRate(new Runnable() {
+        mCalendarService = Executors.newSingleThreadScheduledExecutor();
+        mCalendarService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 //更新时间
@@ -157,7 +246,7 @@ public class TitleFragment1 extends BaseFragment {
     @Override
     public void onPause() {
         super.onPause();
-        mService.shutdown();
+        mCalendarService.shutdown();
     }
 
     private String getWeekStr() {

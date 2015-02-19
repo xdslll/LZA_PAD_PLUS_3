@@ -14,6 +14,7 @@
             android:textSize="@dimen/ebook_list_module_title"
             android:layout_weight="1.0"
             android:gravity="bottom"
+            android:visibility="gone"
             android:id="@+id/ebook_list_title_text"
             />
         <TextView
@@ -24,6 +25,7 @@
             android:textSize="@dimen/ebook_list_module_title"
             android:background="@drawable/common_bg"
             android:gravity="bottom"
+            android:visibility="gone"
             android:id="@+id/ebook_list_more"
             />
     </LinearLayout>

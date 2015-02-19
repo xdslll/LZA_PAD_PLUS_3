@@ -27,7 +27,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="豆瓣评分"
+                android:text="评分"
                 android:textSize="16sp"
                 android:textColor="@color/gray"
                 android:layout_gravity="center_horizontal"
@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/common_blue"
-                android:textSize="@dimen/ebook_content_content_size"
+                android:textSize="@dimen/ebook_content_value_size"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
                 android:id="@+id/ebook_content_author"
@@ -88,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_gray"
-                    android:textSize="@dimen/ebook_content_title_size"
+                    android:textSize="@dimen/ebook_content_key_size"
                     android:singleLine="true"
                     android:text="出版社："
                     />
@@ -96,7 +96,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_dark_gray"
-                    android:textSize="@dimen/ebook_content_content_size"
+                    android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
                     android:id="@+id/ebook_content_press"
@@ -111,15 +111,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_gray"
-                    android:textSize="@dimen/ebook_content_title_size"
+                    android:textSize="@dimen/ebook_content_key_size"
                     android:singleLine="true"
-                    android:text="出版年份："
+                    android:text="出版年："
                     />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_dark_gray"
-                    android:textSize="@dimen/ebook_content_content_size"
+                    android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
                     android:id="@+id/ebook_content_pubdate"
@@ -134,7 +134,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_gray"
-                    android:textSize="@dimen/ebook_content_title_size"
+                    android:textSize="@dimen/ebook_content_key_size"
                     android:singleLine="true"
                     android:text="页数："
                     />
@@ -142,7 +142,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_dark_gray"
-                    android:textSize="@dimen/ebook_content_content_size"
+                    android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
                     android:id="@+id/ebook_content_total_pages"
@@ -157,7 +157,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_gray"
-                    android:textSize="@dimen/ebook_content_title_size"
+                    android:textSize="@dimen/ebook_content_key_size"
                     android:singleLine="true"
                     android:text="装帧："
                     />
@@ -165,7 +165,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_dark_gray"
-                    android:textSize="@dimen/ebook_content_content_size"
+                    android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
                     android:id="@+id/ebook_content_binding"
@@ -180,7 +180,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_gray"
-                    android:textSize="@dimen/ebook_content_title_size"
+                    android:textSize="@dimen/ebook_content_key_size"
                     android:singleLine="true"
                     android:text="定价："
                     />
@@ -188,7 +188,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_dark_gray"
-                    android:textSize="@dimen/ebook_content_content_size"
+                    android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
                     android:id="@+id/ebook_content_price"
@@ -203,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_gray"
-                    android:textSize="@dimen/ebook_content_title_size"
+                    android:textSize="@dimen/ebook_content_key_size"
                     android:singleLine="true"
                     android:text="ISBN："
                     />
@@ -211,7 +211,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/common_dark_gray"
-                    android:textSize="@dimen/ebook_content_content_size"
+                    android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
                     android:id="@+id/ebook_content_isbn"
@@ -223,7 +223,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginRight="5dp">
+            android:layout_marginRight="10dp">
             <ImageView
                 android:layout_width="@dimen/ebook_content_qcode_width"
                 android:layout_height="@dimen/ebook_content_qcode_width"
@@ -246,19 +246,21 @@
                 />
         </LinearLayout>
     </LinearLayout>
-    <View
+    <!--<View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:background="@color/common_light_gray"
-        />
+        />-->
 
     <com.lza.pad.widget.PagerSlidingTabStrip
         android:layout_width="match_parent"
         android:layout_height="48dip"
         android:background="@drawable/background_tab"
         app:pstsIndicatorColor="@color/common_blue"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:id="@+id/ebook_content_pager_tab"
         />
 

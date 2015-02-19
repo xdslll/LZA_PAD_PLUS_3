@@ -27,7 +27,8 @@ public class VolleySingleton {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
-    private String mCacheImageType;
+    private String mCacheFolderName;
+    private String mImgType;
 
     private VolleySingleton(Context context) {
         mCtx = context;
@@ -74,15 +75,16 @@ public class VolleySingleton {
         return mImageLoader;
     }
 
-    public ImageLoader getImageLoader(String type) {
+    public ImageLoader getImageLoader(String cacheType, final String imgType) {
+        mCacheFolderName = cacheType;
+        mImgType = imgType;
 
-        mCacheImageType = type;
         mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
 
             @Override
             public Bitmap getBitmap(String url) {
                 //从数据库获取缓存文件路径
-                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheImageType, url);
+                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheFolderName, url);
                 //实例化Bitmap对象
                 Bitmap bitmap = BitmapFactory.decodeFile(filePath);
                 return bitmap;
@@ -90,13 +92,13 @@ public class VolleySingleton {
 
             @Override
             public void putBitmap(String url, Bitmap bitmap) {
-                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheImageType, url);
+                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheFolderName, url);
                 if (TextUtils.isEmpty(filePath)) {
                     //获取缓存文件夹路径
-                    File cacheDir = FileTools.createCacheFile(mCacheImageType);
+                    File cacheDir = FileTools.createCacheFile(mCacheFolderName);
                     //获取文件名
                     //String fileName = FileTools.getFileNameFromUrl(url);
-                    String fileName = String.valueOf(System.currentTimeMillis() + ".jpg");
+                    String fileName = String.valueOf(System.currentTimeMillis() + "." + imgType);
                     //将url作为文件名
                     //String fileName = url;
                     File cacheFile = new File(cacheDir, fileName);
@@ -105,7 +107,11 @@ public class VolleySingleton {
                         try {
                             if (cacheFile.createNewFile()) {
                                 FileOutputStream fos = new FileOutputStream(cacheFile);
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                if (mImgType.equals("jpg") || mImgType.equals("jpeg")) {
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                } else if (mImgType.equals("png")) {
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                                }
                                 fos.flush();
                                 fos.close();
                             }
@@ -114,7 +120,7 @@ public class VolleySingleton {
                         }
                         //保存缓存文件url和文件路径到数据库
                         CacheImage data = new CacheImage();
-                        data.setType(mCacheImageType);
+                        data.setType(mCacheFolderName);
                         data.setKey(url);
                         data.setValue(cacheFile.getAbsolutePath());
                         CacheImageFacade.createOrUpdateData(mCtx, data);
@@ -125,25 +131,29 @@ public class VolleySingleton {
         return mImageLoader;
     }
 
+    public ImageLoader getImageLoader(String type) {
+        return getImageLoader(type, "jpg");
+    }
+
     public ImageLoader getImageLoader(String type, final int outWidth, final int outHeight) {
 
-        mCacheImageType = type;
+        mCacheFolderName = type;
         mImageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
 
             @Override
             public Bitmap getBitmap(String url) {
                 //从数据库获取缓存文件路径
-                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheImageType, url);
+                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheFolderName, url);
                 //实例化Bitmap对象
                 return ImageHelper.compressBitmap(filePath, outWidth, outHeight);
             }
 
             @Override
             public void putBitmap(String url, Bitmap bitmap) {
-                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheImageType, url);
+                String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheFolderName, url);
                 if (TextUtils.isEmpty(filePath)) {
                     //获取缓存文件夹路径
-                    File cacheDir = FileTools.createCacheFile(mCacheImageType);
+                    File cacheDir = FileTools.createCacheFile(mCacheFolderName);
                     //获取文件名
                     //String fileName = FileTools.getFileNameFromUrl(url);
                     String fileName = String.valueOf(System.currentTimeMillis() + ".jpg");
@@ -164,7 +174,7 @@ public class VolleySingleton {
                         }
                         //保存缓存文件url和文件路径到数据库
                         CacheImage data = new CacheImage();
-                        data.setType(mCacheImageType);
+                        data.setType(mCacheFolderName);
                         data.setKey(url);
                         data.setValue(cacheFile.getAbsolutePath());
                         CacheImageFacade.createOrUpdateData(mCtx, data);
