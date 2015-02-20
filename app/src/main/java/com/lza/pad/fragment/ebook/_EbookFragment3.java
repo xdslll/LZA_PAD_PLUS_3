@@ -13,7 +13,7 @@ import com.lza.pad.R;
 import com.lza.pad.app.ebook.EbookActivity;
 import com.lza.pad.app.ebook._EbookContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.fragment.base.BaseResourceListFragment;
+import com.lza.pad.fragment.base._BaseResourceListFragment;
 import com.lza.pad.widget.DefaultEbookCover;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
  * @Date 1/19/15.
  */
 @Deprecated
-public class _EbookFragment3 extends BaseResourceListFragment {
+public class _EbookFragment3 extends _BaseResourceListFragment {
 
     private int[][] DATAS = new int[][] {
             new int[] {R.drawable.test_cover1, R.drawable.test_cover2, R.drawable.test_cover3, R.drawable.test_cover4},

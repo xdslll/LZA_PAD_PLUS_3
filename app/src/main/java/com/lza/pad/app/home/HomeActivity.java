@@ -263,7 +263,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
         for (int i = 0; i < homeControls.size(); i++) {
             log("正在绘制第" + (i + 1) + "个控件");
             PadModuleControl control = homeControls.get(i);
-            int controlHeight = Integer.parseInt(control.getControl_height());
+            //int controlHeight = Integer.parseInt(control.getControl_height());
             //拼接出控件代码所在的路径
             String controlType = control.getControl_type();
             String controlName = control.getControl_name();
@@ -283,9 +283,13 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
 
             AppLogger.e("文件名：" + buffer.toString());
 
+            //获取总体的高度
+            int totalHeight = getTotalHeight(homeControls);
+            int width = W;
             try {
-                int width = W;
-                int height = H / mHomeControlSize * controlHeight;
+                //int width = W;
+                //int height = H / mHomeControlSize * controlHeight;
+                int height = (int) ((Float.parseFloat(control.getControl_height()) / totalHeight) * H);
                 Class clazz = Class.forName(buffer.toString());
                 Fragment frg = (Fragment) clazz.newInstance();
                 Bundle arg = new Bundle();
@@ -295,6 +299,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 arg.putInt(KEY_FRAGMENT_WIDTH, width);
                 arg.putInt(KEY_FRAGMENT_HEIGHT, height);
                 arg.putBoolean(KEY_IF_HOME, mIsHome);
+                arg.putInt(KEY_CURRENT_MODULE_INDEX, INDEX_HOME_MODULE);
                 frg.setArguments(arg);
 
                 int id = (i + 1) << (i + 1);
@@ -314,6 +319,19 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 e.printStackTrace();
             }
         }
+    }
+
+    private int getTotalHeight(List<PadModuleControl> controls) {
+        int height = 0;
+        for (int i = 0; i < controls.size(); i++) {
+            try {
+                int h = Integer.parseInt(controls.get(i).getControl_height());
+                height += h;
+            } catch (Exception ex) {
+
+            }
+        }
+        return height;
     }
 
     @Override

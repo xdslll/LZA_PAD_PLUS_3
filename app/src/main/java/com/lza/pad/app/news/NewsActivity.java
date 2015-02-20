@@ -27,7 +27,7 @@ import java.util.List;
  * @Date 1/21/15.
  */
 @Deprecated
-public class _NewsActivity extends _BaseModuleActivity {
+public class NewsActivity extends _BaseModuleActivity {
 
     private LayoutInflater mInflater;
 
@@ -54,7 +54,7 @@ public class _NewsActivity extends _BaseModuleActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(_NewsActivity.this, NewsContentActivity.class));
+                startActivity(new Intent(NewsActivity.this, NewsContentActivity.class));
             }
         });
         container.addView(list);

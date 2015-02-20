@@ -33,7 +33,14 @@ public class BaseFragment extends Fragment implements Consts {
     protected PadDeviceInfo mPadDeviceInfo;
     protected PadModuleControl mPadControlInfo;
     protected PadResource mPadResource;
+    /**
+     * 所有模块
+     */
     protected List<PadLayoutModule> mPadModuleInfos;
+    /**
+     * 当前模块序号
+     */
+    protected int mCurrentModuleIndex = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,7 @@ public class BaseFragment extends Fragment implements Consts {
             mPadControlInfo = getArguments().getParcelable(KEY_PAD_CONTROL_INFO);
             mPadResource = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
             mPadModuleInfos = getArguments().getParcelableArrayList(KEY_PAD_MODULE_INFOS);
+            mCurrentModuleIndex = getArguments().getInt(KEY_CURRENT_MODULE_INDEX);
         }
 
         EventBus.getDefault().register(this);

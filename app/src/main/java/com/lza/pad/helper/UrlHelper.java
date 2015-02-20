@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.lza.pad.app.base.MainApplication;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
+import com.lza.pad.db.model.pad.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
@@ -32,7 +33,7 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_DEVICE_CODE = "bh";
 
-    public static final String PAR_SCHOOL_CODE = "school_bh";
+    public static final String PAR_SCHOOL_BH = "school_bh";
 
     public static final String PAR_ID = "id";
 
@@ -66,6 +67,7 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_BH = "bh";
 
+    public static final String PAR_CONTROL_ID = "control_id";
 
     public static String generateUrl(Map<String, String> par) {
         String param = UniversalUtility.encodeUrl(par);
@@ -166,6 +168,15 @@ public class UrlHelper implements Consts {
         par.put(PAR_CONTROL, CONTROL_OPAC_SEARCH_DETAIL);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         par.put(PAR_BH, resource.getBh());
+        return generateUrl(par);
+    }
+
+    public static String getImageUrl(PadDeviceInfo deviceInfo, PadModuleControl control) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_IMAGE);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_SCHOOL_BH, deviceInfo.getSchool_bh());
+        par.put(PAR_CONTROL_ID, control.getWidgets_id());
         return generateUrl(par);
     }
 

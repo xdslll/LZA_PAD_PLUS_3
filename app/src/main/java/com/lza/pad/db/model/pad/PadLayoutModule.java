@@ -29,6 +29,16 @@ public class PadLayoutModule implements Parcelable {
 
     String subject;
 
+    String module_type;
+
+    String module_style;
+
+    String module_index;
+
+    String default_keyword;
+
+    String default_subject;
+
     public String getId() {
         return id;
     }
@@ -101,6 +111,50 @@ public class PadLayoutModule implements Parcelable {
         this.subject = subject;
     }
 
+    public String getModule_type() {
+        return module_type;
+    }
+
+    public void setModule_type(String module_type) {
+        this.module_type = module_type;
+    }
+
+    public String getModule_style() {
+        return module_style;
+    }
+
+    public void setModule_style(String module_style) {
+        this.module_style = module_style;
+    }
+
+    public String getModule_index() {
+        return module_index;
+    }
+
+    public void setModule_index(String module_index) {
+        this.module_index = module_index;
+    }
+
+    public String getDefault_keyword() {
+        return default_keyword;
+    }
+
+    public void setDefault_keyword(String default_keyword) {
+        this.default_keyword = default_keyword;
+    }
+
+    public String getDefault_subject() {
+        return default_subject;
+    }
+
+    public void setDefault_subject(String default_subject) {
+        this.default_subject = default_subject;
+    }
+
+    public PadLayoutModule() {
+
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -108,57 +162,46 @@ public class PadLayoutModule implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(px);
-        dest.writeString(module_id);
-        dest.writeString(layout_id);
-        dest.writeString(layout_icon);
-        dest.writeString(layout_icon2);
-        dest.writeString(module_name);
-        dest.writeString(keyword);
-        dest.writeString(subject);
+        dest.writeString(this.id);
+        dest.writeString(this.px);
+        dest.writeString(this.module_id);
+        dest.writeString(this.layout_id);
+        dest.writeString(this.layout_icon);
+        dest.writeString(this.layout_icon2);
+        dest.writeString(this.module_name);
+        dest.writeString(this.keyword);
+        dest.writeString(this.subject);
+        dest.writeString(this.module_type);
+        dest.writeString(this.module_style);
+        dest.writeString(this.module_index);
+        dest.writeString(this.default_keyword);
+        dest.writeString(this.default_subject);
     }
 
-    public PadLayoutModule() {
-
-    }
-
-    public PadLayoutModule(Parcel src) {
-        id = src.readString();
-        px = src.readString();
-        module_id = src.readString();
-        layout_id = src.readString();
-        layout_icon = src.readString();
-        layout_icon2 = src.readString();
-        module_name = src.readString();
-        keyword = src.readString();
-        subject = src.readString();
+    private PadLayoutModule(Parcel in) {
+        this.id = in.readString();
+        this.px = in.readString();
+        this.module_id = in.readString();
+        this.layout_id = in.readString();
+        this.layout_icon = in.readString();
+        this.layout_icon2 = in.readString();
+        this.module_name = in.readString();
+        this.keyword = in.readString();
+        this.subject = in.readString();
+        this.module_type = in.readString();
+        this.module_style = in.readString();
+        this.module_index = in.readString();
+        this.default_keyword = in.readString();
+        this.default_subject = in.readString();
     }
 
     public static final Creator<PadLayoutModule> CREATOR = new Creator<PadLayoutModule>() {
-        @Override
         public PadLayoutModule createFromParcel(Parcel source) {
             return new PadLayoutModule(source);
         }
 
-        @Override
         public PadLayoutModule[] newArray(int size) {
             return new PadLayoutModule[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "PadLayoutModule{" +
-                "id='" + id + '\'' +
-                ", px='" + px + '\'' +
-                ", module_id='" + module_id + '\'' +
-                ", layout_id='" + layout_id + '\'' +
-                ", layout_icon='" + layout_icon + '\'' +
-                ", layout_icon2='" + layout_icon2 + '\'' +
-                ", module_name='" + module_name + '\'' +
-                ", keyword='" + keyword + '\'' +
-                ", subject='" + subject + '\'' +
-                '}';
-    }
 }

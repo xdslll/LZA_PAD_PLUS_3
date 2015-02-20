@@ -1,6 +1,5 @@
 package com.lza.pad.fragment.home;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,24 +8,20 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.lza.pad.R;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.service.MinaServiceHelper;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
-import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadImageCollection;
 import com.lza.pad.db.model.pad.PadLayoutModule;
-import com.lza.pad.fragment.base.BaseImageFragment;
-import com.lza.pad.helper.CommonRequestListener;
-import com.lza.pad.helper.JsonParseHelper;
-import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.support.network.VolleySingleton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,14 +36,16 @@ import java.util.concurrent.TimeUnit;
  * @author xiads
  * @Date 1/13/15.
  */
-public class TitleFragment1 extends BaseImageFragment {
+@Deprecated
+public class _TitleFragment1 extends BaseFragment {
 
     private Calendar mCalendar;
     private TextView mTxtTime, mTxtDate, mTxtConnectUser;
-    private ImageView mImgBg;
+    //private ImageButton mImgNavEbook, mImgNavNews, mImgNavMore, mImgNavGuide, mImgNavNewbook;
     private LinearLayout mLayoutFreeWifi;
     private GridView mGridModules;
     private LayoutInflater mInflater;
+    private ImageLoader mImgLoader;
 
     private static final int MAX_GRID_SIZE = 6;
 
@@ -56,18 +53,58 @@ public class TitleFragment1 extends BaseImageFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInflater = LayoutInflater.from(mActivity);
+        mImgLoader = VolleySingleton.getInstance(mActivity).getImageLoader(TEMP_IMAGE_LOADER, IMG_PNG);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.title1, container, false);
+        View view = inflater.inflate(R.layout.title, container, false);
 
         mTxtConnectUser = (TextView) view.findViewById(R.id.title_current_connect_user);
         mTxtTime = (TextView) view.findViewById(R.id.title_time_text);
         mTxtDate = (TextView) view.findViewById(R.id.title_date_text);
         mLayoutFreeWifi = (LinearLayout) view.findViewById(R.id.title_free_wifi);
         mGridModules = (GridView) view.findViewById(R.id.title_grid);
-        mImgBg = (ImageView) view.findViewById(R.id.title_bg);
+
+        /*mImgNavEbook = (ImageButton) view.findViewById(R.id.title_nav_ebook);
+        mImgNavEbook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, EbookActivity.class));
+            }
+        });
+
+        mImgNavNews = (ImageButton) view.findViewById(R.id.title_nav_news);
+        mImgNavNews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, _NewsActivity.class));
+            }
+        });
+
+        mImgNavMore = (ImageButton) view.findViewById(R.id.title_nav_more);
+        mImgNavMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, MinaServerActivity.class));
+            }
+        });
+
+        mImgNavGuide = (ImageButton) view.findViewById(R.id.title_nav_guide);
+        mImgNavGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, GuideActivity.class));
+            }
+        });
+
+        mImgNavNewbook = (ImageButton) view.findViewById(R.id.title_nav_newbook);
+        mImgNavNewbook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mActivity, WifiApActivity.class));
+            }
+        });*/
 
         if (mPadModuleInfos != null) {
             int size = mPadModuleInfos.size();
@@ -78,74 +115,8 @@ public class TitleFragment1 extends BaseImageFragment {
             }
             mGridModules.setAdapter(new TitleMenuAdapter());
         }
-
-        mGridModules.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //如果点击了首页，则直接退出
-                if (position + 1 == INDEX_HOME_MODULE) return;
-                //拼接出代码所在的路径
-                String javaCodeFile = getModuleJavaFileName(mPadModuleInfos.get(position));
-                try {
-                    Class clazz = Class.forName(javaCodeFile);
-                    Intent intent = new Intent(mActivity, clazz);
-                    startActivity(intent);
-                } catch (Exception ex) {
-
-                }
-            }
-        });
         return view;
     }
-
-    private String getModuleJavaFileName(PadLayoutModule module) {
-        String moduleType = module.getModule_type();
-        String moduleStyle = module.getModule_style();
-        String moduleIndex = module.getModule_index();
-        String packageName = mActivity.getPackageName();
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(packageName).append(".").append("app.");
-        //将包名的首字母变成小写
-        if (!TextUtils.isEmpty(moduleType)) {
-            moduleType = moduleType.toLowerCase();
-            buffer.append(moduleType).append(".");
-        }
-        //将文件名首字母变成大写
-        if (moduleStyle != null && moduleStyle.length() > 1) {
-            buffer.append(moduleStyle.substring(0, 1).toUpperCase())
-                    .append(moduleStyle.substring(1, moduleStyle.length()));
-        } else if (moduleStyle != null && moduleStyle.length() == 1){
-            buffer.append(moduleStyle.toUpperCase());
-        }
-        buffer.append("Activity");
-        if (!TextUtils.isEmpty(moduleIndex)) {
-            buffer.append(moduleIndex);
-        }
-        return buffer.toString();
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (mPadDeviceInfo != null && mPadControlInfo != null) {
-            String getImageUrl = UrlHelper.getImageUrl(mPadDeviceInfo, mPadControlInfo);
-            send(getImageUrl, mBgImageListener);
-        }
-    }
-
-    CommonRequestListener<PadImageCollection> mBgImageListener = new CommonRequestListener<PadImageCollection>() {
-        @Override
-        public ResponseData<PadImageCollection> parseJson(String json) {
-            return JsonParseHelper.parseImageCollectionResponse(json);
-        }
-
-        @Override
-        public void handleRespone(List<PadImageCollection> content) {
-            PadImageCollection imgCollection = content.get(0);
-            String imgUrl = imgCollection.getImgs();
-            displayImage(imgUrl, mImgBg);
-        }
-    };
 
     private class TitleMenuAdapter extends BaseAdapter {
 
@@ -169,14 +140,25 @@ public class TitleFragment1 extends BaseImageFragment {
             if (convertView == null) convertView = mInflater.inflate(R.layout.title_menu_item, null);
             final ViewHolder holder = getHolder(convertView);
             PadLayoutModule data = getItem(position);
-            String imgUrl;
-            if (mCurrentModuleIndex == position + 1) {
-                imgUrl = data.getLayout_icon2();
-            } else {
-                imgUrl = data.getLayout_icon();
-            }
-            displayImage(imgUrl, holder.img);
+            String imgUrl = data.getLayout_icon();
+            //holder.img.setImageUrl(imgUrl, mImgLoader);
+            //holder.img.setImageUrl("http://114.212.7.87/book_center/upload/widgets//nav_ebook.png", mImgLoader);
+            //holder.img.setDefaultImageResId(R.drawable.nav_ebook);
             holder.text.setText(data.getModule_name());
+            /*mImgLoader.get(data.getLayout_icon(), new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
+                    if (imageContainer == null) return;
+                    if (imageContainer.getBitmap() == null) return;
+                    Bitmap bm = imageContainer.getBitmap();
+                    holder.img.setImageBitmap(bm);
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    holder.img.setImageResource(R.drawable.nav_ebook);
+                }
+            });*/
             return convertView;
         }
 
@@ -221,12 +203,8 @@ public class TitleFragment1 extends BaseImageFragment {
                 //AppLogger.e("timeStr=" + timeStr + ",mTimeStr=" + mTimeStr);
                 if (!timeStr.equals(mTimeStr)) {
                     mTimeStr = timeStr;
-                    try {
-                        if (isVisible())
-                            mHandler.sendEmptyMessage(REQUEST_UPDATE_TIME);
-                    } catch (Exception ex) {
-
-                    }
+                    if (isVisible())
+                        mHandler.sendEmptyMessage(REQUEST_UPDATE_TIME);
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);

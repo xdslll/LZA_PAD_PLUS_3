@@ -22,7 +22,7 @@ import com.lza.pad.app.ebook.EbookActivity;
 import com.lza.pad.app.ebook.EbookContentActivity;
 import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.fragment.base.BaseResourceListFragment;
+import com.lza.pad.fragment.base._BaseResourceListFragment;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.network.VolleySingleton;
 import com.lza.pad.widget.DefaultEbookCover;
@@ -35,7 +35,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/19/15.
  */
-public class EbookFragment1 extends BaseResourceListFragment {
+public class EbookFragment1 extends _BaseResourceListFragment {
 
     @Override
     protected void onMoreButtonClick() {

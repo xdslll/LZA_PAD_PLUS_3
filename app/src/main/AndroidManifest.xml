@@ -18,13 +18,16 @@
         android:icon="@drawable/ic_launcher" android:name=".app.base.MainApplication"
         android:theme="@style/BaseTheme">
         <activity android:name=".app.SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".app.home.HomeActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
         <activity android:name=".app.PluginInstallActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
         <activity android:name=".app.ebook.EbookActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".app.news._NewsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
+        <activity android:name=".app.news.NewsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
         <activity android:name=".app.ebook.EbookContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
         <activity android:name=".app.SubjectActivity" android:screenOrientation="portrait"
@@ -46,10 +49,6 @@
             android:launchMode="singleTop"/>
 
         <activity android:name=".app.test.TestActivity2">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <service android:name=".app.socket.service.MinaService" android:enabled="true">

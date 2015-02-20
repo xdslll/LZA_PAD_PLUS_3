@@ -463,4 +463,12 @@ public class UniversalUtility {
     public static String wrap(String value, String defaultValue) {
         return TextUtils.isEmpty(value) ? defaultValue : value;
     }
+
+    public static int safeIntParse(String digitValue, int defaultValue) {
+        try {
+            return Integer.parseInt(digitValue);
+        } catch (Exception ex) {
+            return defaultValue;
+        }
+    }
 }

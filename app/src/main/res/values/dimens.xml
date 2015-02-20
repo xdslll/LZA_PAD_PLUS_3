@@ -115,7 +115,8 @@
     <dimen name="title_menu_item_ico_width">60dp</dimen>
 
     <!-- title.xml -->
-    <dimen name="title_calendar_date_size">44sp</dimen>
-    <dimen name="title_calendar_time_size">28sp</dimen>
+    <dimen name="title_calendar_date_size">50sp</dimen>
+    <dimen name="title_calendar_time_size">36sp</dimen>
+    <dimen name="title_wifi_img_width">60dp</dimen>
 
 </resources>

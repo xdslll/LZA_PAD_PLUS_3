@@ -61,8 +61,13 @@ public interface Consts {
      */
     public static final String CONTROL_OPAC_SEARCH_DETAIL = "opac_search_detail";
 
+    /**
+     * 获取图片
+     */
+    public static final String CONTROL_GET_IMAGE = "get_image";
 
 
+    public static final String KEY_CURRENT_MODULE_INDEX = "key_current_module_index";
     public static final String KEY_FRAGMENT_INDEX = "key_fragment_index";
     public static final String KEY_DOUBAN_BOOK = "key_douban_book";
     public static final String KEY_PAD_RESOURCE_INFO = "key_pad_resource";
@@ -127,4 +132,9 @@ public interface Consts {
 
     public static final String IMG_JPEG = "jpg";
     public static final String IMG_PNG = "png";
+
+    /**
+     * 首页归属的模块编号为1
+     */
+    public static final int INDEX_HOME_MODULE = 1;
 }

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.lza.pad.R;
-import com.lza.pad.app.news._NewsActivity;
+import com.lza.pad.app.news.NewsActivity;
 import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
@@ -63,7 +63,7 @@ public class NewsFragment1 extends BaseFragment {
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity, _NewsActivity.class));
+                startActivity(new Intent(mActivity, NewsActivity.class));
             }
         });
 
