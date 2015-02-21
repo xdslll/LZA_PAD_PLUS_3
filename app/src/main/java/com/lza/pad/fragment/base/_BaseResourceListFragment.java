@@ -502,7 +502,7 @@ public abstract class _BaseResourceListFragment extends BaseFragment {
     /**
      * ViewPager的Adapter对象
      */
-    protected class EbookListPagerAdapter extends PagerAdapter {
+    private class EbookListPagerAdapter extends PagerAdapter {
 
         @Override
         public int getCount() {

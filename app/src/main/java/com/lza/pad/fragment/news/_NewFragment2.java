@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookActivity;
+import com.lza.pad.app.ebook._EbookActivity;
 import com.lza.pad.app.ebook._EbookContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base._BaseResourceListFragment;
@@ -24,11 +24,12 @@ import java.util.List;
  * @author xiads
  * @Date 1/20/15.
  */
-public class NewFragment2 extends _BaseResourceListFragment {
+@Deprecated
+public class _NewFragment2 extends _BaseResourceListFragment {
 
     @Override
     protected void onMoreButtonClick() {
-        startActivity(new Intent(mActivity, EbookActivity.class));
+        startActivity(new Intent(mActivity, _EbookActivity.class));
     }
 
     @Override

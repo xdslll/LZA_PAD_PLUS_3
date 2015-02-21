@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookActivity;
+import com.lza.pad.app.ebook._EbookActivity;
 import com.lza.pad.fragment.base.BaseFragment;
 
 /**
@@ -42,7 +42,7 @@ public class _NewbookListFragment extends BaseFragment {
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mActivity, EbookActivity.class));
+                startActivity(new Intent(mActivity, _EbookActivity.class));
             }
         });
 

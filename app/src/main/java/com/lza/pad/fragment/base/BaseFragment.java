@@ -1,8 +1,8 @@
 package com.lza.pad.fragment.base;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.lza.pad.app.socket.model.MinaClient;

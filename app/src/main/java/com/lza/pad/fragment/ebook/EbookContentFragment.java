@@ -1,10 +1,11 @@
 package com.lza.pad.fragment.ebook;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -17,7 +18,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.douban.DoubanBook;
@@ -25,13 +25,14 @@ import com.lza.pad.db.model.douban.DoubanRating;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
 import com.lza.pad.event.model.ResponseEventInfo;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.CommonRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
-import com.lza.pad.support.network.VolleySingleton;
 import com.lza.pad.widget.DefaultEbookCover;
 import com.lza.pad.widget.PagerSlidingTabStrip;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +45,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/18/15.
  */
-public class EbookContentFragment extends BaseFragment {
+public class EbookContentFragment extends BaseImageFragment {
 
     DefaultEbookCover mEbookCover;
     TextView mTxtTitle, mTxtAuthor, mTxtPubdate, mTxtPress, mTxtIsbn,
@@ -63,7 +64,6 @@ public class EbookContentFragment extends BaseFragment {
     public static final int INDEX_COLLECTIONS = 4;
 
     LayoutInflater mInflater;
-    ImageLoader mImgLoader;
 
     EbookContentAdapter mEbookContentAdapter;
 
@@ -73,8 +73,6 @@ public class EbookContentFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInflater = LayoutInflater.from(mActivity);
-
-        mImgLoader = VolleySingleton.getInstance(mActivity).getImageLoader(TEMP_IMAGE_LOADER);
     }
 
     @Override
@@ -126,7 +124,30 @@ public class EbookContentFragment extends BaseFragment {
     private void requestCoverFromPadResource() {
         //显示封面
         String imgUrl = mPadResource.getIco();
-        if (!TextUtils.isEmpty(imgUrl)) {
+        loadImage(imgUrl, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.default_ebook_cover);
+                mEbookCover.setDrawable(new BitmapDrawable(getResources(), bm));
+                mEbookCover.postInvalidate();
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                mEbookCover.setCoverTitle(mPadResource.getTitle());
+                mEbookCover.setCoverAuthor(mPadResource.getAuthor());
+                mEbookCover.postInvalidate();
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                mEbookCover.setDrawable(new BitmapDrawable(getResources(), loadedImage));
+                mEbookCover.setCoverTitle("");
+                mEbookCover.setCoverAuthor("");
+                mEbookCover.postInvalidate();
+            }
+        });
+        /*if (!TextUtils.isEmpty(imgUrl)) {
             mImgLoader.get(imgUrl, new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
@@ -143,7 +164,7 @@ public class EbookContentFragment extends BaseFragment {
 
                 }
             });
-        }
+        }*/
     }
 
     /**
@@ -201,7 +222,7 @@ public class EbookContentFragment extends BaseFragment {
         //获取封面
         String imgUrl = book.getImageUrl();
         if (TextUtils.isEmpty(imgUrl)) requestCoverFromPadResource();
-        else requestCoverFromDouban(imgUrl);
+        else requestCoverFromDouban(book, imgUrl);
 
         createViewPager(book);
     }
@@ -211,8 +232,32 @@ public class EbookContentFragment extends BaseFragment {
      *
      * @param url
      */
-    private void requestCoverFromDouban(String url) {
-        mImgLoader.get(url, new ImageLoader.ImageListener() {
+    private void requestCoverFromDouban(final DoubanBook book, String url) {
+        loadImage(url, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.default_ebook_cover);
+                mEbookCover.setDrawable(new BitmapDrawable(getResources(), bm));
+                mEbookCover.postInvalidate();
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                mEbookCover.setCoverTitle(book.getTitle());
+                mEbookCover.setCoverAuthor(book.getBookAuthor());
+                mEbookCover.postInvalidate();
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                BitmapDrawable drawable = new BitmapDrawable(getResources(), loadedImage);
+                mEbookCover.setDrawable(drawable);
+                mEbookCover.setCoverTitle("");
+                mEbookCover.setCoverAuthor("");
+                mEbookCover.postInvalidate();
+            }
+        });
+        /*mImgLoader.get(url, new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer imageContainer, boolean b) {
                 if (imageContainer == null) return;
@@ -229,7 +274,7 @@ public class EbookContentFragment extends BaseFragment {
             public void onErrorResponse(VolleyError error) {
                 requestCoverFromPadResource();
             }
-        });
+        });*/
     }
 
     private CommonRequestListener<DoubanBook> mDoubanListener = new CommonRequestListener<DoubanBook>() {

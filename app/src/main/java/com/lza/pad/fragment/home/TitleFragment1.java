@@ -176,6 +176,16 @@ public class TitleFragment1 extends BaseImageFragment {
                 imgUrl = data.getLayout_icon();
             }
             displayImage(imgUrl, holder.img);
+            /*int imgWidth = holder.img.getWidth();
+            int imgHeight = holder.img.getHeight();
+            ImageSize size = new ImageSize(imgWidth, imgHeight);
+            loadImage(imgUrl, size, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    holder.img.setImageBitmap(loadedImage);
+                }
+            });*/
+
             holder.text.setText(data.getModule_name());
             return convertView;
         }

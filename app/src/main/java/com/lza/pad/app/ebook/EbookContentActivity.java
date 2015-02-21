@@ -1,6 +1,6 @@
 package com.lza.pad.app.ebook;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 
 import com.lza.pad.app.base.BaseContentActivity;
 import com.lza.pad.fragment.ebook.EbookContentFragment;

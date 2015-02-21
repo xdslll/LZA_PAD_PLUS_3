@@ -67,10 +67,18 @@ public interface Consts {
     public static final String CONTROL_GET_IMAGE = "get_image";
 
 
+
+    public static final String KEY_GRID_NUM_COLUMNS = "key_grid_num_columns";
+    public static final String KEY_CURRENT_PAGE = "key_current_page";
+    public static final String KEY_TOTAL_PAGE = "key_total_page";
+    public static final String KEY_PAGE_SIZE = "key_page_size";
+    public static final String KEY_DATA_SIZE = "key_data_size";
+    public static final String KEY_POSITION = "key_position";
     public static final String KEY_CURRENT_MODULE_INDEX = "key_current_module_index";
     public static final String KEY_FRAGMENT_INDEX = "key_fragment_index";
     public static final String KEY_DOUBAN_BOOK = "key_douban_book";
     public static final String KEY_PAD_RESOURCE_INFO = "key_pad_resource";
+    public static final String KEY_PAD_RESOURCE_INFOS = "key_pad_resources";
     public static final String KEY_PAD_CONTROL_INFO = "key_pad_control";
     public static final String KEY_PAD_MODULE_INFO = "key_pad_module";
     public static final String KEY_PAD_MODULE_INFOS = "key_pad_modules";

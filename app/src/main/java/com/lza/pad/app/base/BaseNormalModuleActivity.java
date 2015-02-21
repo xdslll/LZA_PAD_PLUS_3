@@ -101,7 +101,7 @@ public abstract class BaseNormalModuleActivity extends BaseActivity {
 
     protected void onTypeClick(View v) {}
 
-    protected abstract void onDrawWindow(LinearLayout container, int w, int h);
+    //protected abstract void onDrawWindow(LinearLayout container, int w, int h);
 
     protected void setTypeText(String text) {
         if (TextUtils.isEmpty(text)) {

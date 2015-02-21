@@ -328,7 +328,6 @@ public class EbookContentOverviewFragment extends BaseFragment {
                     String avatarUrl = author.getAvatar();
                     ImageLoader imageLoader = VolleySingleton.getInstance(mActivity).getImageLoader(TEMP_IMAGE_LOADER);
                     holder.mImgAvatar.setImageUrl(avatarUrl, imageLoader);
-
                     holder.mTxtUsername.setText(author.getName());
                 }
 

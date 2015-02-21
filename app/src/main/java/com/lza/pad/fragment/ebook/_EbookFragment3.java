@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookActivity;
+import com.lza.pad.app.ebook._EbookActivity;
 import com.lza.pad.app.ebook._EbookContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base._BaseResourceListFragment;
@@ -37,7 +37,7 @@ public class _EbookFragment3 extends _BaseResourceListFragment {
 
     @Override
     protected void onMoreButtonClick() {
-        startActivity(new Intent(mActivity, EbookActivity.class));
+        startActivity(new Intent(mActivity, _EbookActivity.class));
     }
 
     @Override

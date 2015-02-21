@@ -29,6 +29,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class TestPagerFragment extends Fragment {
                 .cacheOnDisk(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                .showImageOnLoading(R.drawable.default_ebook_cover)
                 .build();
 
         /*ImageLoader.getInstance().loadImage(imageUrl, mImageSize, options, new SimpleImageLoadingListener() {
@@ -135,11 +137,17 @@ public class TestPagerFragment extends Fragment {
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.title_menu_item, null);
             }
-            ViewHolder holder = getHolder(convertView);
+            final ViewHolder holder = getHolder(convertView);
             holder.txt.setText(getItem(position).getTitle());
             holder.img.setLayoutParams(new LinearLayout.LayoutParams(120, 120));
             String imgUrl = getItem(position).getIco();
-            ImageLoader.getInstance().displayImage(imgUrl, holder.img, mOptions);
+            //ImageLoader.getInstance().displayImage(imgUrl, holder.img, mOptions);
+            ImageLoader.getInstance().loadImage(imgUrl, mOptions, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    holder.img.setImageBitmap(loadedImage);
+                }
+            });
             return convertView;
         }
     }

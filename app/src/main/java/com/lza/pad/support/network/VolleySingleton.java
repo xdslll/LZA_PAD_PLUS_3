@@ -12,8 +12,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.lza.pad.db.facade.CacheImageFacade;
 import com.lza.pad.db.model.CacheImage;
-import com.lza.pad.helper.ImageHelper;
 import com.lza.pad.support.file.FileTools;
+import com.lza.pad.support.utils.UniversalUtility;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -145,7 +145,7 @@ public class VolleySingleton {
                 //从数据库获取缓存文件路径
                 String filePath = CacheImageFacade.queryByTypeAndKey(mCtx, mCacheFolderName, url);
                 //实例化Bitmap对象
-                return ImageHelper.compressBitmap(filePath, outWidth, outHeight);
+                return UniversalUtility.compressBitmap(filePath, outWidth, outHeight);
             }
 
             @Override

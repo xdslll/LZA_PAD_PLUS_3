@@ -6,30 +6,28 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.CommonRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
 import com.lza.pad.support.utils.UniversalUtility;
 
@@ -55,16 +53,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     protected ImageView mImgBottom;
 
     protected LayoutInflater mInflater;
-
-    protected List<PadResource> mPadResources;
-    protected List<View> mPageViews;
-    protected List<String> mPageTitles;
     protected List<Integer> mRadPageIds = new ArrayList<Integer>();
-
-    /**
-     * 当前翻到第几页
-     */
-    protected int mCurrentPageNumber = 0;
 
     /**
      * 头部的高度
@@ -92,17 +81,23 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     /**
      * 请求总数据量
      */
-    protected int mDefaultPageSize = 20;
+    protected int mDataSize = 20;
 
     /**
      * 默认请求的数据量
      */
-    protected int mDefaultEveryPageSize = 4;
+    protected int DEFAULT_EVERY_PAGE_SIZE = 4;
 
     /**
      * 默认请求页数
      */
-    protected int mDefaultPage = 1;
+    protected int DEFAULT_PAGE = 1;
+
+    /**
+     * 共需要请求多少页
+     */
+    protected int mTotalPageSize = 0;
+
 
     protected boolean mIfSlideShow = true;
 
@@ -110,34 +105,35 @@ public abstract class BaseResourceListFragment extends BaseFragment {
 
     protected int mSlideShowPeriod = 0;
 
+    private EbookListPagerAdapter mAdapter;
+
+    protected List<PadResource> mDataSource;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mInflater = LayoutInflater.from(mActivity);
 
-        //生成ViewPager的数据源
-        //mPageViews = getPageViews();
-        //mPageTitles = getPageTitles();
+        //设置每行的数据量
+        mGridNumColumns = getGridNumColumns();
+        //获取默认请求的总数据量
+        mDataSize = getGridDataSize();
+        //计算ViewPager共多少页
+        mTotalPageSize = (int) Math.ceil((float) mDataSize / mGridNumColumns);
 
-        //获取每行的数据量
-        if (mArg != null) {
-            mGridNumColumns = mArg.getInt(KEY_EBOOK_NUM_COLUMNS);
-        }
-        if (mGridNumColumns <= 0) {
-            //mGridNumColumns = getGridNumColumns();
-            int eachData = getGridNumColumns();
-            setGridNumColumns(eachData);
-        }
-        mDefaultPageSize = getGridDataSize();
         if (mPadControlInfo != null) {
+            //判断是否启动幻灯片模式
             String ifSlideShow = UniversalUtility.wrap(mPadControlInfo.getIf_show_slide(), "0");
             if (ifSlideShow.equals(PadModuleControl.BOOLEAN_SHOW_SLIDE)) {
                 mIfSlideShow = true;
             } else if (ifSlideShow.equals(PadModuleControl.BOOLEAN_NOT_SHOW_SLIDE)) {
                 mIfSlideShow = false;
             }
-            mSlideShowTime = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_time(), "0"));
-            mSlideShowPeriod = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_period(), "0"));
+            //获取幻灯片播放的参数
+            //多久没有用户交互时开始播放
+            mSlideShowTime = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_time(), "60"));
+            //多久开始翻页
+            mSlideShowPeriod = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_period(), "5"));
         }
     }
 
@@ -165,27 +161,14 @@ public abstract class BaseResourceListFragment extends BaseFragment {
             mTitleHeight = 0;
             mPagesHeight = 0;
         }
-
         mImgBottom = (ImageView) view.findViewById(R.id.ebook_list_bottom_img);
         //计算底部图片高度
         calcBottom();
-
         //计算图书区域的高度
         calcBook();
-
         //加载ViewPager
         mViewPager = (ViewPager) view.findViewById(R.id.ebook_list_viewpager);
         mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
-        mViewPagerTab = (PagerTabStrip) view.findViewById(R.id.ebook_list_viewpager_title);
-        mViewPagerTab.setDrawFullUnderline(false);
-        mViewPagerTab.setTextColor(getResources().getColor(R.color.common_blue));
-        mViewPagerTab.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-        mViewPagerTab.setTabIndicatorColor(getResources().getColor(R.color.white));
-        //默认不显示ViewPager的Title，如果需要，可以手动打开
-        mViewPagerTab.setVisibility(View.GONE);
-        //默认显示第一页
-        mViewPager.setCurrentItem(0);
-        //mViewPager.setAdapter(new EbookListPagerAdapter());
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -199,8 +182,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
                     int checkId = mRadPageIds.get(position);
                     mRadPages.check(checkId);
                 }
-                mCurrentPageNumber = position;
-                log("[" + mPadControlInfo.getTitle() + "]当前页数：" + mCurrentPageNumber);
+                log("[" + mPadControlInfo.getTitle() + "]当前页：" + position);
             }
 
             @Override
@@ -218,13 +200,34 @@ public abstract class BaseResourceListFragment extends BaseFragment {
                 return false;
             }
         });
-
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        send(getUrl(), mResourceListener);
+        super.onViewCreated(view, savedInstanceState);
+        String url = getUrl();
+        send(url, new PadResourceListener());
+    }
+
+    private class PadResourceListener extends CommonRequestListener<PadResource> {
+        @Override
+        public ResponseData<PadResource> parseJson(String json) {
+            return JsonParseHelper.parseResourceResponse(json);
+        }
+
+        @Override
+        public void handleRespone(List<PadResource> content) {
+            mDataSource = content;
+            mAdapter = new EbookListPagerAdapter(getChildFragmentManager());
+            mViewPager.setAdapter(mAdapter);
+
+            if (mIsHome) {
+                generateTitleView();
+                generateRaidoButton();
+            }
+            startSlideShowService();
+        }
     }
 
     @Override
@@ -247,34 +250,6 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     SlideShowService mSlideShowService;
 
-    private CommonRequestListener<PadResource> mResourceListener = new CommonRequestListener<PadResource>() {
-
-        @Override
-        public void handleRespone(List<PadResource> content) {
-            //生成ViewPager的数据源
-            mPadResources = content;
-            mPageViews = getPageViews();
-            mPageTitles = getPageTitles();
-            mViewPager.setAdapter(new EbookListPagerAdapter());
-
-            if (mIsHome) {
-                generateTitleView();
-                generateRaidoButton();
-            }
-            startSlideShowService();
-        }
-
-        @Override
-        public void handleRespone(VolleyError error) {
-
-        }
-
-        @Override
-        public ResponseData<PadResource> parseJson(String json) {
-            return JsonParseHelper.parseResourceResponse(json);
-        }
-    };
-
     private void startSlideShowService() {
         mSlideShowService = new SlideShowService(mSlideShowTime, mSlideShowPeriod, mIfSlideShow) {
             @Override
@@ -283,11 +258,13 @@ public abstract class BaseResourceListFragment extends BaseFragment {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mCurrentPageNumber++;
-                        if (mCurrentPageNumber >= mViewPager.getAdapter().getCount()) {
-                            mCurrentPageNumber = 0;
+                        if (mViewPager == null) return;
+                        int currentItem = mViewPager.getCurrentItem();
+                        currentItem++;
+                        if (currentItem == mTotalPageSize) {
+                            currentItem = 0;
                         }
-                        mViewPager.setCurrentItem(mCurrentPageNumber);
+                        mViewPager.setCurrentItem(currentItem, true);
                     }
                 });
             }
@@ -305,7 +282,10 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      *
      * @return
      */
-    protected abstract String getTitleText();
+    protected String getTitleText() {
+        if (mPadControlInfo != null) return mPadControlInfo.getTitle();
+        return "未知模块";
+    }
 
     /**
      * 获取更多按钮的文本
@@ -321,7 +301,11 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      *
      * @return
      */
-    protected abstract String getUrl();
+    protected String getUrl() {
+        if (mPadDeviceInfo == null || mPadControlInfo == null) return null;
+        return UrlHelper.getResourcesUrl(mPadDeviceInfo,
+                mPadControlInfo.getSource_type(), mDataSize, DEFAULT_PAGE);
+    }
 
     /**
      * 获取翻页按钮文本
@@ -329,7 +313,8 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      * @return
      */
     protected List<String> getPageTitles() {
-        int length = mPageViews.size();
+        //int length = mPageViews.size();
+        int length = mAdapter.getCount();
         List<String> titles = new ArrayList<String>();
         for (int i = 1; i <= length; i++) {
             titles.add(String.valueOf(i));
@@ -338,51 +323,15 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     }
 
     /**
-     * 获取ViewPager的View
-     *
-     * @return
-     */
-    protected List<View> getPageViews() {
-        if (mPadResources == null) return null;
-        int totalSize = mPadResources.size();
-        List<View> views = new ArrayList<View>();
-        for (int i = 0; i < totalSize; i++) {
-            int start = i * mGridNumColumns;
-            int end = start + mGridNumColumns;
-            if (start >= totalSize) break;
-            if (end > totalSize) end = totalSize;
-            List<PadResource> subData = mPadResources.subList(start, end);
-            views.add(generateGridView(i, subData));
-            //views.add(generateGridView(i, mPageDatas));
-        }
-        return views;
-    }
-
-    /**
-     * GridView的Adapter
-     *
-     * @return
-     */
-    protected BaseAdapter getAdapter(int index, List<PadResource> data) {
-        return null;
-    }
-
-    /**
      * 每行显示多少个Grid
      *
      * @return
      */
     protected int getGridNumColumns() {
-        return mDefaultEveryPageSize;
-    }
-
-    /**
-     * 设置每行显示的数据量
-     * @param eachData
-     */
-    private void setGridNumColumns(int eachData) {
-        if (eachData < 0) mGridNumColumns = 0;
-        else mGridNumColumns = eachData;
+        if (mPadControlInfo != null) {
+            return UniversalUtility.safeIntParse(mPadControlInfo.getControl_data_each(), DEFAULT_EVERY_PAGE_SIZE);
+        }
+        return DEFAULT_EVERY_PAGE_SIZE;
     }
 
     /**
@@ -390,35 +339,19 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      * @return
      */
     protected int getGridDataSize() {
-        return mDefaultPageSize;
+        if (mPadControlInfo != null) {
+            return UniversalUtility.safeIntParse(mPadControlInfo.getControl_data_size(), mDataSize);
+        }
+        return mDataSize;
     }
 
     /**
-     * 生成标准的GridView
-     *
+     * 获取总页数
      * @return
      */
-    protected View generateGridView(int index, List<PadResource> data) {
-        View view = mInflater.inflate(R.layout.common_grid, null);
-        GridView grid = (GridView) view.findViewById(R.id.common_grid);
-
-        grid.setNumColumns(mGridNumColumns);
-        //mPageDatas = getPageDatas();
-        //mPageDatas = data;
-        BaseAdapter adapter = getAdapter(index, data);
-        if (adapter != null) {
-            grid.setAdapter(adapter);
-            grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    onGridItemClick(parent, view, mGridNumColumns * mCurrentPageNumber + position, id);
-                }
-            });
-        }
-        return view;
+    protected int getTotalPage() {
+        return mTotalPageSize;
     }
-
-    protected void onGridItemClick(AdapterView<?> parent, View view, int position, long id) {}
 
     /**
      * 计算标题高度，并设定布局
@@ -439,14 +372,16 @@ public abstract class BaseResourceListFragment extends BaseFragment {
      * 生成翻页按钮
      */
     private void generateRaidoButton() {
-        int size = mPageViews.size();
+        //if (mAdapter == null || mAdapter.getCount() <= 0) return;
+        //int length = mAdapter.getCount();
+        int length = mTotalPageSize;
         //设定并计算翻页控件高度
         int buttonW = RuntimeUtility.dip2px(mActivity, 30);
         int buttonH = RuntimeUtility.dip2px(mActivity, 8);
         int paddingVer = RuntimeUtility.dip2px(mActivity, 8);
         mRadPages.setPadding(0, paddingVer, 0, paddingVer);
         mPagesHeight = buttonH + (paddingVer * 2);
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < length; i++) {
             //添加翻页按钮
             RadioButton button = new RadioButton(mActivity);
             RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(buttonW, buttonH);
@@ -498,35 +433,38 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         return mBookAreaHeight;
     }
 
+    protected abstract Fragment getFragment(int position);
+
+    protected List<PadResource> getDataSource() {
+        return mDataSource;
+    }
+
     /**
      * ViewPager的Adapter对象
      */
-    protected class EbookListPagerAdapter extends PagerAdapter {
+    protected class EbookListPagerAdapter extends FragmentPagerAdapter {
+
+        public EbookListPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment;
+            if (mDataSource == null || mDataSource.size() <= 0) {
+                fragment = new Fragment();
+            } else {
+                fragment = getFragment(position);
+                if (fragment == null) {
+                    fragment = new Fragment();
+                }
+            }
+            return fragment;
+        }
 
         @Override
         public int getCount() {
-            return mPageViews.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object o) {
-            return view == o;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(mPageViews.get(position));
-            return mPageViews.get(position);
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView(mPageViews.get(position));
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mPageTitles.get(position);
+            return mTotalPageSize;
         }
     }
 

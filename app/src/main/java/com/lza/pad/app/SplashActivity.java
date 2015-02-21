@@ -20,6 +20,7 @@ import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.event.state.ResponseEventTag;
+import com.lza.pad.helper.ImageHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -62,6 +63,8 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
         });
 
         //mMainHandler.sendEmptyMessageDelayed(REQUEST_INIT, 2000);
+
+        ImageHelper.getInstance(mCtx).clearDiskCache();
     }
 
     @Override

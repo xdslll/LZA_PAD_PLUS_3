@@ -1,11 +1,11 @@
 package com.lza.pad.app.home;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -289,6 +289,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             try {
                 //int width = W;
                 //int height = H / mHomeControlSize * controlHeight;
+                //计算当前控件的高度
                 int height = (int) ((Float.parseFloat(control.getControl_height()) / totalHeight) * H);
                 Class clazz = Class.forName(buffer.toString());
                 Fragment frg = (Fragment) clazz.newInstance();

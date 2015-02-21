@@ -1,10 +1,6 @@
 package com.lza.pad.app.base;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +9,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
@@ -44,7 +44,7 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 1/5/15.
  */
-public class BaseActivity extends Activity implements Consts {
+public class BaseActivity extends FragmentActivity implements Consts {
 
     public static final String JSON_LAYOUT_MODULE = "json_layout_module";
     public static final String JSON_MODULE_CONTROL = "json_module_control";
@@ -181,7 +181,7 @@ public class BaseActivity extends Activity implements Consts {
     }
 
     protected void launchFragment(Fragment fragment, int id) {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(id, fragment);
         ft.commit();

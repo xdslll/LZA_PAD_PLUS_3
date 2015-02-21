@@ -338,4 +338,19 @@ public class DoubanBook implements Parcelable {
         if (TextUtils.isEmpty(imgUrl)) imgUrl = doubanImg.getMedium();
         return imgUrl;
     }
+
+    public String getBookAuthor() {
+        if (author != null && author.length > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < author.length; i++) {
+                String au = author[0];
+                if (i > 0) {
+                    sb.append(",");
+                }
+                sb.append(au);
+            }
+            return sb.toString();
+        }
+        return "";
+    }
 }

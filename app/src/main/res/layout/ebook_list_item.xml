@@ -16,13 +16,6 @@
         android:visibility="gone"
         android:id="@+id/ebook_list_item_book"
         />
-    <!--<com.android.volley.toolbox.NetworkImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitXY"
-        android:visibility="gone"
-        android:id="@+id/ebook_list_item_book_img"
-        />-->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

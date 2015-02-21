@@ -16,7 +16,7 @@
 package org.taptwo.android.widget;
 
 /**
- * A TitleProvider provides the title to display according to a view.
+ * A TitleProvider provides the title to displayImage according to a view.
  */
 public interface TitleProvider {
 
