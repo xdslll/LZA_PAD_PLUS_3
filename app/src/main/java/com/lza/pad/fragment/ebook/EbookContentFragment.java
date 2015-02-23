@@ -236,9 +236,13 @@ public class EbookContentFragment extends BaseImageFragment {
         loadImage(url, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.default_ebook_cover);
-                mEbookCover.setDrawable(new BitmapDrawable(getResources(), bm));
-                mEbookCover.postInvalidate();
+                try {
+                    Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.default_ebook_cover);
+                    mEbookCover.setDrawable(new BitmapDrawable(getResources(), bm));
+                    mEbookCover.postInvalidate();
+                } catch (Exception ex) {
+
+                }
             }
 
             @Override
@@ -390,7 +394,7 @@ public class EbookContentFragment extends BaseImageFragment {
             PadResource resource = content.get(0);
             if (resource == null) return;
             List<PadResourceDetail> resouceDetail = resource.getMr();
-            if (resouceDetail == null) return;
+            if (resouceDetail == null || resouceDetail.size() <= 0) return;
             Collections.sort(resouceDetail, new SortById());
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < resouceDetail.size(); i++) {
@@ -417,9 +421,9 @@ public class EbookContentFragment extends BaseImageFragment {
                         return 1;
                     }
                 } catch (Exception ex) {
-
+                    return 1;
                 }
-                return o1.getId().compareTo(o2.getId());
+                //return o1.getId().compareTo(o2.getId());
             }
         }
     };

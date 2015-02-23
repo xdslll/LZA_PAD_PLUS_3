@@ -401,7 +401,7 @@ public abstract class _BaseResourceListFragment extends BaseFragment {
      */
     protected View generateGridView(int index, List<PadResource> data) {
         View view = mInflater.inflate(R.layout.common_grid, null);
-        GridView grid = (GridView) view.findViewById(R.id.common_grid);
+        GridView grid = (GridView) view.findViewById(R.id.common_grid_grid);
 
         grid.setNumColumns(mGridNumColumns);
         //mPageDatas = getPageDatas();

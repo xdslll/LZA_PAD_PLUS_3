@@ -335,6 +335,7 @@
 
     <color name="translucent_dark">#99000000</color>
     <color name="translucenter_dark">#bf000000</color>
+    <color name="translucenter_gray">#bf5d5d5d</color>
 
     <color name="ebook_content_book_name">#542b05</color>
 

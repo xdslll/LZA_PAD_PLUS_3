@@ -60,7 +60,7 @@ public class SubjectFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_grid, container, false);
-        mGrid = (GridView) view.findViewById(R.id.common_grid);
+        mGrid = (GridView) view.findViewById(R.id.common_grid_grid);
         mGrid.setNumColumns(NUM_LINES);
         mGrid.setBackgroundColor(Color.WHITE);
         mGrid.setLayoutParams(new FrameLayout.LayoutParams(mMinWidth, mMinHeight));

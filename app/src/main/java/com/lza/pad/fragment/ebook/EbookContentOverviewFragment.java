@@ -262,9 +262,9 @@ public class EbookContentOverviewFragment extends BaseFragment {
                         return 1;
                     }
                 } catch (Exception ex) {
-
+                    return 1;
                 }
-                return o1.getId().compareTo(o2.getId());
+                //return o1.getId().compareTo(o2.getId());
             }
         }
     };

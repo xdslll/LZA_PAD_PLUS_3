@@ -38,7 +38,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 页面基本框架，包含一个ViewPager，ViewPager中默认包含一个GridView，GridView下可以填充各种Adapter
+ * 可翻页的Fragment
  *
  * @author xiads
  * @Date 1/7/15.
@@ -374,7 +374,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     private void generateRaidoButton() {
         //if (mAdapter == null || mAdapter.getCount() <= 0) return;
         //int length = mAdapter.getCount();
-        int length = mTotalPageSize;
+        int length = getTotalPage();
         //设定并计算翻页控件高度
         int buttonW = RuntimeUtility.dip2px(mActivity, 30);
         int buttonH = RuntimeUtility.dip2px(mActivity, 8);
@@ -508,6 +508,10 @@ public abstract class BaseResourceListFragment extends BaseFragment {
             mService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
+                    if (!UniversalUtility.isTopActivity(mActivity)) {
+                        log("当前Activity不可见，不能进行幻灯片浏览！");
+                        return;
+                    }
                     //如果可以开始展示，则进行展示
                     if (mSlideCurrentDelay >= SLIDE_SHOW_START) {
                         try {
@@ -551,3 +555,14 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         public SlideShowService() {}
     }
 }
+/*log("isHidden:" + isHidden());
+                    log("isVisible:" + isVisible());
+                    log("isAdded:" + isAdded());
+                    log("isInLayout:" + isInLayout());
+                    log("isResumed:" + isResumed());
+                    log("isDetached:" + isDetached());
+
+                    if (isHidden() || !isVisible()) {
+                        log("Fragment不可见，不进行幻灯片浏览！");
+                        return;
+                    }*/

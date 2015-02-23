@@ -1,6 +1,7 @@
 package com.lza.pad.support.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +39,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -596,5 +598,26 @@ public class UniversalUtility {
             }
         }
         return bmp;
+    }
+
+    /**
+     * 获取处于栈顶的Activity
+     *
+     * @return
+     */
+    public static String getTopActivity(Context c) {
+        ActivityManager manager = (ActivityManager) c.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = manager.getRunningTasks(1);
+        if (runningTasks == null || runningTasks.size() == 0) return null;
+        String className = runningTasks.get(0).topActivity.getShortClassName();
+        if (TextUtils.isEmpty(className) || !className.contains(".")) return null;
+        int index = className.lastIndexOf(".");
+        return className.substring(index + 1, className.length());
+    }
+
+    public static boolean isTopActivity(Activity activity) {
+        String topActivity = getTopActivity(activity);
+        String currentActivity = activity.getClass().getSimpleName();
+        return topActivity.equals(currentActivity);
     }
 }

@@ -3,6 +3,9 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Say something about this class
  *
@@ -10,6 +13,12 @@ import android.os.Parcelable;
  * @Date 15/2/6.
  */
 public class PadLayoutModule implements Parcelable {
+
+    public static Map<String, String> SUBJECT_TYPE = new HashMap<String, String>();
+
+    static {
+        SUBJECT_TYPE.put("1", "学科");
+    }
 
     String id;
 
@@ -204,4 +213,8 @@ public class PadLayoutModule implements Parcelable {
             return new PadLayoutModule[size];
         }
     };
+
+    public String getSubjectType(String key) {
+        return SUBJECT_TYPE.get(key);
+    }
 }

@@ -62,7 +62,7 @@ public class BaseGridFragment extends BaseImageFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_grid, container, false);
-        mGrid = (GridView) view.findViewById(R.id.common_grid);
+        mGrid = (GridView) view.findViewById(R.id.common_grid_grid);
         if (mPadControlInfo != null) {
             mSourceType = mPadControlInfo.getSource_type();
             if (mSourceType.equals(PadResource.RESOURCE_NEWS)) {
@@ -146,8 +146,8 @@ public class BaseGridFragment extends BaseImageFragment {
             //水平垂直边距,如果不在首页，则拉大间距，保持界面美观
             int paddingHor, paddingVer;
             if (mIsHome) {
-                paddingHor = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_hor);
-                paddingVer = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_ver);
+                paddingHor = (int) getResources().getDimension(R.dimen.small_padding);
+                paddingVer = (int) getResources().getDimension(R.dimen.small_padding);
             } else {
                 paddingHor = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_hor2);
                 paddingVer = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_ver2);
@@ -206,6 +206,7 @@ public class BaseGridFragment extends BaseImageFragment {
         loadImage(imgUrl, size, new SimpleImageLoadingListener() {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                if (isDetached() || !isVisible()) return;
                 BitmapDrawable drawable = new BitmapDrawable(getResources(), loadedImage);
                 holder.newsLayout.setBackgroundDrawable(drawable);
                 holder.newsLayout.setGravity(Gravity.BOTTOM);

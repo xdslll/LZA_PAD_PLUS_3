@@ -96,7 +96,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
     /**
      * 重试的延迟
      */
-    protected static final int DEFAULT_RESTART_DELAY = 2000;
+    protected static final int DEFAULT_RETRY_DELAY = 2000;
 
     public static final int DEFAULT_SIZE = 4;
 
@@ -115,8 +115,6 @@ public class BaseActivity extends FragmentActivity implements Consts {
      * 用于接收更新界面服务提交的请求
      */
     private UpdateReceiver mUpdateReceiver;
-
-    private Intent mIntentService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,26 +136,14 @@ public class BaseActivity extends FragmentActivity implements Consts {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mIsHome) {
-            //启动界面自动更新服务
-            mIntentService = new Intent(ACTION_UPDATE_DEVICE_SERVICE);
-            startService(mIntentService);
-            if (mUpdateReceiver == null) {
-                //如果是首页，则开始监听更新的状况
-                log("注册UpdateReceiver");
-                mUpdateReceiver = new UpdateReceiver();
-                IntentFilter filter = new IntentFilter();
-                filter.addAction(ACTION_UPDATE_DEVICE_RECEIVER);
-                registerReceiver(mUpdateReceiver, filter);
-            }
-        }
+    protected void onStart() {
+        super.onStart();
+        startUpdateService();
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -166,9 +152,34 @@ public class BaseActivity extends FragmentActivity implements Consts {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        stopUpdateService();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    private void startUpdateService() {
+        //控制只有首页才启动自动更新服务
+        if (mIsHome) {
+            //启动界面自动更新服务
+            Intent mIntentService = new Intent(ACTION_UPDATE_DEVICE_SERVICE);
+            startService(mIntentService);
+            //如果是首页，则开始监听更新的状况
+            log("注册UpdateReceiver");
+            mUpdateReceiver = new UpdateReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(ACTION_UPDATE_DEVICE_RECEIVER);
+            registerReceiver(mUpdateReceiver, filter);
+        }
+    }
+
+    private void stopUpdateService() {
+        //控制只有首页才停止各种服务
         if (mIsHome) {
             //回传给更新界面服务，使之停止运行
             UpdateDeviceService.UpdateCallback callback = new UpdateDeviceService.UpdateCallback();
@@ -356,6 +367,14 @@ public class BaseActivity extends FragmentActivity implements Consts {
         if (TextUtils.isEmpty(className) || !className.contains(".")) return null;
         int index = className.lastIndexOf(".");
         return className.substring(index + 1, className.length());
+    }
+
+    protected void send(String url, RequestHelper.OnRequestListener listener) {
+        RequestHelper.getInstance(mCtx, url, listener).send();
+    }
+
+    protected String wrap(String value, String defaultValue) {
+        return TextUtils.isEmpty(value) ? defaultValue : value;
     }
 }
 

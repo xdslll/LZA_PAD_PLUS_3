@@ -13,6 +13,7 @@ import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
+import com.lza.pad.support.utils.UniversalUtility;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class BaseFragment extends Fragment implements Consts {
     protected int W, H;
     protected PadDeviceInfo mPadDeviceInfo;
     protected PadModuleControl mPadControlInfo;
+    protected PadLayoutModule mPadModuleInfo;
     protected PadResource mPadResource;
     /**
      * 所有模块
@@ -56,6 +58,7 @@ public class BaseFragment extends Fragment implements Consts {
             mPadResource = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
             mPadModuleInfos = getArguments().getParcelableArrayList(KEY_PAD_MODULE_INFOS);
             mCurrentModuleIndex = getArguments().getInt(KEY_CURRENT_MODULE_INDEX);
+            mPadModuleInfo = getArguments().getParcelable(KEY_PAD_MODULE_INFO);
         }
 
         EventBus.getDefault().register(this);
@@ -85,5 +88,9 @@ public class BaseFragment extends Fragment implements Consts {
 
     protected String wrap(String value, String defaultValue) {
         return TextUtils.isEmpty(value) ? defaultValue : value;
+    }
+
+    protected int parseInt(String value) {
+        return UniversalUtility.safeIntParse(value, 0);
     }
 }

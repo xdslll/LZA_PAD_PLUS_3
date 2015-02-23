@@ -1,7 +1,5 @@
 package com.lza.pad.app.ebook;
 
-import android.widget.LinearLayout;
-
 import com.lza.pad.app.base.BaseNormalModuleActivity;
 
 /**

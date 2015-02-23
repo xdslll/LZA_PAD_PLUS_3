@@ -1,6 +1,7 @@
 package com.lza.pad.fragment.home;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -27,6 +28,8 @@ import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.CommonRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -89,6 +92,9 @@ public class TitleFragment1 extends BaseImageFragment {
                 try {
                     Class clazz = Class.forName(javaCodeFile);
                     Intent intent = new Intent(mActivity, clazz);
+                    intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+                    PadLayoutModule module = mPadModuleInfos.get(position);
+                    intent.putExtra(KEY_PAD_MODULE_INFO, module);
                     startActivity(intent);
                 } catch (Exception ex) {
 
@@ -113,7 +119,7 @@ public class TitleFragment1 extends BaseImageFragment {
         //将文件名首字母变成大写
         if (moduleStyle != null && moduleStyle.length() > 1) {
             buffer.append(moduleStyle.substring(0, 1).toUpperCase())
-                    .append(moduleStyle.substring(1, moduleStyle.length()));
+                    .append(moduleStyle.substring(1, moduleStyle.length()).toLowerCase());
         } else if (moduleStyle != null && moduleStyle.length() == 1){
             buffer.append(moduleStyle.toUpperCase());
         }
@@ -175,8 +181,8 @@ public class TitleFragment1 extends BaseImageFragment {
             } else {
                 imgUrl = data.getLayout_icon();
             }
-            displayImage(imgUrl, holder.img);
-            /*int imgWidth = holder.img.getWidth();
+            //displayImage(imgUrl, holder.img);
+            int imgWidth = holder.img.getWidth();
             int imgHeight = holder.img.getHeight();
             ImageSize size = new ImageSize(imgWidth, imgHeight);
             loadImage(imgUrl, size, new SimpleImageLoadingListener() {
@@ -184,8 +190,7 @@ public class TitleFragment1 extends BaseImageFragment {
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     holder.img.setImageBitmap(loadedImage);
                 }
-            });*/
-
+            });
             holder.text.setText(data.getModule_name());
             return convertView;
         }

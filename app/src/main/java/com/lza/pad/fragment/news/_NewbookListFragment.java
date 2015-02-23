@@ -53,7 +53,7 @@ public class _NewbookListFragment extends BaseFragment {
             mLayoutPages.setVisibility(View.GONE);
         }
 
-        mGrid = (GridView) view.findViewById(R.id.common_grid);
+        mGrid = (GridView) view.findViewById(R.id.common_grid_grid);
         mGrid.setAdapter(new NewbookListAdapter(mActivity));
         return view;
     }

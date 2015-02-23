@@ -118,4 +118,17 @@
     <dimen name="title_calendar_time_size">32sp</dimen>
     <dimen name="title_wifi_img_width">60dp</dimen>
 
+    <!-- 通用字体大小 -->
+    <dimen name="super_huge_text_size">60sp</dimen>
+    <dimen name="huge_text_size">50sp</dimen>
+    <dimen name="large_text_size">36sp</dimen>
+    <dimen name="medium_text_size">24sp</dimen>
+    <dimen name="small_text_size">24sp</dimen>
+    <dimen name="super_small_text_size">18sp</dimen>
+
+    <!-- padding -->
+    <dimen name="large_padding">15dp</dimen>
+    <dimen name="medium_padding">10dp</dimen>
+    <dimen name="small_padding">5dp</dimen>
+
 </resources>

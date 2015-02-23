@@ -260,6 +260,8 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
         W = RuntimeUtility.getScreenWidth(this);
         H = RuntimeUtility.getScreenHeight(this);
         log("屏幕尺寸：" + W + "*" + H);
+        //获取总体的高度
+        int totalHeight = getTotalHeight(homeControls);
         for (int i = 0; i < homeControls.size(); i++) {
             log("正在绘制第" + (i + 1) + "个控件");
             PadModuleControl control = homeControls.get(i);
@@ -277,14 +279,12 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                     .append("fragment.")
                     .append(controlType).append(".")
                     .append(controlName.substring(0, 1).toUpperCase())
-                    .append(controlName.substring(1, controlName.length()))
+                    .append(controlName.substring(1, controlName.length()).toLowerCase())
                     .append("Fragment")
                     .append(controlIndex);
 
             AppLogger.e("文件名：" + buffer.toString());
 
-            //获取总体的高度
-            int totalHeight = getTotalHeight(homeControls);
             int width = W;
             try {
                 //int width = W;
@@ -370,8 +370,9 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
 
                 ResponseData<PadModuleControl> data = JsonParseHelper.parseModuleControlResponse(json);
                 List<PadModuleControl> controls = data.getContent();
-                if (controls == null || controls.size() == 0) return;
-
+                if (controls == null) {
+                    controls = new ArrayList<PadModuleControl>();
+                }
                 mMoudleControls.add(controls);
                 mCurrentModuleIndex++;
                 getModuleControlsFromNet();
@@ -398,7 +399,11 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
         //获取所有模块对象，保存为一个序列
         List<PadLayoutModule> layouts = data.getContent();
         //如果模块不存在，则直接退出
-        if (layouts == null || layouts.size() == 0) return;
+        if (layouts == null || layouts.size() == 0) {
+            dismissProgressDialog();
+            ToastUtils.showLong(mCtx, "模块不存在，请联系管理员！");
+            return;
+        }
         //保存模块对象
         mLayoutsModules = layouts;
         //获取设备模块的数量
@@ -426,7 +431,9 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             //解析Json
             ResponseData<PadModuleControl> data = JsonParseHelper.parseModuleControlResponse(json);
             List<PadModuleControl> controls = data.getContent();
-            if (controls == null || controls.size() == 0) return;
+            if (controls == null) {
+                mMoudleControls.add(new ArrayList<PadModuleControl>());
+            }
             mMoudleControls.add(controls);
         }
         //如果所有模块都更新完毕，则状态切换为获取数据成功

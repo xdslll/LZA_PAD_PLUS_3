@@ -112,10 +112,10 @@ public class UrlHelper implements Consts {
         return generateUrl(getLayoutModulePar(deviceInfo));
     }
 
-    public static Map<String, String> getModuleControlPar(PadDeviceInfo deviceInfo, PadLayoutModule deviceLayout) {
+    public static Map<String, String> getModuleControlPar(PadDeviceInfo deviceInfo, PadLayoutModule module) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MODULE_CONTROL);
-        par.put(PAR_MODEL_ID, deviceLayout.getModule_id());
+        par.put(PAR_MODEL_ID, module.getId());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return par;
     }
