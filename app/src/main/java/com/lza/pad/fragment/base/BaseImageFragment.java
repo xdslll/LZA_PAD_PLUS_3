@@ -60,8 +60,12 @@ public class BaseImageFragment extends BaseFragment {
     }
 
     protected BitmapDrawable getBitmapDrawable(int resId) {
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), resId);
-        return new BitmapDrawable(getResources(), bm);
+        try {
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), resId);
+            return new BitmapDrawable(getResources(), bm);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     protected BitmapDrawable getBitmapDrawable(Bitmap bm) {

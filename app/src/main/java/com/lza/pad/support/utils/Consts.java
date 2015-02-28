@@ -101,7 +101,7 @@ public interface Consts {
     public static final String KEY_CURRENT_SUBJECT = "key_current_subject";
     public static final String KEY_SUBJECT_DATA = "key_subject_data";
     public static final String KEY_EBOOK_NUM_COLUMNS = "key_ebook_num_columns";
-    public static final String KEY_IF_HOME = "key_if_home";
+    public static final String KEY_IS_HOME = "key_is_home";
     public static final String KEY_FRAGMENT_WIDTH = "fragment_width";
     public static final String KEY_FRAGMENT_HEIGHT = "fragment_height";
 
@@ -121,7 +121,7 @@ public interface Consts {
     public static final String KEY_COMMON_RESPONSE = "common_response";
     public static final String API_PARAM_TYPE_COMMON = "Common";
 
-    public static final String CACHE_IMG_PATH = "/lza/pad";
+    public static final String CACHE_PATH = "/lza/pad";
 
     public static final long ONE_DAY = 24 * 60 * 60 * 1000;
     public static final long ONE_HOUR = 60 * 60 * 1000;

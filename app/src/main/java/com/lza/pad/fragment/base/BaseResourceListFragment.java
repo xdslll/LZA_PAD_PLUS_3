@@ -163,12 +163,12 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         }
         mImgBottom = (ImageView) view.findViewById(R.id.ebook_list_bottom_img);
         //计算底部图片高度
-        calcBottom();
+        //calcBottom();
         //计算图书区域的高度
-        calcBook();
+        //calcBook();
+        //mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
         //加载ViewPager
         mViewPager = (ViewPager) view.findViewById(R.id.ebook_list_viewpager);
-        mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -219,13 +219,18 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         @Override
         public void handleRespone(List<PadResource> content) {
             mDataSource = content;
-            mAdapter = new EbookListPagerAdapter(getChildFragmentManager());
-            mViewPager.setAdapter(mAdapter);
-
             if (mIsHome) {
                 generateTitleView();
                 generateRaidoButton();
             }
+            //计算底部图片高度
+            calcBottom();
+            //计算图书区域的高度
+            calcBook();
+            //先计算ViewPager的宽度和高度后再填充Adapter
+            mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
+            mAdapter = new EbookListPagerAdapter(getChildFragmentManager());
+            mViewPager.setAdapter(mAdapter);
             startSlideShowService();
         }
     }
@@ -275,7 +280,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
     /**
      * 实现更多按钮的点击事件
      */
-    protected abstract void onMoreButtonClick();
+    protected void onMoreButtonClick() {};
 
     /**
      * 获取标题名称
@@ -365,7 +370,7 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         mLayoutTitle.setLayoutParams(params);
         mLayoutTitle.setPadding(paddingHor, 0, paddingHor, 0);
         mTxtTitle.setVisibility(View.VISIBLE);
-        mTxtMore.setVisibility(View.VISIBLE);
+        //mTxtMore.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -376,8 +381,10 @@ public abstract class BaseResourceListFragment extends BaseFragment {
         //int length = mAdapter.getCount();
         int length = getTotalPage();
         //设定并计算翻页控件高度
-        int buttonW = RuntimeUtility.dip2px(mActivity, 30);
-        int buttonH = RuntimeUtility.dip2px(mActivity, 8);
+        //int buttonW = RuntimeUtility.dip2px(mActivity, 30);
+        //int buttonH = RuntimeUtility.dip2px(mActivity, 8);
+        int buttonW = getResources().getDimensionPixelSize(R.dimen.width30);
+        int buttonH = getResources().getDimensionPixelSize(R.dimen.width8);
         int paddingVer = RuntimeUtility.dip2px(mActivity, 8);
         mRadPages.setPadding(0, paddingVer, 0, paddingVer);
         mPagesHeight = buttonH + (paddingVer * 2);

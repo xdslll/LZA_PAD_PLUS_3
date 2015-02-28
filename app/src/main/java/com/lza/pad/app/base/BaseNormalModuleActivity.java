@@ -57,6 +57,12 @@ public abstract class BaseNormalModuleActivity extends BaseActivity {
                 finish();
             }
         });
+        mTxtBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         mTxtType = (TextView) findViewById(R.id.home_ebook_subject);
         mTxtType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +137,7 @@ public abstract class BaseNormalModuleActivity extends BaseActivity {
                     .append("fragment.")
                     .append(controlType).append(".")
                     .append(controlName.substring(0, 1).toUpperCase())
-                    .append(controlName.substring(1, controlName.length()).toLowerCase())
+                    .append(controlName.substring(1, controlName.length()))
                     .append("Fragment");
             if (UniversalUtility.safeIntParse(controlIndex, 0) > 0) {
                 buffer.append(controlIndex);
@@ -152,7 +158,7 @@ public abstract class BaseNormalModuleActivity extends BaseActivity {
                 arg.putParcelable(KEY_PAD_CONTROL_INFO, control);
                 arg.putInt(KEY_FRAGMENT_WIDTH, fragmentWidth);
                 arg.putInt(KEY_FRAGMENT_HEIGHT, fragmentHeight);
-                arg.putBoolean(KEY_IF_HOME, mIsHome);
+                arg.putBoolean(KEY_IS_HOME, mIsHome);
                 frg.setArguments(arg);
 
                 int id = (i + 1) << (i + 1);

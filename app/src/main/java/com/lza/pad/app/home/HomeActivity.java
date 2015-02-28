@@ -279,7 +279,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                     .append("fragment.")
                     .append(controlType).append(".")
                     .append(controlName.substring(0, 1).toUpperCase())
-                    .append(controlName.substring(1, controlName.length()).toLowerCase())
+                    .append(controlName.substring(1, controlName.length()))
                     .append("Fragment")
                     .append(controlIndex);
 
@@ -299,7 +299,7 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
                 arg.putParcelableArrayList(KEY_PAD_MODULE_INFOS, (ArrayList<PadLayoutModule>) mLayoutsModules);
                 arg.putInt(KEY_FRAGMENT_WIDTH, width);
                 arg.putInt(KEY_FRAGMENT_HEIGHT, height);
-                arg.putBoolean(KEY_IF_HOME, mIsHome);
+                arg.putBoolean(KEY_IS_HOME, mIsHome);
                 arg.putInt(KEY_CURRENT_MODULE_INDEX, INDEX_HOME_MODULE);
                 frg.setArguments(arg);
 

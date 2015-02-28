@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--电子书布局-->
-    <dimen name="ebook_list_module_title">20sp</dimen>
+    <dimen name="ebook_list_module_title">25sp</dimen>
+    <dimen name="ebook_list_module_more">20sp</dimen>
     <dimen name="ebook_list_book_width">280dp</dimen>
     <dimen name="ebook_list_book_height">350dp</dimen>
     <dimen name="ebook_list_book_title_size">30sp</dimen>
@@ -111,7 +112,7 @@
     <dimen name="content_container_close_size">28sp</dimen>
 
     <!-- title_menu_item.xml -->
-    <dimen name="title_menu_item_ico_width">60dp</dimen>
+    <dimen name="title_menu_item_ico_width">80dp</dimen>
 
     <!-- title.xml -->
     <dimen name="title_calendar_date_size">50sp</dimen>
@@ -124,11 +125,35 @@
     <dimen name="large_text_size">36sp</dimen>
     <dimen name="medium_text_size">24sp</dimen>
     <dimen name="small_text_size">24sp</dimen>
-    <dimen name="super_small_text_size">18sp</dimen>
+    <dimen name="very_small_text_size">18sp</dimen>
 
     <!-- padding -->
-    <dimen name="large_padding">15dp</dimen>
-    <dimen name="medium_padding">10dp</dimen>
-    <dimen name="small_padding">5dp</dimen>
+    <dimen name="large_padding">20dp</dimen>
+    <dimen name="medium_padding">15dp</dimen>
+    <dimen name="small_padding">10dp</dimen>
+
+    <dimen name="width40">60dp</dimen>
+    <dimen name="width30">50dp</dimen>
+    <dimen name="width20">30dp</dimen>
+    <dimen name="width15">15dp</dimen>
+    <dimen name="width10">10dp</dimen>
+    <dimen name="width8">5dp</dimen>
+    <dimen name="width5">5dp</dimen>
+
+    <dimen name="height0">0dp</dimen>
+    <dimen name="height10">10dp</dimen>
+    <dimen name="height20">20dp</dimen>
+    <dimen name="height30">30dp</dimen>
+    <dimen name="height40">40dp</dimen>
+    <dimen name="height50">50dp</dimen>
+    <dimen name="height60">80dp</dimen>
+    <dimen name="height70">90dp</dimen>
+    <dimen name="height80">100dp</dimen>
+    <dimen name="height90">110dp</dimen>
+    <dimen name="height95">115dp</dimen>
+
+    <!-- EbookgridFragment -->
+    <dimen name="ebookgrid_book_ver_padding">45dp</dimen>
+    <dimen name="ebookgrid_book_hor_padding">10dp</dimen>
 
 </resources>

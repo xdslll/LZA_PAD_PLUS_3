@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.lza.pad.event.model.ResponseEventInfo;
@@ -155,19 +154,22 @@ public class RequestHelper implements Consts {
 
     private class MyStringRequest extends StringRequest {
 
-        int timeout = 2500;
+        public static final int DEFAULT_TIMEOUT = 10 * 1000;
+        public static final int DEFAULT_RETRY_COUNT = 3;
 
         public MyStringRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
             super(method, url, listener, errorListener);
+            setRetryPolicy(new DefaultRetryPolicy(DEFAULT_TIMEOUT, DEFAULT_RETRY_COUNT, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         }
 
         public MyStringRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
             super(url, listener, errorListener);
+            setRetryPolicy(new DefaultRetryPolicy(DEFAULT_TIMEOUT, DEFAULT_RETRY_COUNT, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         }
 
-        public MyStringRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener, int timeout) {
-            this(url, listener, errorListener);
-            this.timeout = timeout;
+        public MyStringRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener, int timeout, int maxRetryCount) {
+            super(url, listener, errorListener);
+            setRetryPolicy(new DefaultRetryPolicy(timeout, maxRetryCount, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         }
 
         @Override
@@ -181,12 +183,6 @@ public class RequestHelper implements Consts {
             Map<String, String> headers = response.headers;
             mCookie = getCookie(headers);
             return super.parseNetworkResponse(response);
-        }
-
-        @Override
-        public RetryPolicy getRetryPolicy() {
-            log("正在获取重试规则...");
-            return new DefaultRetryPolicy(timeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         }
     }
 

@@ -3,7 +3,7 @@ package com.lza.pad.app.news;
 import android.support.v4.app.Fragment;
 
 import com.lza.pad.app.base.BaseContentActivity;
-import com.lza.pad.fragment.news.NewsListFragment;
+import com.lza.pad.fragment.news.NewsContentFragment;
 
 /**
  * Say something about this class
@@ -20,7 +20,7 @@ public class NewsContentActivity extends BaseContentActivity {
 
     @Override
     protected Fragment getFragment() {
-        return new NewsListFragment();
+        return new NewsContentFragment();
     }
 
     @Override

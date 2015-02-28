@@ -21,7 +21,8 @@ import com.google.gson.Gson;
 import com.lza.pad.app.socket.admin.server.OnServerIoAdapter;
 import com.lza.pad.app.socket.admin.server.ServerMessageHandler;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.socket.service.MinaServiceHelper;
+import com.lza.pad.app.socket.admin.server.MinaServerHelper;
+import com.lza.pad.app.socket.model.MinaServer;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.CommonRequestListener;
@@ -31,6 +32,7 @@ import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.service.UpdateDeviceService;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
+import com.lza.pad.support.utils.UniversalUtility;
 
 import org.apache.mina.core.session.IoSession;
 
@@ -102,7 +104,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
 
     protected Context mCtx;
 
-    protected MinaServiceHelper mMinaServiceHelper;
+    protected MinaServerHelper mMinaServerHelper;
 
     protected int mActivityUpdateState = ACTIVITY_STATE_NOT_UPDATE;
 
@@ -127,9 +129,9 @@ public class BaseActivity extends FragmentActivity implements Consts {
         //启动异常监控
         //CrashHelper.getInstance(this).init();
 
-        mMinaServiceHelper = MinaServiceHelper.instance();
-        if (mMinaServiceHelper.isStarted()) {
-            mMinaServiceHelper.setOnServerIoAdapter(mMinaServerListener);
+        mMinaServerHelper = MinaServerHelper.instance();
+        if (mMinaServerHelper.isStarted()) {
+            mMinaServerHelper.setOnServerIoAdapter(mMinaServerListener);
         }
 
         EventBus.getDefault().register(this);
@@ -206,7 +208,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
         Bundle arg = new Bundle();
         arg.putInt(KEY_FRAGMENT_WIDTH, w);
         arg.putInt(KEY_FRAGMENT_HEIGHT, h);
-        arg.putBoolean(KEY_IF_HOME, ifHome);
+        arg.putBoolean(KEY_IS_HOME, ifHome);
         fragment.setArguments(arg);
         launchFragment(fragment, id);
     }
@@ -218,9 +220,14 @@ public class BaseActivity extends FragmentActivity implements Consts {
             try {
                 MinaClient client = gson.fromJson(message.toString(), MinaClient.class);
                 client.setSession(session);
-                mMinaServiceHelper.addClient(client);
+                mMinaServerHelper.addClient(client);
                 if (client.getAction().equals(MinaClient.ACTION_CONNECT)) {
                     //onMinaClientConnect(client);
+                    EventBus.getDefault().post(client);
+                } else if (client.getAction().equals(MinaClient.ACTION_SHAKE)) {
+                    mMinaServerHelper.sendOK(client.getSession(), MinaServer.ACTION_SHAKE);
+                    EventBus.getDefault().post(client);
+                } else if (client.getAction().equals(MinaClient.ACTION_APPLY_FOR_DOWNLOAD_FILE)) {
                     EventBus.getDefault().post(client);
                 }
             } catch (Exception ex) {
@@ -375,6 +382,10 @@ public class BaseActivity extends FragmentActivity implements Consts {
 
     protected String wrap(String value, String defaultValue) {
         return TextUtils.isEmpty(value) ? defaultValue : value;
+    }
+
+    protected int parseInt(String value) {
+        return UniversalUtility.safeIntParse(value, 0);
     }
 }
 

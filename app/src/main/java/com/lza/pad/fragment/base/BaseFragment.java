@@ -50,7 +50,7 @@ public class BaseFragment extends Fragment implements Consts {
         mActivity = getActivity();
         mArg = getArguments();
         if (mArg != null) {
-            mIsHome = getArguments().getBoolean(KEY_IF_HOME);
+            mIsHome = getArguments().getBoolean(KEY_IS_HOME);
             W = getArguments().getInt(KEY_FRAGMENT_WIDTH);
             H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
             mPadDeviceInfo = getArguments().getParcelable(KEY_PAD_DEVICE_INFO);
@@ -78,6 +78,10 @@ public class BaseFragment extends Fragment implements Consts {
 
     }
 
+    public void onEventAsync(MinaClient client) {
+
+    }
+
     protected void log(String msg) {
         AppLogger.e("=============== " + msg + " ===============" );
     }
@@ -92,5 +96,38 @@ public class BaseFragment extends Fragment implements Consts {
 
     protected int parseInt(String value) {
         return UniversalUtility.safeIntParse(value, 0);
+    }
+
+    /**
+     * 根据模块信息，拼接出该模块所对应的Activity文件路径
+     *
+     * @param module
+     * @return
+     */
+    protected String getModuleJavaFileName(PadLayoutModule module) {
+        String moduleType = module.getModule_type();
+        String moduleStyle = module.getModule_style();
+        String moduleIndex = module.getModule_index();
+        String packageName = mActivity.getPackageName();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(packageName).append(".").append("app.");
+        //将包名的首字母变成小写
+        if (!TextUtils.isEmpty(moduleType)) {
+            moduleType = moduleType.toLowerCase();
+            buffer.append(moduleType).append(".");
+        }
+        //将文件名首字母变成大写
+        if (moduleStyle != null && moduleStyle.length() > 1) {
+            buffer.append(moduleStyle.substring(0, 1).toUpperCase())
+                    .append(moduleStyle.substring(1, moduleStyle.length()));
+        } else if (moduleStyle != null && moduleStyle.length() == 1){
+            buffer.append(moduleStyle.toUpperCase());
+        }
+        buffer.append("Activity");
+        if (!TextUtils.isEmpty(moduleIndex)) {
+            buffer.append(moduleIndex);
+        }
+        log("activity:" + buffer.toString());
+        return buffer.toString();
     }
 }

@@ -3,6 +3,8 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,77 +54,98 @@ public class PadResource implements Parcelable {
     /**
      * 主键ID
      */
+    @Expose
     private String id;
 
     /**
      * 标题
      */
+    @Expose
     private String title;
 
     /**
      * 学校编号
      */
+    @Expose
     private String school_bh;
 
     /**
      * 资源类型
      */
+    @Expose
     private String source_type;
 
     /**
      * 作者
      */
+    @Expose
     private String author;
 
     /**
      * 发布年份
      */
+    @Expose
     private String pubdate;
 
     /**
      * 内容/摘要
      */
+    @Expose
     private String contents;
 
     /**
      * 分类号
      */
+    @Expose
     private String clc;
 
     /**
      * 全文地址
      */
+    @Expose
     private String url;
 
     /**
      * 缩略图
      */
+    @Expose
     private String ico;
 
     /**
      * 图片组
      */
+    @Expose
     private String imgs;
 
     /**
      * ISBN/ISSN
      */
+    @Expose
     private String isbn;
 
     /**
      * 出版社
      */
+    @Expose
     private String press;
 
     /**
      * 全文下载地址
      */
+    @Expose
     private String fulltext;
 
     /**
      * 资源特有的编号
      */
+    @Expose
     private String bh;
+
+    /**
+     * 摘要
+     */
+    @Expose
+    private String abs;
 
     /**
      * 资源的详细内容
@@ -257,6 +280,14 @@ public class PadResource implements Parcelable {
         this.mr = mr;
     }
 
+    public String getAbs() {
+        return abs;
+    }
+
+    public void setAbs(String abs) {
+        this.abs = abs;
+    }
+
     public PadResource() {}
 
     @Override
@@ -281,7 +312,8 @@ public class PadResource implements Parcelable {
         dest.writeString(this.press);
         dest.writeString(this.fulltext);
         dest.writeString(this.bh);
-        dest.writeTypedList(mr);
+        dest.writeTypedList(this.mr);
+        dest.writeString(this.abs);
     }
 
     private PadResource(Parcel in) {
@@ -301,6 +333,7 @@ public class PadResource implements Parcelable {
         this.fulltext = in.readString();
         this.bh = in.readString();
         in.readTypedList(mr, PadResourceDetail.CREATOR);
+        this.abs = in.readString();
     }
 
     public static final Creator<PadResource> CREATOR = new Creator<PadResource>() {

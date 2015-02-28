@@ -25,7 +25,7 @@ public class BaseDialogFragment extends DialogFragment implements Consts {
         mActivity = getActivity();
         mArg = getArguments();
         if (mArg != null) {
-            mIfHome = getArguments().getBoolean(KEY_IF_HOME);
+            mIfHome = getArguments().getBoolean(KEY_IS_HOME);
             W = getArguments().getInt(KEY_FRAGMENT_WIDTH);
             H = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
         }

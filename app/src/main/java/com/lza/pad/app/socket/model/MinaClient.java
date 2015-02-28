@@ -62,6 +62,11 @@ public class MinaClient {
      */
     public static final String ACTION_SHAKE = "action_shake";
 
+    /**
+     * 客户端同意下载
+     */
+    public static final String ACTION_APPLY_FOR_DOWNLOAD_FILE = "action_apply_for_download_file";
+
     IoSession session;
 
     @Expose
@@ -72,6 +77,12 @@ public class MinaClient {
 
     @Expose
     String action;
+
+    @Expose
+    int id;
+
+    @Expose
+    String filePath;
 
     public IoSession getSession() {
         return session;
@@ -103,5 +114,21 @@ public class MinaClient {
 
     public void setAcademy(String academy) {
         this.academy = academy;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

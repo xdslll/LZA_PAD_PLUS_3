@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.ebook.EbookContentActivity;
+import com.lza.pad.app.journal.JournalContentActivity;
 import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.widget.DefaultEbookCover;
@@ -95,7 +96,7 @@ public class BaseGridFragment extends BaseImageFragment {
                 } else if (sourceType.equals(PadResource.RESOURCE_NEWS)) {
                     intent = new Intent(mActivity, NewsContentActivity.class);
                 } else if (sourceType.equals(PadResource.RESOURCE_JOURNAL)) {
-
+                    intent = new Intent(mActivity, JournalContentActivity.class);
                 }
                 if (intent != null) {
                     intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);

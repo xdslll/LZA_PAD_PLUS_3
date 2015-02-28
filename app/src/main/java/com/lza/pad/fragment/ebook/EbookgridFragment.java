@@ -49,7 +49,7 @@ public class EbookgridFragment extends BaseImageFragment {
 
     List<PadResource> mPadResources;
 
-    int mBookWidth, mBookHeight, mRowCount, mColumnCount, mPaddingSmall, mPaddingMedium;
+    int mBookWidth, mBookHeight, mRowCount, mColumnCount, mPaddingHor, mPaddingVer;
 
     /**
      * 总页数
@@ -65,14 +65,14 @@ public class EbookgridFragment extends BaseImageFragment {
             log("数据量：" + mDataSize + "，每行显示：" + mGridNumColumns +
                     "，width=" + W + "，height=" + H);
         }
-        mPaddingMedium = (int) getResources().getDimension(R.dimen.medium_padding);
-        mPaddingSmall = (int) getResources().getDimension(R.dimen.small_padding);
+        mPaddingHor = (int) getResources().getDimension(R.dimen.ebookgrid_book_hor_padding);
+        mPaddingVer = (int) getResources().getDimension(R.dimen.ebookgrid_book_ver_padding);
 
         mRowCount = (int) Math.ceil((double) mDataSize / mGridNumColumns);
         mColumnCount = mGridNumColumns;
         //垂直总的偏移量
-        int totalVerticalPadding = getTotalPadding(mRowCount, mPaddingSmall);
-        int totalHorizontalPadding = getTotalPadding(mColumnCount, mPaddingSmall);
+        int totalVerticalPadding = getTotalPadding(mRowCount, mPaddingVer);
+        int totalHorizontalPadding = getTotalPadding(mColumnCount, mPaddingHor);
         mBookWidth = (W - totalHorizontalPadding) / mColumnCount;
         mBookHeight = (H - totalVerticalPadding) / mRowCount;
     }
@@ -95,6 +95,7 @@ public class EbookgridFragment extends BaseImageFragment {
         mGrid = (GridView) view.findViewById(R.id.common_grid_grid);
         mGrid.setNumColumns(mGridNumColumns);
         mGrid.setOnScrollListener(new PauseOnScrollListener(getImageLoader(), true, false));
+        mGrid.setBackgroundColor(getResources().getColor(R.color.whitesmoke));
 
         mTxtPrevPage = (TextView) view.findViewById(R.id.common_grid_prev_page);
         mTxtNextPage = (TextView) view.findViewById(R.id.common_grid_next_page);
@@ -219,7 +220,7 @@ public class EbookgridFragment extends BaseImageFragment {
             final ViewHolder holder = getHolder(convertView);
 
             holder.layout.setLayoutParams(new GridView.LayoutParams(mBookWidth, mBookHeight));
-            holder.layout.setPadding(mPaddingSmall, mPaddingMedium, mPaddingSmall, mPaddingMedium);
+            holder.layout.setPadding(mPaddingHor, mPaddingVer, mPaddingHor, mPaddingVer);
             ImageSize size = new ImageSize(mBookWidth, mBookHeight);
             loadImage(data.getIco(), size, new SimpleImageLoadingListener() {
                 @Override

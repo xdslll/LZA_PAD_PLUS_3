@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @author xiads
  * @Date 2/19/15.
  */
+@Deprecated
 public class TestActivity2 extends FragmentActivity {
 
     //String imageUrl = "http://114.212.7.87/book_center/upload/base_img//%E5%8D%97%E5%A4%A72015%E6%96%B0%E5%B9%B4%E6%B5%B7%E6%8A%A5.jpg";

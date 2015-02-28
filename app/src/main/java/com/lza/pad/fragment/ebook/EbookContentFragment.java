@@ -19,6 +19,11 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.lza.pad.R;
+import com.lza.pad.app.socket.admin.file.MinaFileServerAdmin;
+import com.lza.pad.app.socket.admin.server.MinaServerHelper;
+import com.lza.pad.app.socket.model.MinaClient;
+import com.lza.pad.app.socket.model.MinaServer;
+import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.douban.DoubanRating;
@@ -27,13 +32,17 @@ import com.lza.pad.db.model.pad.PadResourceDetail;
 import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.file.FileTools;
+import com.lza.pad.support.utils.Consts;
 import com.lza.pad.widget.DefaultEbookCover;
 import com.lza.pad.widget.PagerSlidingTabStrip;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -481,6 +490,11 @@ public class EbookContentFragment extends BaseImageFragment {
         return arg;
     }
 
+    /**
+     * 响应“概要”页面发起的广播
+     *
+     * @param instance
+     */
     public void onEventMainThread(EbookContentOverviewFragment instance) {
         int tag = instance.getClickTag();
         if (tag == EbookContentOverviewFragment.SHOW_BOOK_SUMMARY) {
@@ -492,5 +506,71 @@ public class EbookContentFragment extends BaseImageFragment {
         } else  if (tag == EbookContentOverviewFragment.SHOW_BOOK_REVIEWS_DETAIL) {
 
         }
+    }
+
+    /**
+     * 响应MinaClient客户端发起的请求
+     *
+     * @param client
+     */
+    @Override
+    public void onEventAsync(MinaClient client) {
+        if (client.getAction().equals(MinaClient.ACTION_SHAKE)) {
+            log("触发摇一摇！");
+            //向客户端发起下载文件的申请，如果客户端同意才开始下载
+            MinaServerHelper.instance().sendFile(client.getSession(), mPadResource);
+        } else if (client.getAction().equals(MinaClient.ACTION_APPLY_FOR_DOWNLOAD_FILE)) {
+            //客户端同意下载，开始下载并传输文件
+            String downloadUrl = mPadResource.getFulltext();
+            if (TextUtils.isEmpty(downloadUrl)) {
+                //ToastUtils.showLong(mActivity, "下载地址为空！");
+                MinaServerHelper.instance().sendFailed(client.getSession(),
+                        MinaServer.ACTION_SEND_FILE_FAILED, "下载的电子书不存在，请联系管理员！");
+            } else {
+                String fileName = parseFileName(downloadUrl);
+                File bookFile = FileTools.getCacheFile(Consts.CACHE_PATH + "/book/" + fileName);
+                log(bookFile.getAbsolutePath());
+                if (bookFile.exists()) {
+                    log("文件已经存在，准备传给客户端！");
+                    //设置服务端的下载文件路径，重要步骤
+                    MinaFileServerAdmin.getInstance().setFilePath(bookFile.getAbsolutePath());
+                    //告诉客户端下载完成，可以开始下载
+                    MinaServerHelper.instance().sendFile(client.getSession(),
+                            fileName, bookFile.length());
+                } else {
+                    DownloadHelper.InternelDownloadFile downloadFile = new DownloadHelper.InternelDownloadFile();
+                    downloadFile.setFileName(fileName);
+                    downloadFile.setFilePath(bookFile.getAbsolutePath());
+                    downloadFile.setFileType(parseInt(mPadResource.getSource_type()));
+                    DownloadHelper helper = new DownloadHelper(mActivity, downloadUrl, downloadFile);
+                    helper.download();
+                }
+            }
+            mClient = client;
+        }
+    }
+
+    private MinaClient mClient;
+
+    public void onEventAsync(DownloadFile downloadFile) {
+        if (downloadFile != null) {
+            String filePath = downloadFile.getFilePath();
+            log("下载完成，下载路径为：" + filePath);
+            //设置服务端的下载文件路径，重要步骤
+            MinaFileServerAdmin.getInstance().setFilePath(filePath);
+            File file = new File(filePath);
+            //告诉客户端下载完成，可以开始下载
+            MinaServerHelper.instance().sendFile(mClient.getSession(),
+                    downloadFile.getFileName(), file.length());
+        }
+    }
+
+    private String parseFileName(String url) {
+        int index = url.lastIndexOf("/");
+        String fileName = "";
+        if (index > 0) {
+            fileName = url.substring(index + 1, url.length());
+        }
+        return fileName;
     }
 }

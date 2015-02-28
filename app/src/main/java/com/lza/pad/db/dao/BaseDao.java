@@ -193,6 +193,15 @@ public abstract class BaseDao<T, ID> {
         }
     }
 
+    public int delete(T data) {
+        try {
+            return mDao.delete(data);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public long clear() {
         List<T> datas = queryForAll();
         if (datas != null && datas.size() > 0) {

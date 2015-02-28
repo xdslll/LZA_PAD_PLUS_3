@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.socket.service.MinaServiceHelper;
+import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.fragment.base.BaseFragment;
 
@@ -173,7 +173,7 @@ public class TitleFragment2 extends BaseFragment {
     MinaClient mClient;
 
     private void updateConnectUser(MinaClient client) {
-        MinaServiceHelper helper = MinaServiceHelper.instance();
+        MinaServerHelper helper = MinaServerHelper.instance();
         List<MinaClient> clients = helper.getClients();
         //AppLogger.e("已连接到Mina服务端的客户端数量：" + clients.size());
         if (client != null) {

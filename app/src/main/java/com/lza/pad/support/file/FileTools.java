@@ -62,7 +62,7 @@ public class FileTools implements Consts {
 
     public static File createCacheFile(String filePath) {
         if (sdCardAvailable()) {
-            String cacheDir = CACHE_IMG_PATH;
+            String cacheDir = CACHE_PATH;
             StringBuilder sb = new StringBuilder();
             String sdDir = getSDCardDir().getAbsolutePath();
             sdDir = appendDirSeparator(sdDir);

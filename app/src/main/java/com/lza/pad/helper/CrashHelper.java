@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.lza.pad.app.socket.service.MinaServiceHelper;
+import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.ToastUtils;
 
@@ -47,7 +47,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
         }else{
             //关闭MinaServer
             AppLogger.e("程序崩溃,正在关闭MinaServer...");
-            MinaServiceHelper.instance().stopMinaServer();
+            MinaServerHelper.instance().stopMinaServer();
             //等待3秒后重新启动程序
             try {
                 Thread.sleep(3000);

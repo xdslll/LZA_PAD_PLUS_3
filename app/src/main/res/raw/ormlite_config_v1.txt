@@ -1,5 +1,5 @@
 #
-# generated on 2015/02/16 05:51:28
+# generated on 2015/02/25 11:55:43
 #
 # --table-start--
 dataClass=com.lza.pad.db.model.ApiParam
@@ -39,6 +39,38 @@ fieldName=value
 # --field-start--
 fieldName=type
 indexName=cache_image_type_idx
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=com.lza.pad.db.model.DownloadFile
+tableName=download_file
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=fileName
+# --field-end--
+# --field-start--
+fieldName=filePath
+# --field-end--
+# --field-start--
+fieldName=type
+# --field-end--
+# --field-start--
+fieldName=artId
+# --field-end--
+# --field-start--
+fieldName=artTitle
+# --field-end--
+# --field-start--
+fieldName=artDescription
+# --field-end--
+# --field-start--
+fieldName=imgPath
 # --field-end--
 # --table-fields-end--
 # --table-end--

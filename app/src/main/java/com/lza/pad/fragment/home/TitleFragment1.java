@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.socket.service.MinaServiceHelper;
+import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadImageCollection;
@@ -102,32 +102,6 @@ public class TitleFragment1 extends BaseImageFragment {
             }
         });
         return view;
-    }
-
-    private String getModuleJavaFileName(PadLayoutModule module) {
-        String moduleType = module.getModule_type();
-        String moduleStyle = module.getModule_style();
-        String moduleIndex = module.getModule_index();
-        String packageName = mActivity.getPackageName();
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(packageName).append(".").append("app.");
-        //将包名的首字母变成小写
-        if (!TextUtils.isEmpty(moduleType)) {
-            moduleType = moduleType.toLowerCase();
-            buffer.append(moduleType).append(".");
-        }
-        //将文件名首字母变成大写
-        if (moduleStyle != null && moduleStyle.length() > 1) {
-            buffer.append(moduleStyle.substring(0, 1).toUpperCase())
-                    .append(moduleStyle.substring(1, moduleStyle.length()).toLowerCase());
-        } else if (moduleStyle != null && moduleStyle.length() == 1){
-            buffer.append(moduleStyle.toUpperCase());
-        }
-        buffer.append("Activity");
-        if (!TextUtils.isEmpty(moduleIndex)) {
-            buffer.append(moduleIndex);
-        }
-        return buffer.toString();
     }
 
     @Override
@@ -306,19 +280,50 @@ public class TitleFragment1 extends BaseImageFragment {
     MinaClient mClient;
 
     private void updateConnectUser(MinaClient client) {
-        MinaServiceHelper helper = MinaServiceHelper.instance();
+        MinaServerHelper helper = MinaServerHelper.instance();
         List<MinaClient> clients = helper.getClients();
-        //AppLogger.e("已连接到Mina服务端的客户端数量：" + clients.size());
-        if (client != null) {
-            mClient = client;
-        }
-        if (mClient == null && clients.size() > 0) {
-            mClient = clients.get(0);
-        }
-        if (mClient != null) {
-            mTxtConnectUser.setText("/当前连接用户数：" + clients.size() + "\n/实时连接用户：[" + mClient.getAcademy() + "]" + mClient.getName());
+        mTxtConnectUser.setText("/当前连接用户数：" + clients.size());
+        /*if (client == null || client.getSession() == null) {
+
         } else {
-            mTxtConnectUser.setText("/当前连接用户数：" + clients.size());
-        }
+            if (client != null) {
+                mClient = client;
+            }
+            if (mClient == null && clients.size() > 0) {
+                mClient = clients.get(0);
+            }
+            if (mClient != null) {
+                mTxtConnectUser.setText("/当前连接用户数：" + clients.size() + "\n/实时连接用户：[" + mClient.getAcademy() + "]" + mClient.getName());
+            } else {
+                mTxtConnectUser.setText("/当前连接用户数：" + clients.size());
+            }
+        }*/
     }
 }
+
+/*private String getModuleJavaFileName(PadLayoutModule module) {
+        String moduleType = module.getModule_type();
+        String moduleStyle = module.getModule_style();
+        String moduleIndex = module.getModule_index();
+        String packageName = mActivity.getPackageName();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(packageName).append(".").append("app.");
+        //将包名的首字母变成小写
+        if (!TextUtils.isEmpty(moduleType)) {
+            moduleType = moduleType.toLowerCase();
+            buffer.append(moduleType).append(".");
+        }
+        //将文件名首字母变成大写
+        if (moduleStyle != null && moduleStyle.length() > 1) {
+            buffer.append(moduleStyle.substring(0, 1).toUpperCase())
+                    .append(moduleStyle.substring(1, moduleStyle.length()));
+        } else if (moduleStyle != null && moduleStyle.length() == 1){
+            buffer.append(moduleStyle.toUpperCase());
+        }
+        buffer.append("Activity");
+        if (!TextUtils.isEmpty(moduleIndex)) {
+            buffer.append(moduleIndex);
+        }
+        log("activity:" + buffer.toString());
+        return buffer.toString();
+    }*/

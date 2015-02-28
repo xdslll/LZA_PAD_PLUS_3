@@ -14,12 +14,12 @@
         android:id="@+id/common_grid_grid"
         />
     <TextView
-        android:layout_width="30dp"
-        android:layout_height="95dp"
+        android:layout_width="@dimen/width30"
+        android:layout_height="@dimen/height90"
         android:background="@drawable/background_next_page"
         android:text="下\n一\n页\n"
         android:textColor="@color/white"
-        android:textSize="@dimen/small_text_size"
+        android:textSize="@dimen/very_small_text_size"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
@@ -33,12 +33,12 @@
         android:id="@+id/common_grid_next_page"
         />
     <TextView
-        android:layout_width="30dp"
-        android:layout_height="95dp"
+        android:layout_width="@dimen/width30"
+        android:layout_height="@dimen/height90"
         android:background="@drawable/background_prev_page"
         android:text="上\n一\n页\n"
         android:textColor="@color/white"
-        android:textSize="@dimen/small_text_size"
+        android:textSize="@dimen/very_small_text_size"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"

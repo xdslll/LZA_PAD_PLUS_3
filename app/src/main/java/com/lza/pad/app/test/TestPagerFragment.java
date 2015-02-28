@@ -39,6 +39,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/20/15.
  */
+@Deprecated
 public class TestPagerFragment extends Fragment {
 
     int index = 0;

@@ -1,12 +1,13 @@
 package com.lza.pad.fragment.ebook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base.BaseGridFragment;
 import com.lza.pad.fragment.base.BaseResourceListFragment;
-import com.lza.pad.support.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,42 @@ public class EbookFragment1 extends BaseResourceListFragment {
     private int mPageSize;
     private int mPage;
 
+    /**
+     * 点击更多按钮事件
+     */
     @Override
     protected void onMoreButtonClick() {
-        ToastUtils.showLong(mActivity, "点击了更多按钮");
+        //gotoMoudule("");
     }
+
+    /**
+     * 根据目标模块ID，跳转到指定模块
+     *
+     * @param targetModuleId
+     */
+    private void gotoMoudule(String targetModuleId) {
+        PadLayoutModule module = null;
+        for (int i = 0; i < mPadModuleInfos.size(); i++) {
+            if (mPadModuleInfos.get(i).getId().equals(targetModuleId)) {
+                module = mPadModuleInfos.get(i);
+                break;
+            }
+        }
+        if (module == null) return;
+        //拼接出代码所在的路径
+        String javaCodeFile = getModuleJavaFileName(module);
+        try {
+            Class clazz = Class.forName(javaCodeFile);
+            Intent intent = new Intent(mActivity, clazz);
+            intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+            intent.putExtra(KEY_PAD_MODULE_INFO, module);
+            startActivity(intent);
+        } catch (Exception ex) {
+
+        }
+    }
+
+
 
     @Override
     protected Fragment getFragment(int position) {
@@ -67,6 +100,7 @@ public class EbookFragment1 extends BaseResourceListFragment {
         arg.putInt(KEY_DATA_SIZE, mDataSize);
         arg.putInt(KEY_GRID_NUM_COLUMNS, mGridNumColumns);
         arg.putParcelableArrayList(KEY_PAD_RESOURCE_INFOS, data);
+        arg.putBoolean(KEY_IS_HOME, mIsHome);
         return arg;
     }
 }
