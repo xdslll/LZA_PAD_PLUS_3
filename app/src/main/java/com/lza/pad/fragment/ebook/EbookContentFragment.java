@@ -439,6 +439,7 @@ public class EbookContentFragment extends BaseImageFragment {
 
     private View createOverview(DoubanBook book) {
         View view = mInflater.inflate(R.layout.ebook_content2_item, null);
+        if (getFragmentManager() == null) return null;
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment frg = new EbookContentOverviewFragment();
         Bundle arg = createArgument(book);
@@ -552,6 +553,11 @@ public class EbookContentFragment extends BaseImageFragment {
 
     private MinaClient mClient;
 
+    /**
+     * 处理下载完成后的事件
+     * @param downloadFile
+     */
+    @Override
     public void onEventAsync(DownloadFile downloadFile) {
         if (downloadFile != null) {
             String filePath = downloadFile.getFilePath();

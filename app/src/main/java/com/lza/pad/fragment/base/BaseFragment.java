@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.lza.pad.app.socket.model.MinaClient;
+import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
@@ -15,7 +16,7 @@ import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 
@@ -38,7 +39,7 @@ public class BaseFragment extends Fragment implements Consts {
     /**
      * 所有模块
      */
-    protected List<PadLayoutModule> mPadModuleInfos;
+    protected ArrayList<PadLayoutModule> mPadModuleInfos;
     /**
      * 当前模块序号
      */
@@ -70,15 +71,39 @@ public class BaseFragment extends Fragment implements Consts {
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * 在消息线程处理Socket事件
+     *
+     * @param client
+     */
     public void onEvent(MinaClient client) {
 
     }
 
+    /**
+     * 在主线程中处理Socket事件
+     *
+     * @param client
+     */
     public void onEventMainThread(MinaClient client) {
 
     }
 
+    /**
+     * 异步处理Socket事件
+     *
+     * @param client
+     */
     public void onEventAsync(MinaClient client) {
+
+    }
+
+    /**
+     * 处理下载完成后的事件
+     *
+     * @param downloadFile
+     */
+    public void onEventAsync(DownloadFile downloadFile) {
 
     }
 
@@ -129,5 +154,15 @@ public class BaseFragment extends Fragment implements Consts {
         }
         log("activity:" + buffer.toString());
         return buffer.toString();
+    }
+
+    protected Bundle createArguments() {
+        Bundle arg = new Bundle();
+        arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+        arg.putParcelable(KEY_PAD_RESOURCE_INFO, mPadResource);
+        arg.putParcelable(KEY_PAD_MODULE_INFO, mPadModuleInfo);
+        arg.putParcelableArrayList(KEY_PAD_MODULE_INFOS, mPadModuleInfos);
+        arg.putParcelable(KEY_PAD_CONTROL_INFO, mPadControlInfo);
+        return arg;
     }
 }

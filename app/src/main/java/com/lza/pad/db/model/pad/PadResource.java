@@ -152,6 +152,11 @@ public class PadResource implements Parcelable {
      */
     private List<PadResourceDetail> mr = new ArrayList<PadResourceDetail>();
 
+    /**
+     * 期刊文章内容
+     */
+    private List<PadJournalArticle> article_list = new ArrayList<PadJournalArticle>();
+
     public String getId() {
         return id;
     }
@@ -288,6 +293,14 @@ public class PadResource implements Parcelable {
         this.abs = abs;
     }
 
+    public List<PadJournalArticle> getArticle_list() {
+        return article_list;
+    }
+
+    public void setArticle_list(List<PadJournalArticle> article_list) {
+        this.article_list = article_list;
+    }
+
     public PadResource() {}
 
     @Override
@@ -312,8 +325,9 @@ public class PadResource implements Parcelable {
         dest.writeString(this.press);
         dest.writeString(this.fulltext);
         dest.writeString(this.bh);
-        dest.writeTypedList(this.mr);
         dest.writeString(this.abs);
+        dest.writeTypedList(mr);
+        dest.writeTypedList(article_list);
     }
 
     private PadResource(Parcel in) {
@@ -332,8 +346,9 @@ public class PadResource implements Parcelable {
         this.press = in.readString();
         this.fulltext = in.readString();
         this.bh = in.readString();
-        in.readTypedList(mr, PadResourceDetail.CREATOR);
         this.abs = in.readString();
+        in.readTypedList(mr, PadResourceDetail.CREATOR);
+        in.readTypedList(article_list, PadJournalArticle.CREATOR);
     }
 
     public static final Creator<PadResource> CREATOR = new Creator<PadResource>() {

@@ -35,7 +35,7 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
                 onResponseStateError(data);
                 return;
             }
-            handleResponseSuccess();
+            handleResponseStatusOK();
             if (data.getContent() == null || data.getContent().size() <= 0) {
                 onResponseContentEmpty();
                 return;
@@ -74,24 +74,32 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
     /**
      * 响应数据为空
      */
-    public void onResponseDataEmpty() {}
+    public void onResponseDataEmpty() {
+        handleResponseFailed();
+    }
 
     /**
      * Json解析失败
      *
      * @param json
      */
-    public void onResponseParseFailed(String json) {}
+    public void onResponseParseFailed(String json) {
+        handleResponseFailed();
+    }
 
     /**
      * 返回状态错误
      */
-    public void onResponseStateError(ResponseData<T> response) {}
+    public void onResponseStateError(ResponseData<T> response) {
+        handleResponseFailed();
+    }
 
     /**
      * 响应内容为空
      */
-    public void onResponseContentEmpty() {}
+    public void onResponseContentEmpty() {
+        handleResponseFailed();
+    }
 
     /**
      * 成功获取数据后的操作
@@ -106,7 +114,9 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
      *
      * @param error
      */
-    public void handleRespone(VolleyError error) {}
+    public void handleRespone(VolleyError error) {
+        handleResponseFailed();
+    }
 
     /**
      * 处理未知错误的请求
@@ -118,5 +128,9 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
     /**
      * 处理返回值为1，即响应成功时的事件
      */
-    public void handleResponseSuccess() {}
+    public void handleResponseStatusOK() {}
+
+    public void handleResponseFailed() {
+
+    }
 }

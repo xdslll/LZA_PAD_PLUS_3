@@ -47,7 +47,7 @@
         <activity android:name=".app.socket.MinaServerActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
         <activity android:name=".app.journal.JournalContentActivity" android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
 
         <activity android:name=".app.test.TestActivity3">
         </activity>

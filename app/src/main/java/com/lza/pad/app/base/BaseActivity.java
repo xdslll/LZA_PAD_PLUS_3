@@ -18,10 +18,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.google.gson.Gson;
+import com.lza.pad.app.socket.admin.server.BaseServerIoAdapter;
+import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.app.socket.admin.server.OnServerIoAdapter;
 import com.lza.pad.app.socket.admin.server.ServerMessageHandler;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.app.socket.model.MinaServer;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -32,6 +33,7 @@ import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.service.UpdateDeviceService;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
+import com.lza.pad.support.utils.ToastUtils;
 import com.lza.pad.support.utils.UniversalUtility;
 
 import org.apache.mina.core.session.IoSession;
@@ -131,7 +133,9 @@ public class BaseActivity extends FragmentActivity implements Consts {
 
         mMinaServerHelper = MinaServerHelper.instance();
         if (mMinaServerHelper.isStarted()) {
-            mMinaServerHelper.setOnServerIoAdapter(mMinaServerListener);
+            mMinaServerHelper.setOnServerIoAdapter(new BaseServerIoAdapter());
+        } else {
+            ToastUtils.showLong(mCtx, "Mina服务启动失败！");
         }
 
         EventBus.getDefault().register(this);
@@ -350,7 +354,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo, key, value);
         RequestHelper.getInstance(mCtx, url, new CommonRequestListener() {
             @Override
-            public void handleResponseSuccess() {
+            public void handleResponseStatusOK() {
                 log("设备状态更新成功");
                 onDeviceUpdateSuccess(deviceInfo);
             }

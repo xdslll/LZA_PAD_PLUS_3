@@ -163,7 +163,7 @@
                 android:textColor="@color/gray"
                 android:text="（0条）"
                 android:textSize="@dimen/ebook_content_tip_size"
-                android:layout_marginLeft="100dp"
+                android:layout_marginLeft="@dimen/ebook_content_overview_douban_reviews_marginLeft"
                 android:id="@+id/ebook_content_overview_douban_reviews_count"
                 />
             <TextView

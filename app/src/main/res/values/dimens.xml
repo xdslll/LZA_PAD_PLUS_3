@@ -157,4 +157,11 @@
     <dimen name="ebookgrid_book_ver_padding">10dp</dimen>
     <dimen name="ebookgrid_book_hor_padding">10dp</dimen>
 
+    <!-- JournalContentCatalogFragment -->
+    <dimen name="journal_catalog_content_title_size">24sp</dimen>
+    <dimen name="journal_catalog_content_normal_size">20sp</dimen>
+    <dimen name="journal_catalog_content_empty_size">40sp</dimen>
+
+    <!-- EbookContentOverview -->
+    <dimen name="ebook_content_overview_douban_reviews_marginLeft">100dp</dimen>
 </resources>

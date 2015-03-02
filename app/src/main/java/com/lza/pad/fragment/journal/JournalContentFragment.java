@@ -39,6 +39,8 @@ public class JournalContentFragment extends BaseImageFragment {
 
     List<String> mTitles = new ArrayList<String>();
 
+    JournalContentAdapter mAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class JournalContentFragment extends BaseImageFragment {
 
         mPagerTab = (PagerSlidingTabStrip) view.findViewById(R.id.journal_content_pager_tab);
         mViewPager = (ViewPager) view.findViewById(R.id.journal_content_view_pager);
+        mPagerTab.setTextSize(getResources().getDimensionPixelSize(R.dimen.ebook_content_pager_tab_text_size));
 
         return view;
     }
@@ -70,7 +73,8 @@ public class JournalContentFragment extends BaseImageFragment {
         super.onViewCreated(view, savedInstanceState);
         requestCover();
         showJournalContent();
-        mViewPager.setAdapter(new JournalContentAdapter(getChildFragmentManager()));
+        mAdapter = new JournalContentAdapter(getChildFragmentManager());
+        mViewPager.setAdapter(mAdapter);
         mPagerTab.setViewPager(mViewPager);
     }
 
@@ -141,6 +145,15 @@ public class JournalContentFragment extends BaseImageFragment {
     }
 
     private Fragment getFragment(int index) {
-        return null;
+        if (index == 0) {
+            JournalContentCatalogFragment frg = new JournalContentCatalogFragment();
+            frg.setArguments(createArguments());
+            return frg;
+        } else if (index == 1) {
+            JournalContentSummaryFragment frg = new JournalContentSummaryFragment();
+            frg.setArguments(createArguments());
+            return frg;
+        }
+        return new Fragment();
     }
 }
