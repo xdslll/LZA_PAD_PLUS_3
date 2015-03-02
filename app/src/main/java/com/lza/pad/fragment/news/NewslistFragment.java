@@ -41,7 +41,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/23/15.
  */
-public class NewslistFragment2 extends BaseImageFragment {
+public class NewslistFragment extends BaseImageFragment {
 
     public static final int DEFAULT_START_PAGE = 1;
     protected int mDataSize = 0;
