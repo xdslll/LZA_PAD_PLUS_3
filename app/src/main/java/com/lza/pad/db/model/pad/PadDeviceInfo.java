@@ -55,6 +55,8 @@ public class PadDeviceInfo implements Parcelable {
 
     String last_connect_time;
 
+    String version;
+
     public String getId() {
         return id;
     }
@@ -183,6 +185,14 @@ public class PadDeviceInfo implements Parcelable {
         this.last_connect_time = last_connect_time;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public PadDeviceInfo() {
 
     }
@@ -229,6 +239,7 @@ public class PadDeviceInfo implements Parcelable {
         dest.writeString(this.hotspot_switch);
         dest.writeString(this.state);
         dest.writeString(this.last_connect_time);
+        dest.writeString(this.version);
     }
 
     private PadDeviceInfo(Parcel in) {
@@ -248,6 +259,7 @@ public class PadDeviceInfo implements Parcelable {
         this.hotspot_switch = in.readString();
         this.state = in.readString();
         this.last_connect_time = in.readString();
+        this.version = in.readString();
     }
 
     public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {

@@ -163,4 +163,8 @@
     <!-- EbookContentOverview -->
     <dimen name="ebook_content_overview_douban_reviews_marginLeft">150dp</dimen>
 
+    <!-- SearchFragment -->
+    <dimen name="search_list_search_text_size">26sp</dimen>
+    <dimen name="search_list_search_text_padding">15dp</dimen>
+
 </resources>

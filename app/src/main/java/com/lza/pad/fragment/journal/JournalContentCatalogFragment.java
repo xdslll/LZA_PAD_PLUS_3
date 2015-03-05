@@ -77,7 +77,7 @@ public class JournalContentCatalogFragment extends BaseImageFragment {
 
                     txtTitle.setText(data.getTitle());
                     txtAuthor.setText(data.getAuthor());
-                    txtQi.setText(data.getPubdate() + "/" + data.getQi());
+                    txtQi.setText(data.getPubdate() + "-" + data.getQi());
                     txtAbstract.setText(data.getContents());
                     txtKeyword.setText(data.getKeywords());
 

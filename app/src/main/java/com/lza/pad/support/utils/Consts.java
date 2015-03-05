@@ -66,6 +66,17 @@ public interface Consts {
      */
     public static final String CONTROL_GET_IMAGE = "get_image";
 
+    /**
+     * 馆藏查询
+     */
+    public static final String CONTROL_OPAC_SEARCH_LIST = "opac_search_list";
+
+    /**
+     * 馆藏查询
+     */
+    public static final String CONTROL_GET_UPGRADE_VERSION = "get_upgrade_version";
+
+
 
 
     public static final String KEY_GRID_NUM_COLUMNS = "key_grid_num_columns";

@@ -223,7 +223,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginRight="10dp">
+            android:layout_marginRight="10dp"
+            android:visibility="gone">
             <ImageView
                 android:layout_width="@dimen/ebook_content_qcode_width"
                 android:layout_height="@dimen/ebook_content_qcode_width"

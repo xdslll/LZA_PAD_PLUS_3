@@ -54,7 +54,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/18/15.
  */
-public class EbookContentFragment extends BaseImageFragment {
+public class EbookContentFragment2 extends BaseImageFragment {
 
     DefaultEbookCover mEbookCover;
     TextView mTxtTitle, mTxtAuthor, mTxtPubdate, mTxtPress, mTxtIsbn,
@@ -111,10 +111,12 @@ public class EbookContentFragment extends BaseImageFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
         //先向豆瓣获取，如果没有数据，则向服务器请求数据
-        String doubanUrl = UrlHelper.createDoubanBookByIsbnUrl(mPadResource);
-        send(doubanUrl, mDoubanListener);
+        //String doubanUrl = UrlHelper.createDoubanBookByIsbnUrl(mPadResource);
+        //send(doubanUrl, mDoubanListener);
+        showBookFromPadResource();
+        requestCoverFromPadResource();
+        createViewPager();
     }
 
     /**
@@ -126,6 +128,9 @@ public class EbookContentFragment extends BaseImageFragment {
         mTxtPress.setText(mPadResource.getPress());
         mTxtPubdate.setText(mPadResource.getPubdate());
         mTxtIsbn.setText(mPadResource.getIsbn());
+        mTxtPrice.setText("-");
+        mTxtTotalPages.setText("-");
+        mTxtBinding.setText("-");
     }
 
     /**
@@ -335,6 +340,21 @@ public class EbookContentFragment extends BaseImageFragment {
         mPagerTab.setViewPager(mViewPager);
     }
 
+    private void createViewPager() {
+        //设置标题
+        mTitles.add("简介");
+        mTitles.add("目录");
+        //设置View
+        if (mViews != null)
+            mViews.clear();
+        mViews.add(createSummaryOrCatalogView(INDEX_SUMMARY));
+        mViews.add(createSummaryOrCatalogView(INDEX_CATALOG));
+        mEbookContentAdapter = new EbookContentAdapter();
+        mViewPager.setAdapter(mEbookContentAdapter);
+
+        mPagerTab.setViewPager(mViewPager);
+    }
+
     private View createDoubanReviews(DoubanBook book) {
         return mInflater.inflate(R.layout.ebook_content2_item, null);
     }
@@ -342,10 +362,21 @@ public class EbookContentFragment extends BaseImageFragment {
     private View createSummaryOrCatalogView(int index, DoubanBook book) {
         View view = mInflater.inflate(R.layout.ebook_content_summary, null);
         TextView txtSummary = (TextView) view.findViewById(R.id.ebook_content_summary_text);
-        if (index == EbookContentFragment.INDEX_SUMMARY) {
+        if (index == EbookContentFragment2.INDEX_SUMMARY) {
             requestEbookSummary(book, txtSummary);
-        } else  if (index == EbookContentFragment.INDEX_CATALOG) {
+        } else  if (index == EbookContentFragment2.INDEX_CATALOG) {
             requestEbookCatalog(book, txtSummary);
+        }
+        return view;
+    }
+
+    private View createSummaryOrCatalogView(int index) {
+        View view = mInflater.inflate(R.layout.ebook_content_summary, null);
+        TextView txtSummary = (TextView) view.findViewById(R.id.ebook_content_summary_text);
+        if (index == EbookContentFragment2.INDEX_SUMMARY) {
+            requestEbookSummary(null, txtSummary);
+        } else  if (index == EbookContentFragment2.INDEX_CATALOG) {
+            requestEbookCatalog(null, txtSummary);
         }
         return view;
     }
@@ -449,6 +480,8 @@ public class EbookContentFragment extends BaseImageFragment {
         ft.commit();
         return view;
     }
+
+
 
     private class EbookContentAdapter extends PagerAdapter {
 

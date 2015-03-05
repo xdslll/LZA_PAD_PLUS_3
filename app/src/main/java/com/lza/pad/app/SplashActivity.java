@@ -2,6 +2,7 @@ package com.lza.pad.app;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,23 +11,33 @@ import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.app.base.BaseActivity;
 import com.lza.pad.app.home.HomeActivity;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.wifi.admin.WifiAdmin;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
+import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadVersionInfo;
 import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.event.state.ResponseEventTag;
+import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.ImageHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.debug.AppLogger;
+import com.lza.pad.support.file.FileTools;
+import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.ToastUtils;
 import com.lza.pad.support.utils.UniversalUtility;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Say something about this class
@@ -44,6 +55,8 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
     boolean mIsWifiEnable = false;
     boolean mIsWifiApEnable = false;
     int mWifiState;
+
+    private PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,7 +219,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
     @Override
     public void onEventMainThread(MinaClient client) {
         if (!checkMinaClient(client)) return;
-        mTxtSplash.setText("您好！欢迎来自[" + client.getAcademy() + "]的朋友：" + client.getName());
+        //mTxtSplash.setText("您好！欢迎来自[" + client.getAcademy() + "]的朋友：" + client.getName());
     }
 
     /**
@@ -271,6 +284,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
             if (state.equals(ResponseData.RESPONSE_STATE_OK)) {
                 if (data.getContent() == null || data.getContent().size() == 0) return;
                 final PadDeviceInfo deviceInfo = data.getContent().get(0);
+                mPadDeviceInfo = deviceInfo;
                 //判断是否需要打开热点
                 String isHotspotOn = deviceInfo.getHotspot_switch();
                 if (isHotspotOn.equals(PadDeviceInfo.TAG_HOTSPOT_ON)) {
@@ -285,7 +299,8 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                             ToastUtils.showLong(mCtx, "[" + wifiApName + "]热点启动成功！");
                             log("[" + wifiApName + "]热点启动成功！");
                             //发送更新启动状态的请求
-                            requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
+                            updateDeviceInfo(deviceInfo);
+                            //requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                         }
 
                         @Override
@@ -293,12 +308,14 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                             ToastUtils.showLong(mCtx, "[" + wifiApName + "]热点启动失败！");
                             log("[" + wifiApName + "]热点启动失败！");
                             //发送更新启动状态的请求
-                            requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
+                            updateDeviceInfo(deviceInfo);
+                            //requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                         }
                     });
                 } else {
                     //发送更新启动状态的请求
-                    requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
+                    updateDeviceInfo(deviceInfo);
+                    //requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                 }
             } else if (state.equals(ResponseData.RESPONSE_STATE_NO_LAYOUT)) {
                 UniversalUtility.showDialog(this, "提示", message,
@@ -320,6 +337,115 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
                                 mMainHandler.sendEmptyMessageDelayed(REQUEST_INIT, DEFAULT_REQUEST_DELAY);
                             }
                         });
+            }
+        } else {
+            UniversalUtility.showDialog(mCtx, "提示", "请求设备信息失败！请重试！");
+        }
+    }
+
+    private void updateDeviceInfo(PadDeviceInfo deviceInfo) {
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateProgressDialog("正在更新设备状态...");
+            }
+        });
+        deviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
+        deviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
+        //读取设备的版本号，比对现有的版本号
+        int currentVersionCode = UniversalUtility.getVersionCode(mCtx);
+        String newVersionCode = deviceInfo.getVersion();
+        log("当前版本号：" + currentVersionCode + ",新版本号：" + newVersionCode);
+        if (isEmpty(newVersionCode)) {
+            deviceInfo.setVersion(String.valueOf(currentVersionCode));
+            requestUpdateDeviceInfo(deviceInfo);
+        } else {
+            if (currentVersionCode < parseInt(newVersionCode)) {
+                //只有当前版本小于新版本号时，才开始更新版本
+                updateNewVersion(deviceInfo);
+            } else {
+                deviceInfo.setVersion(String.valueOf(currentVersionCode));
+                requestUpdateDeviceInfo(deviceInfo);
+            }
+        }
+    }
+
+    protected void updateNewVersion(PadDeviceInfo deviceInfo) {
+        //查询该版本是否存在
+        String requestUrl = UrlHelper.getVersionUrl(deviceInfo);
+        //如果存在则下载该版本
+        send(requestUrl, new UpdateNewVersionListener(deviceInfo));
+    }
+
+    private class UpdateNewVersionListener extends CommonRequestListener<PadVersionInfo> {
+
+        PadDeviceInfo deviceInfo;
+
+        private UpdateNewVersionListener(PadDeviceInfo deviceInfo) {
+            this.deviceInfo = deviceInfo;
+        }
+
+        @Override
+        public ResponseData<PadVersionInfo> parseJson(String json) {
+            return JsonParseHelper.pareseVersionInfo(json);
+        }
+
+        @Override
+        public void handleRespone(List<PadVersionInfo> content) {
+            log("开始更新版本...");
+            PadVersionInfo version = content.get(0);
+            String downloadUrl = version.getUrl();
+            if (isEmpty(downloadUrl)) {
+                gotoHomeActivity(deviceInfo);
+            } else {
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateProgressDialog("开始更新版本...");
+                    }
+                });
+
+                String fileName = deviceInfo.getVersion() + ".apk";
+                File filePath = FileTools.getCacheFile(Consts.CACHE_PATH + "/version/" + fileName);
+                try {
+                    if (filePath.exists()) {
+                        filePath.delete();
+                    }
+                } catch (Exception ex) {
+
+                }
+                DownloadHelper.InternelDownloadFile downloadFile = new DownloadHelper.InternelDownloadFile();
+                downloadFile.setFileName(fileName);
+                downloadFile.setFilePath(filePath.getAbsolutePath());
+                downloadFile.setFileType(PadVersionInfo.VERSION);
+                DownloadHelper helper = new DownloadHelper(SplashActivity.this, downloadUrl, downloadFile);
+                helper.download();
+            }
+
+        }
+
+        @Override
+        public void handleRespone(VolleyError error) {
+            log("下载失败");
+            gotoHomeActivity(deviceInfo);
+        }
+    }
+
+    @Override
+    public void onEventAsync(DownloadFile downloadFile) {
+        if (downloadFile == null) return;
+        String filePath = downloadFile.getFilePath();
+        if (isEmpty(filePath)) {
+            log("更新文件下载失败！");
+            gotoHomeActivity(mPadDeviceInfo);
+        } else {
+            File file = new File(filePath);
+            log("文件是否下载成功：" + file.exists());
+            if (file.exists()) {
+                Uri uri = Uri.fromFile(new File(filePath));
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                startActivity(intent);
             }
         }
     }

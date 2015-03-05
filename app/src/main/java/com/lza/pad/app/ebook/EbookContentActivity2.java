@@ -3,15 +3,15 @@ package com.lza.pad.app.ebook;
 import android.support.v4.app.Fragment;
 
 import com.lza.pad.app.base.BaseContentActivity;
-import com.lza.pad.fragment.ebook.EbookContentFragment;
+import com.lza.pad.fragment.ebook.EbookContentFragment2;
 
 /**
- * 显示电子书内容和豆瓣书评
+ * 仅显示电子书内容
  *
  * @author xiads
  * @Date 2/16/15.
  */
-public class EbookContentActivity extends BaseContentActivity {
+public class EbookContentActivity2 extends BaseContentActivity {
 
     @Override
     protected String getModName() {
@@ -26,6 +26,6 @@ public class EbookContentActivity extends BaseContentActivity {
         arg.putParcelable(KEY_PAD_RESOURCE_INFO, mPadResource);
         frg.setArguments(arg);
         return frg;*/
-        return new EbookContentFragment();
+        return new EbookContentFragment2();
     }
 }

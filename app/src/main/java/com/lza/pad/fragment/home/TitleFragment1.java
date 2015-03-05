@@ -18,8 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.admin.server.MinaServerHelper;
+import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadImageCollection;
@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class TitleFragment1 extends BaseImageFragment {
 
     private Calendar mCalendar;
-    private TextView mTxtTime, mTxtDate, mTxtConnectUser;
+    private TextView mTxtTime, mTxtDate, mTxtConnectUser, mTxtVersion;
     private ImageView mImgBg;
     private LinearLayout mLayoutFreeWifi;
     private GridView mGridModules;
@@ -71,6 +71,11 @@ public class TitleFragment1 extends BaseImageFragment {
         mLayoutFreeWifi = (LinearLayout) view.findViewById(R.id.title_free_wifi);
         mGridModules = (GridView) view.findViewById(R.id.title_grid);
         mImgBg = (ImageView) view.findViewById(R.id.title_bg);
+
+        /*mTxtVersion = (TextView) view.findViewById(R.id.title_version);
+        mTxtVersion.setVisibility(View.VISIBLE);
+        int versionCode = UniversalUtility.getVersionCode(mActivity);
+        mTxtVersion.setText("version:" + versionCode);*/
 
         if (mPadModuleInfos != null) {
             int size = mPadModuleInfos.size();

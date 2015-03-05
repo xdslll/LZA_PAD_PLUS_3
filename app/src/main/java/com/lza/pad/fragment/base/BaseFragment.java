@@ -123,6 +123,10 @@ public class BaseFragment extends Fragment implements Consts {
         return UniversalUtility.safeIntParse(value, 0);
     }
 
+    protected boolean isEmpty(String str) {
+        return TextUtils.isEmpty(str);
+    }
+
     /**
      * 根据模块信息，拼接出该模块所对应的Activity文件路径
      *
@@ -149,7 +153,7 @@ public class BaseFragment extends Fragment implements Consts {
             buffer.append(moduleStyle.toUpperCase());
         }
         buffer.append("Activity");
-        if (!TextUtils.isEmpty(moduleIndex)) {
+        if (parseInt(moduleIndex) > 0) {
             buffer.append(moduleIndex);
         }
         log("activity:" + buffer.toString());

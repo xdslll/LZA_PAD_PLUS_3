@@ -2,7 +2,6 @@ package com.lza.pad.app.socket.admin.server;
 
 import com.google.gson.Gson;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.socket.model.MinaServer;
 import com.lza.pad.helper.GsonHelper;
 
 import org.apache.mina.core.session.IoSession;
@@ -28,7 +27,7 @@ public class BaseServerIoAdapter extends OnServerIoAdapter {
             if (client.getAction().equals(MinaClient.ACTION_CONNECT)) {
                 EventBus.getDefault().post(client);
             } else if (client.getAction().equals(MinaClient.ACTION_SHAKE)) {
-                MinaServerHelper.instance().sendOK(client.getSession(), MinaServer.ACTION_SHAKE);
+                //MinaServerHelper.instance().sendOK(client.getSession(), MinaServer.ACTION_SHAKE);
                 EventBus.getDefault().post(client);
             } else if (client.getAction().equals(MinaClient.ACTION_APPLY_FOR_DOWNLOAD_FILE)) {
                 EventBus.getDefault().post(client);

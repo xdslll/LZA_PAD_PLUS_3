@@ -30,10 +30,14 @@
         <activity android:name=".app.news.NewsActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
         <activity android:name=".app.ebook.EbookContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
+        <activity android:name=".app.ebook.EbookContentActivity2" android:screenOrientation="portrait"
+            android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
         <activity android:name=".app.SubjectActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
         <activity android:name=".app.news.NewsContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
+        <activity android:name=".app.search.SearchActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
         <activity android:name=".widget.panoramic.shadow.ball.PanoramicActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
         <activity android:name=".app.guide.GuideActivity" android:screenOrientation="portrait"
@@ -48,6 +52,7 @@
             android:launchMode="singleTop"/>
         <activity android:name=".app.journal.JournalContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
+
 
         <activity android:name=".app.test.TestActivity3">
         </activity>
@@ -70,7 +75,7 @@
             </intent-filter>
         </service>
 
-        <!--<receiver android:name=".broadcast.RunOnBoot" >
+        <receiver android:name=".broadcast.RunOnBoot" >
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.HOME"/>
@@ -78,7 +83,7 @@
             <intent-filter >
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
     </application>
 
 </manifest>

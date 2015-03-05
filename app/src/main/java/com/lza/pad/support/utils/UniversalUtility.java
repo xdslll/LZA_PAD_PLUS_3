@@ -303,6 +303,18 @@ public class UniversalUtility {
         return sVersionName;
     }
 
+    public static int getVersionCode(Context context) {
+        int versionCode = 0;
+        PackageManager pm = context.getPackageManager();
+        try {
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionCode = pi.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
     /**
      * 获取网络类型
      *

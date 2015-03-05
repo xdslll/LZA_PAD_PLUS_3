@@ -69,6 +69,18 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_CONTROL_ID = "control_id";
 
+    public static final String PAR_KEY = "key";
+
+    public static final String PAR_STATE = "state";
+
+    public static final String PAR_LAST_CONNECT_TIME = "last_connect_time";
+
+    public static final String PAR_VERSION = "version";
+
+    public static final String PAR_VERSION_CODE = "version_code";
+
+
+
     public static String generateUrl(Map<String, String> par) {
         String param = UniversalUtility.encodeUrl(par);
         StringBuilder builder = new StringBuilder();
@@ -140,9 +152,9 @@ public class UrlHelper implements Consts {
         return par;
     }
 
-    public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo) {
+    /*public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo) {
         return generateUrl(updateDeviceInfoPar(deviceInfo));
-    }
+    }*/
 
     public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo, String key, String value) {
         Map<String, String> par = new HashMap<String, String>();
@@ -150,6 +162,18 @@ public class UrlHelper implements Consts {
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         par.put(PAR_DEVICE_CODE, deviceInfo.getBh());
         par.put(key, value);
+        return generateUrl(par);
+    }
+
+    public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_UPDATE_DEVICE_INFO);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_DEVICE_CODE, deviceInfo.getBh());
+        par.put(PAR_STATE, deviceInfo.getState());
+        par.put(PAR_LAST_CONNECT_TIME, deviceInfo.getLast_connect_time());
+        par.put(PAR_VERSION, deviceInfo.getVersion());
+        par.put(PAR_UPDATE_TAG, deviceInfo.getUpdate_tag());
         return generateUrl(par);
     }
 
@@ -177,6 +201,21 @@ public class UrlHelper implements Consts {
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         par.put(PAR_SCHOOL_BH, deviceInfo.getSchool_bh());
         par.put(PAR_CONTROL_ID, control.getWidgets_id());
+        return generateUrl(par);
+    }
+
+    public static String getOpacSearchListUrl(String keyword) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_OPAC_SEARCH_LIST);
+        par.put(PAR_KEY, keyword);
+        return generateUrl(par);
+    }
+
+    public static String getVersionUrl(PadDeviceInfo deviceInfo) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_UPGRADE_VERSION);
+        par.put(PAR_VERSION_CODE, deviceInfo.getVersion());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return generateUrl(par);
     }
 
@@ -218,12 +257,26 @@ public class UrlHelper implements Consts {
         return url;
     }
 
+    /**
+     * 查询豆瓣评论
+     *
+     * @param data
+     * @return
+     */
     public static String createDoubanReviewsByIsbnUrl(PadResource data) {
         String isbn = data.getIsbn();
         String url = String.format(DOUBAN_URL_BOOK_REVIEWS_BY_ISBN, isbn);
         return url;
     }
 
+    /**
+     * 查询豆瓣评论
+     *
+     * @param data
+     * @param start
+     * @param count
+     * @return
+     */
     public static String createDoubanReviewsByIsbnUrl(PadResource data, String start, String count) {
         String isbn = data.getIsbn();
         String url = String.format(DOUBAN_URL_BOOK_REVIEWS_BY_ISBN, isbn);

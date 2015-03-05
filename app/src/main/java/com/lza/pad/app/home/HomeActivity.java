@@ -276,12 +276,20 @@ public class HomeActivity extends BaseActivity implements RequestHelper.OnReques
             //将文件名首字母变成大写
             StringBuffer buffer = new StringBuffer();
             buffer.append(packageName).append(".")
-                    .append("fragment.")
-                    .append(controlType).append(".")
-                    .append(controlName.substring(0, 1).toUpperCase())
-                    .append(controlName.substring(1, controlName.length()))
-                    .append("Fragment")
-                    .append(controlIndex);
+                    .append("fragment.");
+            if (!TextUtils.isEmpty(controlType)) {
+                buffer.append(controlType).append(".");
+            }
+            if (!TextUtils.isEmpty(controlName) && controlName.length() > 1) {
+                buffer.append(controlName.substring(0, 1).toUpperCase())
+                        .append(controlName.substring(1, controlName.length()));
+            } else if (!TextUtils.isEmpty(controlName) && controlName.length() > 0) {
+                buffer.append(controlName.toUpperCase());
+            }
+                buffer.append("Fragment");
+            if (parseInt(controlIndex) > 0) {
+                buffer.append(controlIndex);
+            }
 
             AppLogger.e("文件名：" + buffer.toString());
 

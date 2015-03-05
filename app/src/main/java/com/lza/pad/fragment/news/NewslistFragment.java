@@ -18,7 +18,7 @@ import com.android.volley.VolleyError;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookContentActivity;
+import com.lza.pad.app.ebook.EbookContentActivity2;
 import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
@@ -89,7 +89,7 @@ public class NewslistFragment extends BaseImageFragment {
                 String sourceType = res.getSource_type();
                 if (sourceType.equals(PadResource.RESOURCE_EBOOK) || sourceType.equals(PadResource.RESOURCE_EBOOK_JC)
                         || sourceType.equals(PadResource.RESOURCE_HOT_BOOK) || sourceType.equals(PadResource.RESOURCE_NEW_BOOK)) {
-                    intent = new Intent(mActivity, EbookContentActivity.class);
+                    intent = new Intent(mActivity, EbookContentActivity2.class);
                 } else if (sourceType.equals(PadResource.RESOURCE_NEWS)) {
                     intent = new Intent(mActivity, NewsContentActivity.class);
                 } else if (sourceType.equals(PadResource.RESOURCE_JOURNAL)) {

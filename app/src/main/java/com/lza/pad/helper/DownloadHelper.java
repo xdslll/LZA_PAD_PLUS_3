@@ -1,15 +1,18 @@
 package com.lza.pad.helper;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 
 import com.lza.pad.db.facade.DownloadFileFacade;
 import com.lza.pad.db.model.DownloadFile;
+import com.lza.pad.support.debug.AppLogger;
 
 import java.io.File;
 
@@ -23,18 +26,20 @@ import de.greenrobot.event.EventBus;
  */
 public class DownloadHelper {
 
-    public DownloadHelper(Activity activity, String url, InternelDownloadFile downloadFile) {
+    public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
+    private DownloadChangeObserver mDownloadChangeObserver;
+
+    public DownloadHelper(Context ctx, String url, InternelDownloadFile downloadFile) {
         mDownloadUrl = url;
-        mActivity = activity;
+        mCtx = ctx;
         mDownloadFile = new File(downloadFile.filePath);
         mInnerFile = downloadFile;
-
-        mDownloadManager = (DownloadManager) mActivity.getSystemService(Context.DOWNLOAD_SERVICE);
+        mDownloadManager = (DownloadManager) mCtx.getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
     public void download() {
         IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        mActivity.registerReceiver(mDownloadCompleteReceiver, filter);
+        mCtx.registerReceiver(mDownloadCompleteReceiver, filter);
         //创建下载请求
         Uri uri = Uri.parse(mDownloadUrl);
         DownloadManager.Request request = new DownloadManager.Request(uri);
@@ -45,13 +50,72 @@ public class DownloadHelper {
         //开始下载
         mDownloadReference = mDownloadManager.enqueue(request);
 
+        mDownloadChangeObserver = new DownloadChangeObserver(null);
+        mCtx.getContentResolver().registerContentObserver(
+                CONTENT_URI, true, mDownloadChangeObserver);
         ifDownload = true;
+    }
+
+    private class DownloadChangeObserver extends ContentObserver {
+
+        /**
+         * Creates a content observer.
+         *
+         * @param handler The handler to run {@link #onChange} on, or null if none.
+         */
+        public DownloadChangeObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            queryDownloadStatus();
+        }
+    }
+
+    private void queryDownloadStatus() {
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(mDownloadReference);
+        Cursor c = mDownloadManager.query(query);
+        if (c != null && c.moveToFirst()) {
+            int status = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
+            int fileSizeIndex = c.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES);
+            int bytesSizeIndex = c.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR);
+            int fileSize = c.getInt(fileSizeIndex);
+            int bytesSize = c.getInt(bytesSizeIndex);
+            int percent = (int) ((float) bytesSize / fileSize * 100);
+            AppLogger.e("[DownloadManager] status=" + parseStatus(status)
+                    + ",fileSize=" + fileSize + ",bytesSize=" + bytesSize
+                    + ",percent=" + percent + "%");
+        }
+    }
+
+    private String parseStatus(int status) {
+        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+            return "STATUS_SUCCESSFUL";
+        } else if (status == DownloadManager.STATUS_FAILED) {
+            return "STATUS_FAILED";
+        } else if (status == DownloadManager.STATUS_PAUSED) {
+            return "STATUS_PAUSED";
+        } else if (status == DownloadManager.STATUS_PENDING) {
+            return "STATUS_PENDING";
+        } else if (status == DownloadManager.STATUS_RUNNING) {
+            return "STATUS_RUNNING";
+        }
+        return "";
     }
 
     public void release() {
         if (mDownloadCompleteReceiver != null) {
             try {
-                mActivity.unregisterReceiver(mDownloadCompleteReceiver);
+                mCtx.unregisterReceiver(mDownloadCompleteReceiver);
+            } catch (Exception ex) {
+
+            }
+        }
+        if (mDownloadChangeObserver != null) {
+            try {
+                mCtx.getContentResolver().unregisterContentObserver(mDownloadChangeObserver);
             } catch (Exception ex) {
 
             }
@@ -62,7 +126,7 @@ public class DownloadHelper {
     private long mDownloadReference;
     private File mDownloadFile;
     private String mDownloadUrl = "";
-    private Activity mActivity;
+    private Context mCtx;
     private InternelDownloadFile mInnerFile;
 
     private DownloadManager mDownloadManager;
@@ -83,13 +147,20 @@ public class DownloadHelper {
                     mDBDownloadFile.setArtTitle(mInnerFile.fileArtTitle);
                     mDBDownloadFile.setArtDescription(mInnerFile.fileArtDescription);
                     mDBDownloadFile.setImgPath(mInnerFile.imgPath);
-                    DownloadFileFacade.create(mActivity, mDBDownloadFile);
-                    release();
+                    DownloadFileFacade.create(mCtx, mDBDownloadFile);
                     //发送广播
                     EventBus.getDefault().post(mDBDownloadFile);
                 } else {
                     //Toast.makeText(context, "下载失败", Toast.LENGTH_SHORT).show();
+                    mDBDownloadFile = new DownloadFile();
+                    mDBDownloadFile.setFilePath(null);
+                    EventBus.getDefault().post(mDBDownloadFile);
                 }
+                release();
+            } else {
+                /*mDBDownloadFile = new DownloadFile();
+                mDBDownloadFile.setFilePath(null);
+                EventBus.getDefault().post(mDBDownloadFile);*/
             }
         }
     };

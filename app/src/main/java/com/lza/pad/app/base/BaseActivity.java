@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -24,9 +22,11 @@ import com.lza.pad.app.socket.admin.server.OnServerIoAdapter;
 import com.lza.pad.app.socket.admin.server.ServerMessageHandler;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.model.MinaServer;
+import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.CrashHelper;
 import com.lza.pad.helper.GsonHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -129,7 +129,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //启动异常监控
-        //CrashHelper.getInstance(this).init();
+        CrashHelper.getInstance(this).init();
 
         mMinaServerHelper = MinaServerHelper.instance();
         if (mMinaServerHelper.isStarted()) {
@@ -250,18 +250,21 @@ public class BaseActivity extends FragmentActivity implements Consts {
      *
      * @param client
      */
-    public void onEvent(MinaClient client) {
-
-    }
+    public void onEvent(MinaClient client) {}
 
     /**
      * 在主线程处理客户端连接请求
      *
      * @param client
      */
-    public void onEventMainThread(MinaClient client) {
+    public void onEventMainThread(MinaClient client) {}
 
-    }
+    /**
+     * 处理下载事件
+     *
+     * @param downloadFile
+     */
+    public void onEventAsync(DownloadFile downloadFile) {}
 
     protected ProgressDialog mProgressDialog = null;
 
@@ -343,30 +346,38 @@ public class BaseActivity extends FragmentActivity implements Consts {
      *
      * @param deviceInfo
      */
-    protected void requestUpdateDeviceInfo(final PadDeviceInfo deviceInfo, String key, String value) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                updateProgressDialog("正在更新设备状态");
-            }
-        });
-
+    @Deprecated
+    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo, String key, String value) {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo, key, value);
-        RequestHelper.getInstance(mCtx, url, new CommonRequestListener() {
-            @Override
-            public void handleResponseStatusOK() {
-                log("设备状态更新成功");
-                onDeviceUpdateSuccess(deviceInfo);
-            }
-
-            @Override
-            public void onResponseStateError(ResponseData response) {
-                log("设备状态更新失败");
-                onDeviceUpdateFailed(deviceInfo);
-            }
-        }).send();
+        RequestHelper.getInstance(mCtx, url, new UpdateDeviceInfoListener(deviceInfo)).send();
     }
 
+    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo) {
+        String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
+        RequestHelper.getInstance(mCtx, url, new UpdateDeviceInfoListener(deviceInfo)).send();
+    }
+
+
+    private class UpdateDeviceInfoListener extends CommonRequestListener {
+
+        PadDeviceInfo deviceInfo;
+
+        private UpdateDeviceInfoListener(PadDeviceInfo deviceInfo) {
+            this.deviceInfo = deviceInfo;
+        }
+
+        @Override
+        public void handleResponseStatusOK() {
+            log("设备状态更新成功");
+            onDeviceUpdateSuccess(deviceInfo);
+        }
+
+        @Override
+        public void onResponseStateError(ResponseData response) {
+            log("设备状态更新失败");
+            onDeviceUpdateFailed(deviceInfo);
+        }
+    }
     protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
     protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
 
@@ -390,6 +401,10 @@ public class BaseActivity extends FragmentActivity implements Consts {
 
     protected int parseInt(String value) {
         return UniversalUtility.safeIntParse(value, 0);
+    }
+
+    protected boolean isEmpty(String str) {
+        return TextUtils.isEmpty(str);
     }
 }
 
