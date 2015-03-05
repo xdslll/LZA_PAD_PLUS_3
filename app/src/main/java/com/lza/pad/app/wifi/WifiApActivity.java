@@ -22,7 +22,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.base.BaseActivity;
-import com.lza.pad.app.wifi.admin.WifiAdmin;
+import com.lza.pad.app.wifi.admin._WifiAdmin;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.ToastUtils;
@@ -43,7 +43,7 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
     ListView mListWifi;
 
     WifiManager mWifiManager;
-    WifiAdmin mWifiAdmin;
+    _WifiAdmin mWifiAdmin;
     WifiApAdmin mWifiApAdmin;
     WifiConfiguration mWifiApConfig;
     Context mCtx;
@@ -90,7 +90,7 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
         mBtnConnectWifi = (Button) findViewById(R.id.wifi_hotpot_connect);
         mIsWifiEnable = mWifiManager.isWifiEnabled();//获取Wifi开启状态
         setWifiState();//设置Wifi状态文字
-        mWifiAdmin = new WifiAdmin(mCtx) {
+        mWifiAdmin = new _WifiAdmin(mCtx) {
             @Override
             public void onWifiConnected() {
                 ToastUtils.showShort(mCtx, "Wifi连接成功！");
@@ -260,13 +260,13 @@ public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiAp
                             AppLogger.e("SSID:" + SSID + ",TYPE:" + TYPE);
                             int type;
                             if (TYPE.contains("WPA") || TYPE.contains("WPA2")) {
-                                type = WifiAdmin.TYPE_WPA;
+                                type = _WifiAdmin.TYPE_WPA;
                                 showWifiPasswordDialog(SSID, type);
                             } else if (TYPE.contains("WEP")) {
-                                type = WifiAdmin.TYPE_WEP;
+                                type = _WifiAdmin.TYPE_WEP;
                                 showWifiPasswordDialog(SSID, type);
                             } else {
-                                type = WifiAdmin.TYPE_NO_PASSWORD;
+                                type = _WifiAdmin.TYPE_NO_PASSWORD;
                                 mWifiAdmin.addNetWork(SSID, "", type);
                             }
 

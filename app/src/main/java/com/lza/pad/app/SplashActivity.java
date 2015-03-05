@@ -16,7 +16,7 @@ import com.lza.pad.R;
 import com.lza.pad.app.base.BaseActivity;
 import com.lza.pad.app.home.HomeActivity;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.wifi.admin.WifiAdmin;
+import com.lza.pad.app.wifi.admin._WifiAdmin;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
@@ -26,7 +26,6 @@ import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.event.state.ResponseEventTag;
 import com.lza.pad.helper.CommonRequestListener;
 import com.lza.pad.helper.DownloadHelper;
-import com.lza.pad.helper.ImageHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -49,7 +48,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
 
     TextView mTxtSplash;
 
-    WifiAdmin mWifiAdmin;
+    _WifiAdmin mWifiAdmin;
     WifiApAdmin mWifiApAdmin;
 
     boolean mIsWifiEnable = false;
@@ -77,7 +76,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
 
         //mMainHandler.sendEmptyMessageDelayed(REQUEST_INIT, 2000);
 
-        ImageHelper.getInstance(mCtx).clearDiskCache();
+        //ImageHelper.getInstance(mCtx).clearDiskCache();
     }
 
     @Override
@@ -140,7 +139,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
             mIsWifiApEnable = mWifiApAdmin.isWifiApEnable();
         }
 
-        mWifiAdmin = new WifiAdmin(mCtx);
+        mWifiAdmin = new _WifiAdmin(mCtx);
         //打开Wifi，获取Mac地址
         mIsWifiEnable = mWifiAdmin.isWifiEnabled();
         if (!mIsWifiApEnable && !mIsWifiEnable) {
