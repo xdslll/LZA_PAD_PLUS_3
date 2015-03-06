@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.app.wifi.admin._WifiAdmin;
 import com.lza.pad.app.wifi.admin.WifiApAdmin;
 import com.lza.pad.support.debug.AppLogger;
@@ -36,7 +36,7 @@ import java.util.List;
  * @author xiads
  * @Date 15/1/26.
  */
-public class WifiApActivity extends BaseActivity implements WifiApAdmin.OnWifiApStartListener {
+public class WifiApActivity extends _BaseActivity implements WifiApAdmin.OnWifiApStartListener {
 
     Button mBtnOpenWifiAp, mBtnConnectWifi, mBtnScanWifi;
     TextView mTxtWifiApState, mTxtApWifiSSID, mTxtWifiApPassword, mTxtWifiState;

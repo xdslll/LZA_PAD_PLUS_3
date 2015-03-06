@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
  */
 public class MinaFileServerAdmin {
 
-    public static final int PORT = 9999;
+    public static int PORT = 9999;
 
     private MinaFileSendHandler mHandler;
 
@@ -39,7 +39,7 @@ public class MinaFileServerAdmin {
         return mAcceptor != null && mAcceptor.isActive();
     }
 
-    public void start() {
+    public boolean start() {
         mAcceptor = new NioSocketAcceptor();
         DefaultIoFilterChainBuilder chainBuilder = mAcceptor.getFilterChain();
 
@@ -56,8 +56,11 @@ public class MinaFileServerAdmin {
             mAcceptor.bind(address);
         } catch (IOException e) {
             e.printStackTrace();
+            PORT++;
+            return start();
         }
         AppLogger.e("文件服务器已经启动，端口号：" + PORT);
+        return true;
     }
 
     public boolean stop() {

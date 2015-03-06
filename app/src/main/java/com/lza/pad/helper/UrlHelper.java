@@ -2,7 +2,6 @@ package com.lza.pad.helper;
 
 import android.text.TextUtils;
 
-import com.lza.pad.app.base.MainApplication;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
@@ -20,6 +19,9 @@ import java.util.Map;
  * @Date 15/1/22.
  */
 public class UrlHelper implements Consts {
+
+    public static String DEFAULT_URL = "http://pad2.smartlib.cn/interface.cx?";
+    //public static String DEFAULT_URL = "http://114.212.7.87/book_center/interface.cx?";
 
     public static final String PAR_CONTROL = "control";
 
@@ -84,8 +86,7 @@ public class UrlHelper implements Consts {
     public static String generateUrl(Map<String, String> par) {
         String param = UniversalUtility.encodeUrl(par);
         StringBuilder builder = new StringBuilder();
-        String defaultUrl = MainApplication.getInstance().getUrl();
-        builder.append(defaultUrl).append(param);
+        builder.append(DEFAULT_URL).append(param);
         return builder.toString();
     }
 
@@ -284,8 +285,6 @@ public class UrlHelper implements Consts {
                 .append("&start=").append(start)
                 .append("&count=").append(count)
                 .toString();
-        //url = url + "&start=" + start + "&count=" + count;
-        //return url;
     }
 
 }

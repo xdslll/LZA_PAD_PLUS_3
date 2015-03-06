@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.SeekBar;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.widget.TestView;
 
 /**
@@ -17,7 +17,7 @@ import com.lza.pad.widget.TestView;
  * @Date 15/1/23.
  */
 @Deprecated
-public class TestActivity extends BaseActivity {
+public class TestActivity extends _BaseActivity {
 
     SeekBar mSeekBar;
     TestView mTestView;

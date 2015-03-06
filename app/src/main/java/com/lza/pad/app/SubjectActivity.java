@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.fragment.SubjectFragment;
 
 /**
@@ -14,7 +14,8 @@ import com.lza.pad.fragment.SubjectFragment;
  * @author xiads
  * @Date 1/21/15.
  */
-public class SubjectActivity extends BaseActivity {
+@Deprecated
+public class SubjectActivity extends _BaseActivity {
 
     private TextView mTxtClose, mTxtTitle;
     private int mCurrentSubject = 0;

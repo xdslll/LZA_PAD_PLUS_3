@@ -16,7 +16,7 @@ import com.lza.pad.support.utils.RuntimeUtility;
  * @author xiads
  * @Date 1/21/15.
  */
-public abstract class BaseContentActivity extends BaseActivity {
+public abstract class BaseContentActivity extends _BaseActivity {
 
     private TextView mTxtClose, mTxtTitle;
     protected PadResource mPadResource;

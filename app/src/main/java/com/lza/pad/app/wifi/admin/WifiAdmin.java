@@ -9,7 +9,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
-import com.lza.pad.client.utils.AppLogger;
+import com.lza.pad.support.debug.AppLogger;
 
 import java.util.List;
 

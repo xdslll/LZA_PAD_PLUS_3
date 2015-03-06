@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.app.socket.admin.server.MinaServerAdmin;
 import com.lza.pad.app.socket.admin.server.OnServerIoAdapter;
 import com.lza.pad.app.socket.admin.server.ServerMessageHandler;
@@ -32,7 +32,7 @@ import java.util.List;
  * @author xiads
  * @Date 15/2/4.
  */
-public class MinaServerActivity extends BaseActivity {
+public class MinaServerActivity extends _BaseActivity {
     Button mBtnStartServer, mBtnStopServer;
     TextView mTxtLogMessage;
 

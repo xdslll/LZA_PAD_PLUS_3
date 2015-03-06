@@ -382,6 +382,15 @@ public class UniversalUtility {
                 .show();
     }
 
+    public static void showDialog(Context context, int title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("确定", okListener)
+                .setNegativeButton("取消", cancelListener)
+                .show();
+    }
+
     public static void showDialog(Context context, String title, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
         new AlertDialog.Builder(context)
                 .setTitle(title)
@@ -399,6 +408,19 @@ public class UniversalUtility {
                         dialog.dismiss();
                     }
         });
+    }
+
+    public static void showDialog(Context context, int title, int message) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     public static void showDialog(Context context, String title, String message) {

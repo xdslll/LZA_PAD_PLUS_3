@@ -57,6 +57,14 @@ public class PadDeviceInfo implements Parcelable {
 
     String version;
 
+    String wifi_ssid;
+
+    String wifi_password;
+
+    String wifi_type;
+
+    String secret_key;
+
     public String getId() {
         return id;
     }
@@ -193,6 +201,38 @@ public class PadDeviceInfo implements Parcelable {
         this.version = version;
     }
 
+    public String getWifi_ssid() {
+        return wifi_ssid;
+    }
+
+    public void setWifi_ssid(String wifi_ssid) {
+        this.wifi_ssid = wifi_ssid;
+    }
+
+    public String getWifi_password() {
+        return wifi_password;
+    }
+
+    public void setWifi_password(String wifi_password) {
+        this.wifi_password = wifi_password;
+    }
+
+    public String getWifi_type() {
+        return wifi_type;
+    }
+
+    public void setWifi_type(String wifi_type) {
+        this.wifi_type = wifi_type;
+    }
+
+    public String getSecret_key() {
+        return secret_key;
+    }
+
+    public void setSecret_key(String secret_key) {
+        this.secret_key = secret_key;
+    }
+
     public PadDeviceInfo() {
 
     }
@@ -240,6 +280,10 @@ public class PadDeviceInfo implements Parcelable {
         dest.writeString(this.state);
         dest.writeString(this.last_connect_time);
         dest.writeString(this.version);
+        dest.writeString(this.wifi_ssid);
+        dest.writeString(this.wifi_password);
+        dest.writeString(this.wifi_type);
+        dest.writeString(this.secret_key);
     }
 
     private PadDeviceInfo(Parcel in) {
@@ -260,6 +304,10 @@ public class PadDeviceInfo implements Parcelable {
         this.state = in.readString();
         this.last_connect_time = in.readString();
         this.version = in.readString();
+        this.wifi_ssid = in.readString();
+        this.wifi_password = in.readString();
+        this.wifi_type = in.readString();
+        this.secret_key = in.readString();
     }
 
     public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {

@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
@@ -38,7 +38,7 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 1/5/15.
  */
-public class HomeActivity extends BaseActivity implements RequestHelper.OnRequestListener {
+public class HomeActivity extends _BaseActivity implements RequestHelper.OnRequestListener {
 
     private LinearLayout mMainContainer;
 

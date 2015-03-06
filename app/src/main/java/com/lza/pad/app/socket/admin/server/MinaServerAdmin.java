@@ -23,7 +23,7 @@ public class MinaServerAdmin {
     private SocketAcceptor acceptor;
     private ServerMessageHandler handler = new ServerMessageHandler();
 
-    private static final int PORT = 8888;
+    private static int PORT = 8888;
     private static final int DEFAULT_IDLE_TIME = 30;
 
     public void setOnServerIoListener(ServerMessageHandler.OnServerIoListener listener) {
@@ -50,8 +50,8 @@ public class MinaServerAdmin {
         } catch (IOException e) {
             AppLogger.e("绑定[" + PORT + "]失败，失败原因：" + e.getMessage() + "," + e.getCause());
             e.printStackTrace();
-            //stop();
-            return false;
+            PORT++;
+            return start();
         }
         return true;
     }

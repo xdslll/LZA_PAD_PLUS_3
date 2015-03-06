@@ -16,7 +16,7 @@ import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base.BaseFragment;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.network.VolleySingleton;
@@ -89,7 +89,7 @@ public class NewsFragment1 extends BaseFragment {
         send(url, mListener);
     }
 
-    private CommonRequestListener<PadResource> mListener = new CommonRequestListener<PadResource>() {
+    private SimpleRequestListener<PadResource> mListener = new SimpleRequestListener<PadResource>() {
 
         @Override
         public ResponseData<PadResource> parseJson(String json) {

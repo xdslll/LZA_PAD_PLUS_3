@@ -25,7 +25,7 @@ import com.lza.pad.app.socket.model.MinaServer;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.CrashHelper;
 import com.lza.pad.helper.GsonHelper;
 import com.lza.pad.helper.RequestHelper;
@@ -48,7 +48,8 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 1/5/15.
  */
-public class BaseActivity extends FragmentActivity implements Consts {
+@Deprecated
+public class _BaseActivity extends FragmentActivity implements Consts {
 
     public static final String JSON_LAYOUT_MODULE = "json_layout_module";
     public static final String JSON_MODULE_CONTROL = "json_module_control";
@@ -128,6 +129,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
         //全屏显示
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         //启动异常监控
         CrashHelper.getInstance(this).init();
 
@@ -358,7 +360,7 @@ public class BaseActivity extends FragmentActivity implements Consts {
     }
 
 
-    private class UpdateDeviceInfoListener extends CommonRequestListener {
+    private class UpdateDeviceInfoListener extends SimpleRequestListener {
 
         PadDeviceInfo deviceInfo;
 
@@ -367,9 +369,10 @@ public class BaseActivity extends FragmentActivity implements Consts {
         }
 
         @Override
-        public void handleResponseStatusOK() {
+        public boolean handleResponseStatusOK(String json) {
             log("设备状态更新成功");
             onDeviceUpdateSuccess(deviceInfo);
+            return super.handleResponseStatusOK(json);
         }
 
         @Override

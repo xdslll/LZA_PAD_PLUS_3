@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.fragment.ebook._EbookContentFragment;
 
 /**
@@ -15,7 +15,7 @@ import com.lza.pad.fragment.ebook._EbookContentFragment;
  * @Date 1/18/15.
  */
 @Deprecated
-public class _EbookContentActivity extends BaseActivity {
+public class _EbookContentActivity extends _BaseActivity {
 
     private TextView mTxtClose;
 

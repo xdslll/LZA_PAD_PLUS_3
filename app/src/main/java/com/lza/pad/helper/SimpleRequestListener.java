@@ -8,38 +8,49 @@ import com.lza.pad.event.state.ResponseEventTag;
 import java.util.List;
 
 /**
- * Say something about this class
+ * 通过的请求处理事件
  *
  * @author xiads
  * @Date 15/2/10.
  */
-public class CommonRequestListener<T> implements RequestHelper.OnRequestListener {
+public class SimpleRequestListener<T> implements RequestHelper.OnRequestListener {
 
     @Override
     public void onResponse(ResponseEventInfo response) {
+        //处理响应数据为空的情况
         if (response == null) {
             onResponseDataEmpty();
             return;
         }
+        //处理响应成功的情况
         if (response.getTag() == ResponseEventTag.ON_RESONSE) {
             String json = response.getResponseData();
+            //解析Json，用户可以拦截解析的结果
             if (handlerJson(json)) return;
+            //解析Json为指定数据类型
             ResponseData<T> data = parseJson(json);
+            //如果解析数据为空，则
             if (data == null) {
                 onResponseParseFailed(json);
                 return;
             }
+            //拦截对响应数据的处理
             if (handlerResponse(data)) return;
+            //获取处理状态
             String state = data.getState();
+            //如果响应状态不为1，则进行异常处理
             if (state == null || !state.equals(ResponseData.RESPONSE_STATE_OK)) {
                 onResponseStateError(data);
                 return;
             }
-            handleResponseStatusOK();
+            //拦截状态响应成功时的情况
+            if (handleResponseStatusOK(json)) return;
+            //处理content字段为空的情况
             if (data.getContent() == null || data.getContent().size() <= 0) {
                 onResponseContentEmpty();
                 return;
             }
+            //处理响应数据
             handleRespone(data.getContent());
         } else if (response.getTag() == ResponseEventTag.ON_ERROR) {
             handleRespone(response.getError());
@@ -127,9 +138,15 @@ public class CommonRequestListener<T> implements RequestHelper.OnRequestListener
 
     /**
      * 处理返回值为1，即响应成功时的事件
+     * @param json
      */
-    public void handleResponseStatusOK() {}
+    public boolean handleResponseStatusOK(String json) {
+        return false;
+    }
 
+    /**
+     * 统一处理异常
+     */
     public void handleResponseFailed() {
 
     }

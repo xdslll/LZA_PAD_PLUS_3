@@ -23,7 +23,7 @@ import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base.BaseImageFragment;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.ToastUtils;
@@ -119,7 +119,7 @@ public class NewslistFragment extends BaseImageFragment {
         send(url, new PadResourceListener());
     }
 
-    private class PadResourceListener extends CommonRequestListener<PadResource> {
+    private class PadResourceListener extends SimpleRequestListener<PadResource> {
 
         @Override
         public ResponseData<PadResource> parseJson(String json) {

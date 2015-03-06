@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 
-public class PanoramicActivity extends BaseActivity {
+public class PanoramicActivity extends _BaseActivity {
 
 	GLSurfaceView mGlSurfaceView;
 	PanoramicBallView mBall;

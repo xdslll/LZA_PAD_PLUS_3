@@ -12,7 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.support.network.VolleySingleton;
 
 /**
@@ -22,7 +22,7 @@ import com.lza.pad.support.network.VolleySingleton;
  * @Date 2/23/15.
  */
 @Deprecated
-public class TestActivity3 extends BaseActivity {
+public class TestActivity3 extends _BaseActivity {
 
     EditText mEdtUrl;
     TextView mTxtRequest, mTxtData;

@@ -8,7 +8,7 @@ import android.os.Environment;
 import android.view.View;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.UniversalUtility;
 
@@ -20,7 +20,8 @@ import java.io.File;
  * @author xiads
  * @Date 1/6/15.
  */
-public class PluginInstallActivity extends BaseActivity {
+@Deprecated
+public class PluginInstallActivity extends _BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -25,7 +25,7 @@ import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadImageCollection;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.fragment.base.BaseImageFragment;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
@@ -118,7 +118,7 @@ public class TitleFragment1 extends BaseImageFragment {
         }
     }
 
-    CommonRequestListener<PadImageCollection> mBgImageListener = new CommonRequestListener<PadImageCollection>() {
+    SimpleRequestListener<PadImageCollection> mBgImageListener = new SimpleRequestListener<PadImageCollection>() {
         @Override
         public ResponseData<PadImageCollection> parseJson(String json) {
             return JsonParseHelper.parseImageCollectionResponse(json);

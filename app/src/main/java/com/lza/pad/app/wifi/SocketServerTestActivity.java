@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.ToastUtils;
 
@@ -26,7 +26,7 @@ import java.util.Date;
  * @author xiads
  * @Date 15/1/28.
  */
-public class SocketServerTestActivity extends BaseActivity {
+public class SocketServerTestActivity extends _BaseActivity {
 
     TextView mTxtMsg;
     Button mBtnLaunch;

@@ -15,13 +15,9 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application android:allowBackup="true" android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher" android:name=".app.base.MainApplication"
+        android:icon="@drawable/ic_launcher" android:name=".app2.application.MainApplication"
         android:theme="@style/BaseTheme">
         <activity android:name=".app.SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".app.home.HomeActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
         <activity android:name=".app.PluginInstallActivity" android:screenOrientation="portrait"
@@ -52,14 +48,18 @@
             android:launchMode="singleTop"/>
         <activity android:name=".app.journal.JournalContentActivity" android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" android:launchMode="singleTop"/>
-
-
         <activity android:name=".app.test.TestActivity3">
         </activity>
         <activity android:name=".app.test.TestActivity2">
-
         </activity>
         <activity android:name=".app.test.TestActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".app2.verify.VerifyActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <service android:name=".app.socket.admin.server.MinaService" android:enabled="true">
             <intent-filter>
@@ -75,7 +75,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".broadcast.RunOnBoot" >
+        <!--<receiver android:name=".broadcast.RunOnBoot" >
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.HOME"/>
@@ -83,7 +83,7 @@
             <intent-filter >
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
     </application>
 
 </manifest>

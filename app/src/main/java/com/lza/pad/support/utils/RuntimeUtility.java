@@ -669,7 +669,7 @@ public final class RuntimeUtility implements Consts {
      * @向sharePreference中存放值
      */
     public static void putToSP(Context context, String key, Object defaultValue) {
-        SharedPreferences preferences = context.getSharedPreferences(SP_NAME, SP_MODE);
+        SharedPreferences preferences = context.getSharedPreferences(SP_NAME, SP_MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
         if (defaultValue instanceof String) {
@@ -691,18 +691,36 @@ public final class RuntimeUtility implements Consts {
      */
     public static String getFromSP(Context context, String key, String defaultValue) {
         String value = null;
-        SharedPreferences preferences = context.getSharedPreferences(SP_NAME, SP_MODE);
+        SharedPreferences preferences = context.getSharedPreferences(SP_NAME, SP_MODE_PRIVATE);
         value = preferences.getString(key, defaultValue);
         return value;
     }
 
     public static boolean getFromSP(Context context, String key, boolean defaultValue) {
         boolean value = false;
-        SharedPreferences preferences = context.getSharedPreferences(SP_NAME, SP_MODE);
+        SharedPreferences preferences = context.getSharedPreferences(SP_NAME, SP_MODE_PRIVATE);
         value = preferences.getBoolean(key, defaultValue);
         return value;
     }
 
+    /**
+     * 存储设备数据
+     *
+     * @param context
+     * @param key
+     * @param defaultValue
+     */
+    public static void putToDeviceSP(Context context, String key, Object defaultValue) {
+        putToSP(context, SP_DEVICE_NAME, SP_MODE_PRIVATE, key, defaultValue);
+    }
+
+    public static String getFromDeviceSP(Context context, String key, String defaultValue) {
+        return getStringFromSP(context, SP_DEVICE_NAME, SP_MODE_PRIVATE, key, defaultValue);
+    }
+
+    public static boolean clearDeviceSp(Context context) {
+        return clearSp(context, SP_DEVICE_NAME, SP_MODE_PRIVATE);
+    }
 
     /**
      * 存储Ui数据
@@ -712,15 +730,15 @@ public final class RuntimeUtility implements Consts {
      * @param defaultValue
      */
     public static void putToUiSP(Context context, String key, Object defaultValue) {
-        putToSP(context, SP_UI_NAME, SP_MODE, key, defaultValue);
+        putToSP(context, SP_UI_NAME, SP_MODE_PRIVATE, key, defaultValue);
     }
 
     public static String getFromUiSP(Context context, String key, String defaultValue) {
-        return getStringFromSP(context, SP_UI_NAME, SP_MODE, key, defaultValue);
+        return getStringFromSP(context, SP_UI_NAME, SP_MODE_PRIVATE, key, defaultValue);
     }
 
     public static boolean clearUiSp(Context context) {
-        return clearSp(context, SP_UI_NAME, SP_MODE);
+        return clearSp(context, SP_UI_NAME, SP_MODE_PRIVATE);
     }
 
     /**

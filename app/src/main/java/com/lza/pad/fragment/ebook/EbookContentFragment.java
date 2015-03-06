@@ -31,7 +31,7 @@ import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
 import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.fragment.base.BaseImageFragment;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -291,7 +291,7 @@ public class EbookContentFragment extends BaseImageFragment {
         });*/
     }
 
-    private CommonRequestListener<DoubanBook> mDoubanListener = new CommonRequestListener<DoubanBook>() {
+    private SimpleRequestListener<DoubanBook> mDoubanListener = new SimpleRequestListener<DoubanBook>() {
 
         @Override
         public boolean handlerJson(String json) {
@@ -386,7 +386,7 @@ public class EbookContentFragment extends BaseImageFragment {
         send(url, new RequestListener(text));
     }
 
-    private class RequestListener extends CommonRequestListener<PadResource> {
+    private class RequestListener extends SimpleRequestListener<PadResource> {
 
         TextView text;
         public RequestListener(TextView text) {

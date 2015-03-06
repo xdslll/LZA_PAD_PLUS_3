@@ -17,7 +17,7 @@ import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.debug.AppLogger;
@@ -31,7 +31,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/18/15.
  */
-public abstract class BaseNormalModuleActivity extends BaseActivity {
+public abstract class BaseNormalModuleActivity extends _BaseActivity {
 
     private LinearLayout mMainContainer;
     private TextView mTxtBack, mTxtType, mTxtSearch, mTxtModName, mTxtDivider;
@@ -187,7 +187,7 @@ public abstract class BaseNormalModuleActivity extends BaseActivity {
         send(controlUrl, new RequestControlsListener());
     }
 
-    private class RequestControlsListener extends CommonRequestListener<PadModuleControl> {
+    private class RequestControlsListener extends SimpleRequestListener<PadModuleControl> {
         @Override
         public ResponseData<PadModuleControl> parseJson(String json) {
             return JsonParseHelper.parseModuleControlResponse(json);

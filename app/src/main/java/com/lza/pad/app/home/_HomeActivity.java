@@ -3,7 +3,7 @@ package com.lza.pad.app.home;
 import android.os.Bundle;
 
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -16,7 +16,7 @@ import com.lza.pad.support.utils.ToastUtils;
  * @Date 15/2/9.
  */
 @Deprecated
-public class _HomeActivity extends BaseActivity {
+public class _HomeActivity extends _BaseActivity {
 
     private PadDeviceInfo mDeviceInfo;
 

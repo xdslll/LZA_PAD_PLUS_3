@@ -13,4 +13,16 @@
     <string name="ten_thousand">万</string>
     <string name="menu_func_get_menu">获取菜单</string>
 
+    <!-- VerifyActivity.java -->
+    <string name="verify_if_network_connected">正在验证是否联网</string>
+    <string name="getting_mac_address">正在获取mac地址</string>
+    <string name="authority_device_info">正在验证设备信息</string>
+    <string name="opening_wifi">正在打开Wi-Fi...</string>
+    <string name="enabling_wifi">Wi-Fi打开中...</string>
+    <string name="authority_successful">验证成功</string>
+    <string name="authority_successful_detail">验证设备信息成功</string>
+    <string name="authority_failed">验证失败</string>
+    <string name="authority_failed_empty_expiration">验证设备信息失败，服务期限为空</string>
+    <string name="service_expiration">服务过期</string>
+    <string name="service_expiration_detail">设备服务过期，请与代理商联系申请延长服务期限</string>
 </resources>

@@ -15,7 +15,7 @@ import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
 import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.event.state.ResponseEventTag;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
@@ -214,10 +214,11 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         int currentVersion = UniversalUtility.getVersionCode(mContext);
         mDeviceInfo.setVersion(String.valueOf(currentVersion));
         String updateDeviceUrl = UrlHelper.updateDeviceInfoUrl(mDeviceInfo);
-        send(updateDeviceUrl, new CommonRequestListener() {
+        send(updateDeviceUrl, new SimpleRequestListener() {
             @Override
-            public void handleResponseStatusOK() {
+            public boolean handleResponseStatusOK(String json) {
                 log("更新设备状态成功！");
+                return super.handleResponseStatusOK(json);
             }
 
             @Override
@@ -249,7 +250,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         }
     }
 
-    private class UpdateNewVersionListener extends CommonRequestListener<PadVersionInfo> {
+    private class UpdateNewVersionListener extends SimpleRequestListener<PadVersionInfo> {
 
         PadDeviceInfo deviceInfo;
 

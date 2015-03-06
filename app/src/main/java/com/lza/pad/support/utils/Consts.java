@@ -79,6 +79,7 @@ public interface Consts {
 
 
 
+    public static final String KEY_CANCELABLE = "key_cancelable";
     public static final String KEY_GRID_NUM_COLUMNS = "key_grid_num_columns";
     public static final String KEY_CURRENT_PAGE = "key_current_page";
     public static final String KEY_TOTAL_PAGE = "key_total_page";
@@ -141,7 +142,8 @@ public interface Consts {
 
     public static final String SP_NAME = "lza_pad_plus_pref";
     public static final String SP_UI_NAME = "lza_pad_plus_ui_pref";
-    public static final int SP_MODE = Activity.MODE_PRIVATE;
+    public static final String SP_DEVICE_NAME = "lza_pad_device_pref";
+    public static final int SP_MODE_PRIVATE = Activity.MODE_PRIVATE;
     String ACTION_START_SERVER = "start_server";
     String ACTION_STOP_SERVER = "stop_server";
 

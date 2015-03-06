@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.lza.pad.R;
-import com.lza.pad.app.base.BaseActivity;
+import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.app.home.HomeActivity;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.wifi.admin._WifiAdmin;
@@ -24,7 +24,7 @@ import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
 import com.lza.pad.event.model.ResponseEventInfo;
 import com.lza.pad.event.state.ResponseEventTag;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
@@ -44,7 +44,8 @@ import java.util.List;
  * @author xiads
  * @Date 1/4/15.
  */
-public class SplashActivity extends BaseActivity implements RequestHelper.OnRequestListener {
+@Deprecated
+public class SplashActivity extends _BaseActivity implements RequestHelper.OnRequestListener {
 
     TextView mTxtSplash;
 
@@ -376,7 +377,7 @@ public class SplashActivity extends BaseActivity implements RequestHelper.OnRequ
         send(requestUrl, new UpdateNewVersionListener(deviceInfo));
     }
 
-    private class UpdateNewVersionListener extends CommonRequestListener<PadVersionInfo> {
+    private class UpdateNewVersionListener extends SimpleRequestListener<PadVersionInfo> {
 
         PadDeviceInfo deviceInfo;
 

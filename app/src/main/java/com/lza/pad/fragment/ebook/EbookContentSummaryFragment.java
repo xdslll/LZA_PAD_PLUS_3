@@ -16,7 +16,7 @@ import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
 import com.lza.pad.fragment.base.BaseFragment;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
 
@@ -100,7 +100,7 @@ public class EbookContentSummaryFragment extends BaseFragment {
         send(url, mPadResourceListener);
     }
 
-    private CommonRequestListener<PadResource> mPadResourceListener = new CommonRequestListener<PadResource>() {
+    private SimpleRequestListener<PadResource> mPadResourceListener = new SimpleRequestListener<PadResource>() {
         @Override
         public ResponseData<PadResource> parseJson(String json) {
             return JsonParseHelper.parseResourceResponse(json);

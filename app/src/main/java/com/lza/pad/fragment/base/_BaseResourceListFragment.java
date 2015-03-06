@@ -28,7 +28,7 @@ import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.helper.CommonRequestListener;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
 import com.lza.pad.support.utils.UniversalUtility;
@@ -248,7 +248,7 @@ public abstract class _BaseResourceListFragment extends BaseFragment {
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     SlideShowService mSlideShowService;
 
-    private CommonRequestListener<PadResource> mResourceListener = new CommonRequestListener<PadResource>() {
+    private SimpleRequestListener<PadResource> mResourceListener = new SimpleRequestListener<PadResource>() {
 
         @Override
         public void handleRespone(List<PadResource> content) {
