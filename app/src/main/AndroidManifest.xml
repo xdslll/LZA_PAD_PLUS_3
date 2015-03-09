@@ -38,11 +38,11 @@
             android:launchMode="singleTop"/>
         <activity android:name=".app.guide.GuideActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name=".app.wifi.WifiApActivity" android:screenOrientation="portrait"
+        <activity android:name=".wifi.WifiApActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name=".app.wifi.SocketServerTestActivity" android:screenOrientation="portrait"
+        <activity android:name=".wifi.SocketServerTestActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
-        <activity android:name=".app.wifi.SocketServerActivity" android:screenOrientation="portrait"
+        <activity android:name=".wifi.SocketServerActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
         <activity android:name=".app.socket.MinaServerActivity" android:screenOrientation="portrait"
             android:launchMode="singleTop"/>
@@ -60,6 +60,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".app2.guide.GuideActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
 
         <service android:name=".app.socket.admin.server.MinaService" android:enabled="true">
             <intent-filter>

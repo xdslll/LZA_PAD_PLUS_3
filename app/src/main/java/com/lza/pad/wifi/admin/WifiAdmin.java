@@ -1,6 +1,9 @@
-package com.lza.pad.app.wifi.admin;
+package com.lza.pad.wifi.admin;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
 import android.net.NetworkInfo;
@@ -35,6 +38,10 @@ public final class WifiAdmin {
 
     private ConnectivityManager mConnManager;
 
+    private WifiReceiver mWifiReceiver = new WifiReceiver();
+
+    private Context mCtx;
+
     public synchronized static WifiAdmin getInstance(Context c) {
         if (sInstance == null) {
             sInstance = new WifiAdmin(c);
@@ -46,31 +53,60 @@ public final class WifiAdmin {
         mWifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
         mConnManager = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifiInfo = mWifiManager.getConnectionInfo();
+        mCtx = c;
+    }
+
+    /**
+     * 先关闭热点再打开Wi-Fi
+     *
+     * @param listener
+     */
+    public void openWifi(OnWifiStateChange listener) {
+        if (isWifiEnable()) return;
+        setOnWifiStateChange(listener);
+        registerWifiReceiver();
+        mAction = ACTION_OPEN_WIFI;
+        WifiApAdmin wifiApAdmin = WifiApAdmin.getInstance(mCtx);
+        if (!wifiApAdmin.isWifiApEnable()) {
+            openWifi();
+        } else {
+            wifiApAdmin.closeWifiAp(new WifiApAdmin.OnWifiApStateChange() {
+                @Override
+                public void handle(String action, int wifiApState) {
+                    if (action.equals(WifiApAdmin.ACTION_CLOSE_WIFI_AP) &&
+                            wifiApState == WifiApAdmin.WIFI_AP_STATE_DISABLED) {
+                        openWifi();
+                    }
+                }
+            });
+        }
     }
 
     public boolean openWifi() {
-        if (!mWifiManager.isWifiEnabled()) {
-            return mWifiManager.setWifiEnabled(true);
-        }
-        return true;
+        return mWifiManager.setWifiEnabled(true);
+    }
+
+    public boolean closeWifi(OnWifiStateChange listener) {
+        if (!isWifiEnable()) return true;
+        setOnWifiStateChange(listener);
+        registerWifiReceiver();
+        mAction = ACTION_CLOSE_WIFI;
+        return closeWifi();
     }
 
     public boolean closeWifi() {
-        if (mWifiManager.isWifiEnabled()) {
-            return mWifiManager.setWifiEnabled(false);
-        }
-        return true;
+        return mWifiManager.setWifiEnabled(false);
     }
 
     public boolean isWifiEnable() {
         return mWifiManager.isWifiEnabled();
     }
 
-    public int checkState() {
+    public int getWifiState() {
         return mWifiManager.getWifiState();
     }
 
-    public String checkState(int state) {
+    public String checkWifiState(int state) {
         if (state == WifiManager.WIFI_STATE_DISABLED) return "Wi-Fi已关闭";
         else if (state == WifiManager.WIFI_STATE_DISABLING) return "Wi-Fi正在关闭";
         else if (state == WifiManager.WIFI_STATE_ENABLED) return "Wi-Fi已打开";
@@ -125,8 +161,6 @@ public final class WifiAdmin {
         mWifiConfigurations = mWifiManager.getConfiguredNetworks();
         return mWifiList;
     }
-
-
 
     public StringBuffer lookUpScan() {
         StringBuffer sb = new StringBuffer();
@@ -273,5 +307,55 @@ public final class WifiAdmin {
         return addNetwork(createWifiInfo(ssid, password, type));
     }
 
+    /**
+     * 用于检查Wi-Fi状态的变更
+     */
+    private class WifiReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
+                AppLogger.e("监听到Wi-Fi状态变更，当前状态：" + checkWifiState(getWifiState()));
+                if (mOnWifiStateChange != null) {
+                    mOnWifiStateChange.handle(mAction, getWifiState());
+                }
+                if (getWifiState() == WifiManager.WIFI_STATE_ENABLED &&
+                        mAction.equals(ACTION_OPEN_WIFI)) {
+                    unregisterWifiReceiver();
+                } else if (getWifiState() == WifiManager.WIFI_STATE_DISABLED &&
+                        mAction.equals(ACTION_CLOSE_WIFI)) {
+                    unregisterWifiReceiver();
+                }
+            }
+        }
+    }
+
+    public String mAction = "";
+    public static final String ACTION_OPEN_WIFI = "action_open_wifi";
+    public static final String ACTION_CLOSE_WIFI = "action_close_wifi";
+
+    public interface OnWifiStateChange {
+        void handle(String action, int wifiState);
+    }
+
+    private OnWifiStateChange mOnWifiStateChange;
+
+    public void setOnWifiStateChange(OnWifiStateChange onWifiStateChange) {
+        this.mOnWifiStateChange = onWifiStateChange;
+    }
+
+    private void registerWifiReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        mCtx.registerReceiver(mWifiReceiver, filter);
+    }
+
+    private void unregisterWifiReceiver() {
+        try {
+            mCtx.unregisterReceiver(mWifiReceiver);
+        } catch (Exception ex) {
+
+        }
+    }
 }

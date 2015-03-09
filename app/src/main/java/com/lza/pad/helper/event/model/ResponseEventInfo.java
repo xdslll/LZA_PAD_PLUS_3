@@ -1,7 +1,7 @@
-package com.lza.pad.event.model;
+package com.lza.pad.helper.event.model;
 
 import com.android.volley.VolleyError;
-import com.lza.pad.event.state.ResponseEventTag;
+import com.lza.pad.helper.event.state.ResponseEventTag;
 
 /**
  * Say something about this class

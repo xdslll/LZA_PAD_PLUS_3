@@ -1,4 +1,4 @@
-package com.lza.pad.app.wifi;
+package com.lza.pad.wifi;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -22,8 +22,8 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
-import com.lza.pad.app.wifi.admin._WifiAdmin;
-import com.lza.pad.app.wifi.admin.WifiApAdmin;
+import com.lza.pad.wifi.admin._WifiAdmin;
+import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.ToastUtils;
 import com.lza.pad.support.utils.UniversalUtility;
@@ -36,7 +36,7 @@ import java.util.List;
  * @author xiads
  * @Date 15/1/26.
  */
-public class WifiApActivity extends _BaseActivity implements WifiApAdmin.OnWifiApStartListener {
+public class WifiApActivity extends _BaseActivity implements _WifiApAdmin.OnWifiApStartListener {
 
     Button mBtnOpenWifiAp, mBtnConnectWifi, mBtnScanWifi;
     TextView mTxtWifiApState, mTxtApWifiSSID, mTxtWifiApPassword, mTxtWifiState;
@@ -44,7 +44,7 @@ public class WifiApActivity extends _BaseActivity implements WifiApAdmin.OnWifiA
 
     WifiManager mWifiManager;
     _WifiAdmin mWifiAdmin;
-    WifiApAdmin mWifiApAdmin;
+    _WifiApAdmin mWifiApAdmin;
     WifiConfiguration mWifiApConfig;
     Context mCtx;
 
@@ -60,7 +60,7 @@ public class WifiApActivity extends _BaseActivity implements WifiApAdmin.OnWifiA
         setContentView(R.layout.wifi_hotpot);
 
         mWifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-        mWifiApAdmin = WifiApAdmin.instance(mCtx);
+        mWifiApAdmin = _WifiApAdmin.instance(mCtx);
 
         mTxtWifiApState = (TextView) findViewById(R.id.wifi_hotpot_ap_state);
         mTxtApWifiSSID = (TextView) findViewById(R.id.wifi_hotpot_ap_ssid);

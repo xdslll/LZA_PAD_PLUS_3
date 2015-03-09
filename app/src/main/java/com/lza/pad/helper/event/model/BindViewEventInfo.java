@@ -1,6 +1,6 @@
-package com.lza.pad.event.model;
+package com.lza.pad.helper.event.model;
 
-import com.lza.pad.event.state.BindViewEventTag;
+import com.lza.pad.helper.event.state.BindViewEventTag;
 
 import java.util.List;
 

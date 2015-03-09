@@ -2,6 +2,8 @@ package com.lza.pad.app2.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,10 +12,17 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.RequestHelper;
+import com.lza.pad.helper.SimpleRequestListener;
+import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
+
+import java.io.File;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Say something about this class
@@ -140,5 +149,50 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     protected void log(String msg) {
         AppLogger.e("---------------- " + msg + " ----------------");
     }
+
+    protected void registerEventBus() {
+        EventBus.getDefault().register(this);
+    }
+
+    protected void unregisterEventBus() {
+        EventBus.getDefault().unregister(this);
+    }
+
+    protected void installApk(File file) {
+        Uri uri = Uri.fromFile(file);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
+        startActivity(intent);
+    }
+
+    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo) {
+        String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
+        send(url, new UpdateDeviceInfoListener(deviceInfo));
+    }
+
+    private class UpdateDeviceInfoListener extends SimpleRequestListener {
+
+        PadDeviceInfo deviceInfo;
+
+        private UpdateDeviceInfoListener(PadDeviceInfo deviceInfo) {
+            this.deviceInfo = deviceInfo;
+        }
+
+        @Override
+        public boolean handleResponseStatusOK(String json) {
+            log("设备状态更新成功");
+            onDeviceUpdateSuccess(deviceInfo);
+            return true;
+        }
+
+        @Override
+        public void handleResponseFailed() {
+            log("设备状态更新失败");
+            onDeviceUpdateFailed(deviceInfo);
+        }
+    }
+
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
 
 }

@@ -18,7 +18,7 @@ import com.android.volley.toolbox.ImageLoader;
 import com.lza.pad.R;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.admin.server.MinaServerHelper;
-import com.lza.pad.app.wifi.admin.WifiApAdmin;
+import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.fragment.base.BaseFragment;
 import com.lza.pad.support.network.VolleySingleton;
@@ -209,7 +209,7 @@ public class _TitleFragment1 extends BaseFragment {
             }
         }, 0, 1, TimeUnit.SECONDS);
 
-        boolean hasFreeWifi = WifiApAdmin.instance(mActivity).isWifiApEnable();
+        boolean hasFreeWifi = _WifiApAdmin.instance(mActivity).isWifiApEnable();
         if (hasFreeWifi)
             mLayoutFreeWifi.setVisibility(View.VISIBLE);
         else

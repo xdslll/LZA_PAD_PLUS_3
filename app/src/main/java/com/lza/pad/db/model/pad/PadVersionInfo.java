@@ -11,7 +11,7 @@ import android.os.Parcelable;
  */
 public class PadVersionInfo implements Parcelable {
 
-    public static final int VERSION = 101;
+    public static final int FILE_TYPE = 101;
 
     String id;
 

@@ -29,7 +29,7 @@ import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.douban.DoubanRating;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
-import com.lza.pad.event.model.ResponseEventInfo;
+import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;

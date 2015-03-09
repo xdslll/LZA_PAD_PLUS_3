@@ -1,4 +1,4 @@
-package com.lza.pad.app.wifi;
+package com.lza.pad.wifi;
 
 import android.os.AsyncTask;
 import android.os.Bundle;

@@ -12,6 +12,7 @@ import android.os.Handler;
 
 import com.lza.pad.db.facade.DownloadFileFacade;
 import com.lza.pad.db.model.DownloadFile;
+import com.lza.pad.db.model.pad.PadVersionInfo;
 import com.lza.pad.support.debug.AppLogger;
 
 import java.io.File;
@@ -28,6 +29,43 @@ public class DownloadHelper {
 
     public static final Uri CONTENT_URI = Uri.parse("content://downloads/my_downloads");
     private DownloadChangeObserver mDownloadChangeObserver;
+
+    private long mDownloadReference;
+    private File mDownloadFile;
+    private String mDownloadUrl = "";
+    private Context mCtx;
+    private InternelDownloadFile mInnerFile;
+
+    private DownloadManager mDownloadManager;
+    private DownloadFile mDBDownloadFile;
+
+    /**
+     * 更新版本专用的DownloadHelper构造函数
+     *
+     * @param ctx
+     * @param version
+     * @param fileName
+     * @param file
+     */
+    public DownloadHelper(Context ctx, PadVersionInfo version, String fileName, File file) {
+        this(ctx, version.getUrl(), fileName, file.getAbsolutePath(), PadVersionInfo.FILE_TYPE);
+    }
+
+    public DownloadHelper(Context ctx, String url, String fileName, String filePath, int fileType) {
+        mInnerFile = new InternelDownloadFile();
+        mInnerFile.setUrl(url);
+        mInnerFile.setFileName(fileName);
+        mInnerFile.setFilePath(filePath);
+        mInnerFile.setFileType(fileType);
+        mDownloadUrl = url;
+        mCtx = ctx;
+        mDownloadFile = new File(filePath);
+        mDownloadManager = (DownloadManager) mCtx.getSystemService(Context.DOWNLOAD_SERVICE);
+    }
+
+    public DownloadHelper(Context ctx, InternelDownloadFile downloadFile) {
+        this(ctx, downloadFile.getUrl(), downloadFile);
+    }
 
     public DownloadHelper(Context ctx, String url, InternelDownloadFile downloadFile) {
         mDownloadUrl = url;
@@ -47,22 +85,18 @@ public class DownloadHelper {
         //request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         //request.setTitle("正在下载");
         //request.setDescription("正在下载：" + mDownloadFile);
-        //开始下载
         mDownloadReference = mDownloadManager.enqueue(request);
 
         mDownloadChangeObserver = new DownloadChangeObserver(null);
         mCtx.getContentResolver().registerContentObserver(
                 CONTENT_URI, true, mDownloadChangeObserver);
-        ifDownload = true;
     }
 
+    /**
+     * 实时获取下载过程中的文件大小、进度、状态等
+     */
     private class DownloadChangeObserver extends ContentObserver {
 
-        /**
-         * Creates a content observer.
-         *
-         * @param handler The handler to run {@link #onChange} on, or null if none.
-         */
         public DownloadChangeObserver(Handler handler) {
             super(handler);
         }
@@ -87,10 +121,55 @@ public class DownloadHelper {
             AppLogger.e("[DownloadManager] status=" + parseStatus(status)
                     + ",fileSize=" + fileSize + ",bytesSize=" + bytesSize
                     + ",percent=" + percent + "%");
+            DownloadQuery downloadQuery = new DownloadQuery();
+            downloadQuery.fileSize = fileSize;
+            downloadQuery.bytes = bytesSize;
+            downloadQuery.percent = percent;
+            downloadQuery.status = status;
+            EventBus.getDefault().post(downloadQuery);
         }
     }
 
-    private String parseStatus(int status) {
+    public static class DownloadQuery {
+        int fileSize;
+        int bytes;
+        int percent;
+        int status;
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public int getFileSize() {
+            return fileSize;
+        }
+
+        public void setFileSize(int fileSize) {
+            this.fileSize = fileSize;
+        }
+
+        public int getBytes() {
+            return bytes;
+        }
+
+        public void setBytes(int bytes) {
+            this.bytes = bytes;
+        }
+
+        public int getPercent() {
+            return percent;
+        }
+
+        public void setPercent(int percent) {
+            this.percent = percent;
+        }
+    }
+
+    public static String parseStatus(int status) {
         if (status == DownloadManager.STATUS_SUCCESSFUL) {
             return "STATUS_SUCCESSFUL";
         } else if (status == DownloadManager.STATUS_FAILED) {
@@ -122,50 +201,41 @@ public class DownloadHelper {
         }
     }
 
-    private boolean ifDownload = false;
-    private long mDownloadReference;
-    private File mDownloadFile;
-    private String mDownloadUrl = "";
-    private Context mCtx;
-    private InternelDownloadFile mInnerFile;
-
-    private DownloadManager mDownloadManager;
-    private DownloadFile mDBDownloadFile;
-
     private BroadcastReceiver mDownloadCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (mDownloadReference == reference) {
-                if (mDownloadFile != null && mDownloadFile.exists()) {
-                    //Toast.makeText(context, "下载完成", Toast.LENGTH_SHORT).show();
-                    mDBDownloadFile = new DownloadFile();
-                    mDBDownloadFile.setFileName(mInnerFile.fileName);
-                    mDBDownloadFile.setFilePath(mInnerFile.filePath);
-                    mDBDownloadFile.setType(mInnerFile.fileType);
-                    mDBDownloadFile.setArtId(mInnerFile.fileArtId);
-                    mDBDownloadFile.setArtTitle(mInnerFile.fileArtTitle);
-                    mDBDownloadFile.setArtDescription(mInnerFile.fileArtDescription);
-                    mDBDownloadFile.setImgPath(mInnerFile.imgPath);
-                    DownloadFileFacade.create(mCtx, mDBDownloadFile);
-                    //发送广播
-                    EventBus.getDefault().post(mDBDownloadFile);
+            if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+                long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                if (mDownloadReference == reference) {
+                    if (mDownloadFile != null && mDownloadFile.exists()) {
+                        AppLogger.e("下载文件[" + mInnerFile.fileName + "]成功");
+                        mDBDownloadFile = new DownloadFile();
+                        mDBDownloadFile.setFileName(mInnerFile.fileName);
+                        mDBDownloadFile.setFilePath(mInnerFile.filePath);
+                        mDBDownloadFile.setType(mInnerFile.fileType);
+                        mDBDownloadFile.setArtId(mInnerFile.fileArtId);
+                        mDBDownloadFile.setArtTitle(mInnerFile.fileArtTitle);
+                        mDBDownloadFile.setArtDescription(mInnerFile.fileArtDescription);
+                        mDBDownloadFile.setImgPath(mInnerFile.imgPath);
+                        DownloadFileFacade.create(mCtx, mDBDownloadFile);
+                        //发送广播
+                        EventBus.getDefault().post(mDBDownloadFile);
+                    } else {
+                        AppLogger.e("下载文件[" + mInnerFile.fileName + "]失败");
+                        mDBDownloadFile = new DownloadFile();
+                        mDBDownloadFile.setFilePath(null);
+                        EventBus.getDefault().post(mDBDownloadFile);
+                    }
+                    release();
                 } else {
-                    //Toast.makeText(context, "下载失败", Toast.LENGTH_SHORT).show();
-                    mDBDownloadFile = new DownloadFile();
-                    mDBDownloadFile.setFilePath(null);
-                    EventBus.getDefault().post(mDBDownloadFile);
+
                 }
-                release();
-            } else {
-                /*mDBDownloadFile = new DownloadFile();
-                mDBDownloadFile.setFilePath(null);
-                EventBus.getDefault().post(mDBDownloadFile);*/
             }
         }
     };
 
     public static class InternelDownloadFile {
+        String url;
         String filePath;
         String fileName;
         int fileType;
@@ -173,6 +243,14 @@ public class DownloadHelper {
         String fileArtTitle;
         String fileArtDescription;
         String imgPath;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
 
         public String getFilePath() {
             return filePath;

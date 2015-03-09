@@ -1,4 +1,4 @@
-package com.lza.pad.app.wifi.admin;
+package com.lza.pad.wifi.admin;
 
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
@@ -15,13 +15,14 @@ import java.lang.reflect.Method;
  * @author xiads
  * @Date 15/1/26.
  */
-public class WifiApAdmin {
+@Deprecated
+public class _WifiApAdmin {
 
-    private static WifiApAdmin mInstance;
+    private static _WifiApAdmin mInstance;
 
-    public static WifiApAdmin instance(Context context) {
+    public static _WifiApAdmin instance(Context context) {
         if (mInstance == null) {
-            mInstance = new WifiApAdmin(context);
+            mInstance = new _WifiApAdmin(context);
         }
         return mInstance;
     }
@@ -32,7 +33,7 @@ public class WifiApAdmin {
 
     private Context mContext = null;
 
-    private WifiApAdmin(Context context) {
+    private _WifiApAdmin(Context context) {
         this.mContext = context;
         mWifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
     }
@@ -54,7 +55,7 @@ public class WifiApAdmin {
 
         startWifiAp();
 
-        WifiTimerCheck timerCheck = new WifiTimerCheck() {
+        _WifiTimerCheck timerCheck = new _WifiTimerCheck() {
             @Override
             public void onTimerCheck() {
                 if (isWifiApEnable(mWifiManager)) {

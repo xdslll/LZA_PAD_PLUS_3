@@ -13,8 +13,8 @@ import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
-import com.lza.pad.event.model.ResponseEventInfo;
-import com.lza.pad.event.state.ResponseEventTag;
+import com.lza.pad.helper.event.model.ResponseEventInfo;
+import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
@@ -283,7 +283,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
                 DownloadHelper.InternelDownloadFile downloadFile = new DownloadHelper.InternelDownloadFile();
                 downloadFile.setFileName(fileName);
                 downloadFile.setFilePath(filePath.getAbsolutePath());
-                downloadFile.setFileType(PadVersionInfo.VERSION);
+                downloadFile.setFileType(PadVersionInfo.FILE_TYPE);
                 DownloadHelper helper = new DownloadHelper(getBaseContext(), downloadUrl, downloadFile);
                 helper.download();
             }

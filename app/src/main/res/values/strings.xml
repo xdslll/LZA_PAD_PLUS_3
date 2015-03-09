@@ -19,10 +19,16 @@
     <string name="authority_device_info">正在验证设备信息</string>
     <string name="opening_wifi">正在打开Wi-Fi...</string>
     <string name="enabling_wifi">Wi-Fi打开中...</string>
+    <string name="disabling_wifi">Wi-Fi关闭中...</string>
+    <string name="opening_wifi_ap">正在打开Wi-Fi热点...</string>
+    <string name="enabling_wifi_ap">Wi-Fi热点打开中...</string>
+    <string name="disabling_wifi_ap">Wi-Fi热点关闭中...</string>
     <string name="authority_successful">验证成功</string>
     <string name="authority_successful_detail">验证设备信息成功</string>
     <string name="authority_failed">验证失败</string>
+    <string name="authority_failed_detail">验证设备信息失败，请重新请求授权</string>
     <string name="authority_failed_empty_expiration">验证设备信息失败，服务期限为空</string>
     <string name="service_expiration">服务过期</string>
     <string name="service_expiration_detail">设备服务过期，请与代理商联系申请延长服务期限</string>
+    <string name="updating_device_info">正在更新设备信息</string>
 </resources>

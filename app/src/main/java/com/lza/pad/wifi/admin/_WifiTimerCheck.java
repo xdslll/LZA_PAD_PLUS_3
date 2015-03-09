@@ -1,4 +1,4 @@
-package com.lza.pad.app.wifi.admin;
+package com.lza.pad.wifi.admin;
 
 import android.os.Looper;
 
@@ -8,7 +8,8 @@ import android.os.Looper;
  * @author xiads
  * @Date 15/1/26.
  */
-public abstract class WifiTimerCheck {
+@Deprecated
+public abstract class _WifiTimerCheck {
 
     private int mCount = 0;
     private int mTimeoutCount = 1;
@@ -20,7 +21,7 @@ public abstract class WifiTimerCheck {
 
     public abstract void onTimeout();
 
-    public WifiTimerCheck() {
+    public _WifiTimerCheck() {
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {

@@ -16,14 +16,14 @@ import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.app.home.HomeActivity;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app.wifi.admin._WifiAdmin;
-import com.lza.pad.app.wifi.admin.WifiApAdmin;
+import com.lza.pad.wifi.admin._WifiAdmin;
+import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
-import com.lza.pad.event.model.ResponseEventInfo;
-import com.lza.pad.event.state.ResponseEventTag;
+import com.lza.pad.helper.event.model.ResponseEventInfo;
+import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
@@ -50,7 +50,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
     TextView mTxtSplash;
 
     _WifiAdmin mWifiAdmin;
-    WifiApAdmin mWifiApAdmin;
+    _WifiApAdmin mWifiApAdmin;
 
     boolean mIsWifiEnable = false;
     boolean mIsWifiApEnable = false;
@@ -132,7 +132,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
      */
     private void checkWifi() {
         //检查热点是否打开，如果打开，则关闭热点
-        mWifiApAdmin = WifiApAdmin.instance(mCtx);
+        mWifiApAdmin = _WifiApAdmin.instance(mCtx);
         mIsWifiApEnable = mWifiApAdmin.isWifiApEnable();
         if (mIsWifiApEnable) {
             updateProgressDialog("正在关闭热点...");
@@ -290,10 +290,10 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
                 if (isHotspotOn.equals(PadDeviceInfo.TAG_HOTSPOT_ON)) {
                     updateProgressDialog("正在打开热点");
                     //打开热点
-                    WifiApAdmin wifiApAdmin = WifiApAdmin.instance(mCtx);
+                    _WifiApAdmin wifiApAdmin = _WifiApAdmin.instance(mCtx);
                     final String wifiApName = deviceInfo.getName();
                     String wifiApPassword = deviceInfo.getHotspot_password();
-                    wifiApAdmin.startWifiAp(wifiApName, wifiApPassword, new WifiApAdmin.OnWifiApStartListener() {
+                    wifiApAdmin.startWifiAp(wifiApName, wifiApPassword, new _WifiApAdmin.OnWifiApStartListener() {
                         @Override
                         public void onWifiApSuccess() {
                             ToastUtils.showLong(mCtx, "[" + wifiApName + "]热点启动成功！");
@@ -417,7 +417,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
                 DownloadHelper.InternelDownloadFile downloadFile = new DownloadHelper.InternelDownloadFile();
                 downloadFile.setFileName(fileName);
                 downloadFile.setFilePath(filePath.getAbsolutePath());
-                downloadFile.setFileType(PadVersionInfo.VERSION);
+                downloadFile.setFileType(PadVersionInfo.FILE_TYPE);
                 DownloadHelper helper = new DownloadHelper(SplashActivity.this, downloadUrl, downloadFile);
                 helper.download();
             }

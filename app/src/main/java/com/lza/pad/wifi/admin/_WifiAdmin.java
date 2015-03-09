@@ -1,4 +1,4 @@
-package com.lza.pad.app.wifi.admin;
+package com.lza.pad.wifi.admin;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

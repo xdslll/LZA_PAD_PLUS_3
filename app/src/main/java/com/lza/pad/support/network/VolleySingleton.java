@@ -8,6 +8,7 @@ import android.util.LruCache;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 import com.lza.pad.db.facade.CacheImageFacade;
@@ -44,7 +45,14 @@ public class VolleySingleton {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-            mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+            mRequestQueue = Volley.newRequestQueue(mCtx);
+        }
+        return mRequestQueue;
+    }
+
+    public RequestQueue getRequestQueue(HttpStack stack) {
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(mCtx, stack);
         }
         return mRequestQueue;
     }
