@@ -1,4 +1,4 @@
-package com.lza.pad.app2.verify;
+package com.lza.pad.app2.ui.device;
 
 import android.app.DownloadManager;
 import android.content.DialogInterface;
@@ -7,8 +7,8 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 import com.lza.pad.R;
-import com.lza.pad.app2.base.BaseActivity;
-import com.lza.pad.app2.guide.GuideActivity;
+import com.lza.pad.app2.ui.base.BaseActivity;
+import com.lza.pad.app2.ui.parse.MainParseActivity;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -35,7 +35,7 @@ import java.util.List;
  * @author xiads
  * @Date 3/5/15.
  */
-public class VerifyActivity extends BaseActivity {
+public class DeviceAuthorityActivity extends BaseActivity {
 
     WifiAdmin mWifiAdmin;
     WifiApAdmin mWifiApAdmin;
@@ -53,12 +53,20 @@ public class VerifyActivity extends BaseActivity {
         verifyNetwork();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dismissProgressDialog();
+    }
+
     /**
      * [P101]验证是否联网
      */
     private void verifyNetwork() {
         log("[P101]验证是否联网");
-        showProgressDialog(R.string.verify_if_network_connected, false);
+        if (!isProgressDialogShowing()) {
+            showProgressDialog(R.string.verify_if_network_connected, false);
+        }
         mWifiAdmin = WifiAdmin.getInstance(mCtx);
         boolean isNetworkConnected = mWifiAdmin.isNetworkConnected();
         if (isNetworkConnected) {
@@ -277,12 +285,32 @@ public class VerifyActivity extends BaseActivity {
     }
 
     /**
-     * [P116]前往引导页
+     * [P115]处理上传成功逻辑
+     *
+     * @param deviceInfo
      */
-    private void gotoGuideActivity() {
-        dismissProgressDialog();
-        Intent intent = new Intent(mCtx, GuideActivity.class);
+    @Override
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
+        gotoParseActivity();
+    }
+
+    /**
+     * [P115]处理上传失败逻辑
+     *
+     * @param deviceInfo
+     */
+    @Override
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
+        gotoParseActivity();
+    }
+
+    /**
+     * [P116]前往主解析页
+     */
+    private void gotoParseActivity() {
+        Intent intent = new Intent(mCtx, MainParseActivity.class);
         intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
         startActivity(intent);
         finish();
     }
@@ -292,16 +320,6 @@ public class VerifyActivity extends BaseActivity {
      */
     private void checkLocalAuthority() {
         log("[P117]检查本地授权信息");
-    }
-
-    @Override
-    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
-        gotoGuideActivity();
-    }
-
-    @Override
-    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
-        gotoGuideActivity();
     }
 
     /**

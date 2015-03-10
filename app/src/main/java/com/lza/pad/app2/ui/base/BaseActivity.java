@@ -1,4 +1,4 @@
-package com.lza.pad.app2.base;
+package com.lza.pad.app2.ui.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
@@ -62,7 +61,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         _showProgressDialog(msg, true);
     }
 
-    private void _dismissProgressDialog() {
+    protected void dismissProgressDialog() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
@@ -73,58 +72,31 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         mProgressDialog.setMessage(msg);
     }
 
-    protected void showProgressDialog(String msg, boolean cancelable) {
-        Message message = Message.obtain(mHandler, REQUEST_SHOW_DIALOG, msg);
-        Bundle data = new Bundle();
-        data.putBoolean(KEY_CANCELABLE, cancelable);
-        message.setData(data);
-        mHandler.sendMessageDelayed(message, mDefaultDelay);
-    }
-
     protected void showProgressDialog(String msg) {
-        showProgressDialog(msg, true);
+        _showProgressDialog(msg);
     }
 
     protected void showProgressDialog(int resId) {
-        showProgressDialog(getResources().getString(resId), true);
+        _showProgressDialog(getResources().getString(resId), true);
     }
 
     protected void showProgressDialog(int resId, boolean cancelable) {
-        showProgressDialog(getResources().getString(resId), cancelable);
+        _showProgressDialog(getResources().getString(resId), cancelable);
     }
 
     protected void updateProgressDialog(String msg) {
-        Message message = Message.obtain(mHandler, REQUEST_UPDATE_DIALOG, msg);
-        mHandler.sendMessageDelayed(message, mDefaultDelay);
+        _updateProgressDialog(msg);
     }
 
     protected void updateProgressDialog(int resId) {
         updateProgressDialog(getResources().getString(resId));
     }
 
-    protected void dismissProgressDialog() {
-        Message message = Message.obtain(mHandler, REQUEST_DISMISS_DIALOG);
-        mHandler.sendMessageDelayed(message, mDefaultDelay);
+    protected boolean isProgressDialogShowing() {
+        return mProgressDialog != null && mProgressDialog.isShowing();
     }
 
-    public static final int REQUEST_SHOW_DIALOG = 0x01;
-    public static final int REQUEST_UPDATE_DIALOG = 0x02;
-    public static final int REQUEST_DISMISS_DIALOG = 0x03;
-
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == REQUEST_SHOW_DIALOG) {
-                boolean cancelable = msg.getData().getBoolean(KEY_CANCELABLE);
-                _showProgressDialog(msg.obj.toString(), cancelable);
-            } else if (msg.what == REQUEST_UPDATE_DIALOG) {
-                _updateProgressDialog(msg.obj.toString());
-            } else if (msg.what == REQUEST_DISMISS_DIALOG) {
-                _dismissProgressDialog();
-            }
-        }
-    };
+    private Handler mHandler = new Handler();
 
     protected void setDefaultDelay(int defaultDelay) {
         this.mDefaultDelay = defaultDelay;
@@ -156,6 +128,10 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
 
     protected void unregisterEventBus() {
         EventBus.getDefault().unregister(this);
+    }
+
+    protected Handler getMainHandler() {
+        return mHandler;
     }
 
     protected void installApk(File file) {

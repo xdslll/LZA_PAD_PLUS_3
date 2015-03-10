@@ -18,6 +18,7 @@
         android:icon="@drawable/ic_launcher" android:name=".app2.application.MainApplication"
         android:theme="@style/BaseTheme">
         <activity android:name=".app.SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
+
         </activity>
         <activity android:name=".app.home.HomeActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
         <activity android:name=".app.PluginInstallActivity" android:screenOrientation="portrait"
@@ -54,13 +55,15 @@
         </activity>
         <activity android:name=".app.test.TestActivity" android:screenOrientation="portrait"/>
 
-        <activity android:name=".app2.verify.VerifyActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
+        <activity android:name=".app2.ui.device.DeviceAuthorityActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".app2.guide.GuideActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
+        <activity android:name=".app2.ui.parse.MainParseActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
 
         <service android:name=".app.socket.admin.server.MinaService" android:enabled="true">
             <intent-filter>
