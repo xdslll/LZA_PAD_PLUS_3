@@ -24,7 +24,7 @@ import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.model.MinaServer;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._PadDeviceInfo;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.CrashHelper;
 import com.lza.pad.helper.GsonHelper;
@@ -349,12 +349,12 @@ public class _BaseActivity extends FragmentActivity implements Consts {
      * @param deviceInfo
      */
     @Deprecated
-    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo, String key, String value) {
+    protected void requestUpdateDeviceInfo(_PadDeviceInfo deviceInfo, String key, String value) {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo, key, value);
         RequestHelper.getInstance(mCtx, url, new UpdateDeviceInfoListener(deviceInfo)).send();
     }
 
-    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo) {
+    protected void requestUpdateDeviceInfo(_PadDeviceInfo deviceInfo) {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
         RequestHelper.getInstance(mCtx, url, new UpdateDeviceInfoListener(deviceInfo)).send();
     }
@@ -362,9 +362,9 @@ public class _BaseActivity extends FragmentActivity implements Consts {
 
     private class UpdateDeviceInfoListener extends SimpleRequestListener {
 
-        PadDeviceInfo deviceInfo;
+        _PadDeviceInfo deviceInfo;
 
-        private UpdateDeviceInfoListener(PadDeviceInfo deviceInfo) {
+        private UpdateDeviceInfoListener(_PadDeviceInfo deviceInfo) {
             this.deviceInfo = deviceInfo;
         }
 
@@ -381,8 +381,8 @@ public class _BaseActivity extends FragmentActivity implements Consts {
             onDeviceUpdateFailed(deviceInfo);
         }
     }
-    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
-    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateSuccess(_PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateFailed(_PadDeviceInfo deviceInfo) {};
 
     protected String getTopActivity() {
         ActivityManager manager = (ActivityManager) mCtx.getSystemService(ACTIVITY_SERVICE);

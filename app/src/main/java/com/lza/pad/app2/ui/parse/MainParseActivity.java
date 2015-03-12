@@ -9,8 +9,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.lza.pad.app2.ui.base.BaseActivity;
 import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
-import com.lza.pad.support.utils.ToastUtils;
+import com.lza.pad.db.model.pad._PadDeviceInfo;
 
 /**
  * Say something about this class
@@ -20,11 +19,23 @@ import com.lza.pad.support.utils.ToastUtils;
  */
 public class MainParseActivity extends BaseActivity {
 
-    protected PadDeviceInfo mPadDeviceInfo;
+    protected _PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        checkDeviceParam();
+
+        getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+    }
+
+    private void checkDeviceParam() {
         if (getIntent() != null) {
             mPadDeviceInfo = getIntent().getParcelableExtra(KEY_PAD_DEVICE_INFO);
             if (mPadDeviceInfo == null) {
@@ -33,13 +44,6 @@ public class MainParseActivity extends BaseActivity {
         } else {
             backtoDeviceActivity();
         }
-        getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ToastUtils.showLong(mCtx, "Hello Touch!");
-                return false;
-            }
-        });
     }
 
     private void backtoDeviceActivity() {

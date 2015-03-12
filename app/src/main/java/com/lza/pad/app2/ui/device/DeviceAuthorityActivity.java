@@ -11,7 +11,7 @@ import com.lza.pad.app2.ui.base.BaseActivity;
 import com.lza.pad.app2.ui.parse.MainParseActivity;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
@@ -40,7 +40,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
     WifiAdmin mWifiAdmin;
     WifiApAdmin mWifiApAdmin;
 
-    private PadDeviceInfo mPadDeviceInfo;
+    private _PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,20 +113,20 @@ public class DeviceAuthorityActivity extends BaseActivity {
     /**
      * [P105]验证授权结果
      */
-    private class AuthorityDeviceListener extends SimpleRequestListener<PadDeviceInfo> {
+    private class AuthorityDeviceListener extends SimpleRequestListener<_PadDeviceInfo> {
         @Override
-        public ResponseData<PadDeviceInfo> parseJson(String json) {
+        public ResponseData<_PadDeviceInfo> parseJson(String json) {
             return JsonParseHelper.parseDeviceInfoResponse(json);
         }
 
         @Override
-        public void onResponseStateError(ResponseData<PadDeviceInfo> response) {
+        public void onResponseStateError(ResponseData<_PadDeviceInfo> response) {
                 handleAuthorityFailed(getString(R.string.authority_failed),
                         response.getMessage());
         }
 
         @Override
-        public void handleRespone(List<PadDeviceInfo> content) {
+        public void handleRespone(List<_PadDeviceInfo> content) {
             handleAuthoritySuccessful(content);
         }
 
@@ -157,7 +157,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
      *
      * @param content
      */
-    private void handleAuthoritySuccessful(List<PadDeviceInfo> content) {
+    private void handleAuthoritySuccessful(List<_PadDeviceInfo> content) {
         log("[P107]验证服务是否过期");
         mPadDeviceInfo = content.get(0);
         String date = mPadDeviceInfo.getEnd_pubdate();
@@ -254,7 +254,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
         log("[P112]检查是否需要打开Wi-Fi热点");
         updateProgressDialog("正在检查Wi-Fi热点");
         String wifiApSwitch = mPadDeviceInfo.getHotspot_switch();
-        if (wifiApSwitch.equals(PadDeviceInfo.TAG_HOTSPOT_ON)) {
+        if (wifiApSwitch.equals(_PadDeviceInfo.TAG_HOTSPOT_ON)) {
             mWifiApAdmin = WifiApAdmin.getInstance(mCtx);
             openWifiAp();
         } else {
@@ -279,7 +279,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
     private void updateDeviceInfo() {
         log("[P114]更新设备信息");
         updateProgressDialog(getString(R.string.updating_device_info));
-        mPadDeviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
+        mPadDeviceInfo.setState(_PadDeviceInfo.TAG_STATE_ON);
         mPadDeviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
         requestUpdateDeviceInfo(mPadDeviceInfo);
     }
@@ -290,7 +290,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
      * @param deviceInfo
      */
     @Override
-    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
+    protected void onDeviceUpdateSuccess(_PadDeviceInfo deviceInfo) {
         gotoParseActivity();
     }
 
@@ -300,7 +300,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
      * @param deviceInfo
      */
     @Override
-    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
+    protected void onDeviceUpdateFailed(_PadDeviceInfo deviceInfo) {
         gotoParseActivity();
     }
 

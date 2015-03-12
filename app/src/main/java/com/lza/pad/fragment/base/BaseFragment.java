@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.db.model.DownloadFile;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
@@ -32,7 +32,7 @@ public class BaseFragment extends Fragment implements Consts {
     protected boolean mIsHome = true;
     protected Bundle mArg;
     protected int W, H;
-    protected PadDeviceInfo mPadDeviceInfo;
+    protected _PadDeviceInfo mPadDeviceInfo;
     protected PadModuleControl mPadControlInfo;
     protected PadLayoutModule mPadModuleInfo;
     protected PadResource mPadResource;

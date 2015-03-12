@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.support.utils.RuntimeUtility;
 
@@ -20,7 +20,7 @@ public abstract class BaseContentActivity extends _BaseActivity {
 
     private TextView mTxtClose, mTxtTitle;
     protected PadResource mPadResource;
-    protected PadDeviceInfo mPadDeviceInfo;
+    protected _PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

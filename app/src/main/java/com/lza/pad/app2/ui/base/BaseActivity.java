@@ -11,7 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._PadDeviceInfo;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
@@ -141,16 +141,16 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         startActivity(intent);
     }
 
-    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo) {
+    protected void requestUpdateDeviceInfo(_PadDeviceInfo deviceInfo) {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
         send(url, new UpdateDeviceInfoListener(deviceInfo));
     }
 
     private class UpdateDeviceInfoListener extends SimpleRequestListener {
 
-        PadDeviceInfo deviceInfo;
+        _PadDeviceInfo deviceInfo;
 
-        private UpdateDeviceInfoListener(PadDeviceInfo deviceInfo) {
+        private UpdateDeviceInfoListener(_PadDeviceInfo deviceInfo) {
             this.deviceInfo = deviceInfo;
         }
 
@@ -168,7 +168,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         }
     }
 
-    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
-    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateSuccess(_PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateFailed(_PadDeviceInfo deviceInfo) {};
 
 }

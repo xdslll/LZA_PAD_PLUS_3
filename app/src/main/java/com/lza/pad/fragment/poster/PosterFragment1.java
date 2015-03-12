@@ -32,7 +32,7 @@ import java.io.File;
 public class PosterFragment1 extends BaseFragment {
 
     private final String PATH = "image";
-    private final String FILE_NAME = "test_poster";
+    private final String FILE_NAME = "nju";
 
     private ViewFlow mViewFlow;
     private CircleFlowIndicator mIndicator;
@@ -92,7 +92,7 @@ public class PosterFragment1 extends BaseFragment {
         opt.inJustDecodeBounds = false;
         opt.inPurgeable = true;
         opt.inInputShareable = true;
-        opt.inSampleSize = 4;
+        opt.inSampleSize = 3;
         Bitmap bm = BitmapFactory.decodeFile(file.getAbsolutePath(), opt);
 
         return bm;
@@ -129,7 +129,7 @@ public class PosterFragment1 extends BaseFragment {
 
     int mCurrentSelection = 0;
     int MAX_SIZE = 5;
-    int TURN_TO_PAGE_DELAY = 5 * 1000;
+    int TURN_TO_PAGE_DELAY = 20 * 1000;
 
     public static final int REQUEST_NEXT = 0x01;
 
@@ -160,7 +160,7 @@ public class PosterFragment1 extends BaseFragment {
 
         @Override
         public int getCount() {
-            return 5;
+            return 4;
         }
 
         @Override
@@ -185,7 +185,7 @@ public class PosterFragment1 extends BaseFragment {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            File file = createrFile(position);
+            File file = createrFile(position + 1);
             if (file != null)
                 holder.image.setImageBitmap(createBitmap(file));
 
