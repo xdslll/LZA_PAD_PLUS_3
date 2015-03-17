@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
@@ -45,7 +45,7 @@ public class TestPagerFragment extends Fragment {
     int index = 0;
     GridView mGrid;
 
-    _PadDeviceInfo mPadDeviceInfo;
+    PadDeviceInfo mPadDeviceInfo;
     ImageSize mImageSize = new ImageSize(480, 640);
     LayoutInflater mInflater;
     DisplayImageOptions mOptions;
@@ -95,7 +95,7 @@ public class TestPagerFragment extends Fragment {
 
         mInflater = LayoutInflater.from(getActivity());
 
-        mPadDeviceInfo = new _PadDeviceInfo();
+        mPadDeviceInfo = new PadDeviceInfo();
         mPadDeviceInfo.setMac_add(UniversalUtility.getMacAddress(getActivity()));
         String url = UrlHelper.getResourcesUrl(mPadDeviceInfo, PadResource.RESOURCE_EBOOK, 4, index + 1);
         RequestHelper.getInstance(getActivity(), url, mResourceListener).send();

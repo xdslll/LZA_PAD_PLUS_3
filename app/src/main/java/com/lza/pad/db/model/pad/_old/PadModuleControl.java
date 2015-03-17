@@ -1,4 +1,4 @@
-package com.lza.pad.db.model.pad;
+package com.lza.pad.db.model.pad._old;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,6 +9,7 @@ import android.os.Parcelable;
  * @author xiads
  * @Date 15/2/7.
  */
+@Deprecated
 public class PadModuleControl implements Parcelable {
 
     public static final String BOOLEAN_SHOW_SLIDE = "1";

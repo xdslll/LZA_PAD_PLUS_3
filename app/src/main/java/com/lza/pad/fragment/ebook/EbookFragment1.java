@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.lza.pad.db.model.pad.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base.BaseGridFragment;
 import com.lza.pad.fragment.base.BaseResourceListFragment;

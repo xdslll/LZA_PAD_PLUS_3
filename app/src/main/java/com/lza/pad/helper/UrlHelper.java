@@ -2,10 +2,12 @@ package com.lza.pad.helper;
 
 import android.text.TextUtils;
 
-import com.lza.pad.db.model.pad._PadDeviceInfo;
-import com.lza.pad.db.model.pad.PadLayoutModule;
-import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadModule;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
+import com.lza.pad.db.model.pad.PadScene;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
 
@@ -81,6 +83,13 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_VERSION_CODE = "version_code";
 
+    public static final String PAR_VALUE = "value";
+
+    public static final String PAR_PRE_SCENE = "pre_scene";
+
+    public static final String PAR_SCENE_ID = "scene_id";
+
+
 
 
     public static String generateUrl(Map<String, String> par) {
@@ -107,7 +116,7 @@ public class UrlHelper implements Consts {
         return generateUrl(getDevicePar(macAddress));
     }
 
-    public static Map<String, String> getLayoutModulePar(_PadDeviceInfo deviceInfo) {
+    public static Map<String, String> getLayoutModulePar(PadDeviceInfo deviceInfo) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_LAYOUT_MODULE);
         par.put(PAR_LAYOUT_ID, deviceInfo.getModule_ids());
@@ -121,11 +130,11 @@ public class UrlHelper implements Consts {
      * @param deviceInfo    设备信息
      * @return
      */
-    public static String getLayoutModuleUrl(_PadDeviceInfo deviceInfo) {
+    public static String getLayoutModuleUrl(PadDeviceInfo deviceInfo) {
         return generateUrl(getLayoutModulePar(deviceInfo));
     }
 
-    public static Map<String, String> getModuleControlPar(_PadDeviceInfo deviceInfo, PadLayoutModule module) {
+    public static Map<String, String> getModuleControlPar(PadDeviceInfo deviceInfo, PadLayoutModule module) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MODULE_CONTROL);
         par.put(PAR_MODEL_ID, module.getId());
@@ -140,11 +149,11 @@ public class UrlHelper implements Consts {
      * @param deviceLayout  设备布局
      * @return
      */
-    public static String getModuleControlUrl(_PadDeviceInfo deviceInfo, PadLayoutModule deviceLayout) {
+    public static String getModuleControlUrl(PadDeviceInfo deviceInfo, PadLayoutModule deviceLayout) {
         return generateUrl(getModuleControlPar(deviceInfo, deviceLayout));
     }
 
-    public static Map<String, String> updateDeviceInfoPar(_PadDeviceInfo deviceInfo) {
+    public static Map<String, String> updateDeviceInfoPar(PadDeviceInfo deviceInfo) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_UPDATE_DEVICE_INFO);
         par.put(PAR_UPDATE_TAG, deviceInfo.getUpdate_tag());
@@ -157,7 +166,7 @@ public class UrlHelper implements Consts {
         return generateUrl(updateDeviceInfoPar(deviceInfo));
     }*/
 
-    public static String updateDeviceInfoUrl(_PadDeviceInfo deviceInfo, String key, String value) {
+    public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo, String key, String value) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_UPDATE_DEVICE_INFO);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
@@ -166,7 +175,7 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String updateDeviceInfoUrl(_PadDeviceInfo deviceInfo) {
+    public static String updateDeviceInfoUrl(PadDeviceInfo deviceInfo) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_UPDATE_DEVICE_INFO);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
@@ -178,7 +187,7 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String getResourcesUrl(_PadDeviceInfo deviceInfo, String sourceType, int pageSize, int page) {
+    public static String getResourcesUrl(PadDeviceInfo deviceInfo, String sourceType, int pageSize, int page) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MESSAGE);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
@@ -188,7 +197,7 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String getResourceDetailUrl(_PadDeviceInfo deviceInfo, PadResource resource) {
+    public static String getResourceDetailUrl(PadDeviceInfo deviceInfo, PadResource resource) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_OPAC_SEARCH_DETAIL);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
@@ -196,7 +205,7 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String getImageUrl(_PadDeviceInfo deviceInfo, PadModuleControl control) {
+    public static String getImageUrl(PadDeviceInfo deviceInfo, PadModuleControl control) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_IMAGE);
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
@@ -212,10 +221,66 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String getVersionUrl(_PadDeviceInfo deviceInfo) {
+    @Deprecated
+    public static String getVersionUrl(PadDeviceInfo deviceInfo) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_UPGRADE_VERSION);
         par.put(PAR_VERSION_CODE, deviceInfo.getVersion());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getDeviceDetailUrl(String bh) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_DEVICE_DETAIL);
+        par.put(PAR_BH, bh);
+        return generateUrl(par);
+    }
+
+    public static String getDeviceSceneUrl(PadDeviceInfo deviceInfo) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_DEVICE_SCENCE);
+        par.put(PAR_ID, deviceInfo.getScene_id());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getPadSchoolInfoUrl(PadDeviceInfo deviceInfo) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_SCHOOL_INFO);
+        par.put(PAR_BH, deviceInfo.getSchool_bh());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getPadAuthority(PadDeviceInfo deviceInfo, PadScene scene) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_SCENE_AUTHORITY);
+        par.put(PAR_VALUE, scene.getAuthority());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getPadSceneSwitching(PadDeviceInfo deviceInfo, PadScene scene) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_SCENE_SWITCHING);
+        par.put(PAR_PRE_SCENE, scene.getId());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getSceneModules(PadDeviceInfo deviceInfo, PadScene scene) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_SCENE_MODULES);
+        par.put(PAR_SCENE_ID, scene.getId());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getMoudleWidgets(PadDeviceInfo deviceInfo, PadModule moudle) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_MODULE_WIDGETS);
+        par.put(PAR_MODULE_ID, moudle.getId());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return generateUrl(par);
     }

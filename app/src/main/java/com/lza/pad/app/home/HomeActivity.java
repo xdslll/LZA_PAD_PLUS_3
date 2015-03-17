@@ -14,9 +14,9 @@ import android.widget.LinearLayout;
 import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
-import com.lza.pad.db.model.pad.PadLayoutModule;
-import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.helper.JsonParseHelper;
@@ -42,7 +42,7 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
 
     private LinearLayout mMainContainer;
 
-    private _PadDeviceInfo mDeviceInfo;
+    private PadDeviceInfo mDeviceInfo;
     private List<PadLayoutModule> mLayoutsModules;
     private List<List<PadModuleControl>> mMoudleControls = new ArrayList<List<PadModuleControl>>();
 
@@ -90,7 +90,7 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
             return;
         }
 
-        setContentView(R.layout.common_main_container);
+        setContentView(R.layout.main_scene_container);
         mMainContainer = (LinearLayout) findViewById(R.id.home);
 
         //启动更新
@@ -159,11 +159,11 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
         //停止更新
         stopUpdateLayout();
         //发送停止请求
-        requestUpdateDeviceInfo(mDeviceInfo, "state", _PadDeviceInfo.TAG_STATE_OFF);
+        requestUpdateDeviceInfo(mDeviceInfo, "state", PadDeviceInfo.TAG_STATE_OFF);
     }
 
     @Override
-    protected void onDeviceUpdateSuccess(_PadDeviceInfo deviceInfo) {
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
         log("设置设备关闭状态成功");
     }
 
@@ -171,16 +171,16 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
     private int MAX_RETRY_COUNT = 3;
 
     @Override
-    protected void onDeviceUpdateFailed(_PadDeviceInfo deviceInfo) {
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
         log("设置设备关闭状态失败");
         if (mUpdateDeviceRetryCount > MAX_RETRY_COUNT) return;
         mUpdateDeviceRetryCount++;
-        requestUpdateDeviceInfo(mDeviceInfo, "state", _PadDeviceInfo.TAG_STATE_OFF);
+        requestUpdateDeviceInfo(mDeviceInfo, "state", PadDeviceInfo.TAG_STATE_OFF);
     }
 
     private void initLayout() {
         String updateTag = mDeviceInfo.getUpdate_tag();
-        if (updateTag.equals(_PadDeviceInfo.TAG_NEED_UDPATE)) {
+        if (updateTag.equals(PadDeviceInfo.TAG_NEED_UDPATE)) {
             //如果需要更新，先清除存储的布局数据
             boolean result = RuntimeUtility.clearUiSp(mCtx);
             if (result) log("清除布局数据成功！");
@@ -191,7 +191,7 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
             showProgressDialog("开始初始化布局");
             log("开始初始化布局");
             mMainHandler.sendEmptyMessageDelayed(REQUEST_INIT, DEFAULT_REQUEST_DELAY);
-        } else if (updateTag.equals(_PadDeviceInfo.TAG_HAVE_UDPATE)) {
+        } else if (updateTag.equals(PadDeviceInfo.TAG_HAVE_UDPATE)) {
             showProgressDialog("开始获取布局数据");
             //更新状态
             mActivityUpdateState = ACTIVITY_STATE_GETTING_DATA;
@@ -200,7 +200,7 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
             mJsonLayoutModules = RuntimeUtility.getFromUiSP(mCtx, JSON_LAYOUT_MODULE, "");
             log(mJsonLayoutModules);
             if (TextUtils.isEmpty(mJsonLayoutModules)) {
-                mDeviceInfo.setUpdate_tag(_PadDeviceInfo.TAG_NEED_UDPATE);
+                mDeviceInfo.setUpdate_tag(PadDeviceInfo.TAG_NEED_UDPATE);
                 initLayout();
             } else {
                 handleLayoutModuleJson(mJsonLayoutModules, updateTag);
@@ -359,7 +359,7 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
                 //保存Json文件
                 RuntimeUtility.putToUiSP(mCtx, JSON_LAYOUT_MODULE, mJsonLayoutModules);
 
-                handleLayoutModuleJson(mJsonLayoutModules, _PadDeviceInfo.TAG_NEED_UDPATE);
+                handleLayoutModuleJson(mJsonLayoutModules, PadDeviceInfo.TAG_NEED_UDPATE);
             } else {
                 //更新状态为获取数据失败
                 mActivityUpdateState = ACTIVITY_STATE_GET_DATA_SUCCESS;
@@ -419,10 +419,10 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
         //当前更新模块序号为0
         mCurrentModuleIndex = 0;
         //获取所有控件
-        if (updateTag.equals(_PadDeviceInfo.TAG_NEED_UDPATE)) {
+        if (updateTag.equals(PadDeviceInfo.TAG_NEED_UDPATE)) {
             //通过网络请求所有控件
             getModuleControlsFromNet();
-        } else if (updateTag.equals(_PadDeviceInfo.TAG_HAVE_UDPATE)) {
+        } else if (updateTag.equals(PadDeviceInfo.TAG_HAVE_UDPATE)) {
             //读取Json
             getModuleControlsFromSp();
         }
@@ -480,7 +480,7 @@ public class HomeActivity extends _BaseActivity implements RequestHelper.OnReque
     }
 
     private void updateDeviceUpdateTag() {
-        mDeviceInfo.setUpdate_tag(_PadDeviceInfo.TAG_HAVE_UDPATE);
+        mDeviceInfo.setUpdate_tag(PadDeviceInfo.TAG_HAVE_UDPATE);
         String url = UrlHelper.updateDeviceInfoUrl(mDeviceInfo);
         log("开始更新设备状态");
         RequestHelper.OnRequestListener listener = new RequestHelper.OnRequestListener() {

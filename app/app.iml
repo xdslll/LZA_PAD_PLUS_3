@@ -86,7 +86,6 @@
     <orderEntry type="library" exported="" name="ormlite-android-4.48" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="mina-core-2.0.9" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-20.0.0" level="project" />
     <orderEntry type="library" exported="" name="eventbus-2.2.1" level="project" />
     <orderEntry type="library" exported="" name="google_zxing" level="project" />
     <orderEntry type="library" exported="" name="ormlite-core-4.48" level="project" />
@@ -100,7 +99,6 @@
     <orderEntry type="library" exported="" name="NineOldAndroid-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="universal-image-loader-1.9.3" level="project" />
     <orderEntry type="module" module-name="pullToRefreshLibrary" exported="" />
-    <orderEntry type="module" module-name="actionbarsherlock" exported="" />
   </component>
 </module>
 

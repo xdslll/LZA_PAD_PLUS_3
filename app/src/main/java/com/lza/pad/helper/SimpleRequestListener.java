@@ -13,7 +13,7 @@ import java.util.List;
  * @author xiads
  * @Date 15/2/10.
  */
-public class SimpleRequestListener<T> implements RequestHelper.OnRequestListener {
+public class    SimpleRequestListener<T> implements RequestHelper.OnRequestListener {
 
     @Override
     public void onResponse(ResponseEventInfo response) {

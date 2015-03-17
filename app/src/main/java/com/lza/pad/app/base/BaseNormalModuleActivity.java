@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
-import com.lza.pad.db.model.pad.PadLayoutModule;
-import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -38,7 +38,7 @@ public abstract class BaseNormalModuleActivity extends _BaseActivity {
 
     private List<PadModuleControl> mPadControlInfos;
     private PadLayoutModule mPadModuleInfo;
-    private _PadDeviceInfo mPadDeviceInfo;
+    private PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

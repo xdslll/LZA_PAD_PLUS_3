@@ -1,4 +1,4 @@
-package com.lza.pad.broadcast;
+package com.lza.pad.app2.broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

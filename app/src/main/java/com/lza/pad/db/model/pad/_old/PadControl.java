@@ -1,4 +1,4 @@
-package com.lza.pad.db.model.pad;
+package com.lza.pad.db.model.pad._old;
 
 /**
  * Say something about this class
@@ -6,6 +6,7 @@ package com.lza.pad.db.model.pad;
  * @author xiads
  * @Date 15/2/7.
  */
+@Deprecated
 public class PadControl {
 
     private String id;

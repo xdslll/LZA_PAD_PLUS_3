@@ -11,7 +11,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
+import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
@@ -20,6 +21,7 @@ import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
 
 import java.io.File;
+import java.util.List;
 
 import de.greenrobot.event.EventBus;
 
@@ -80,6 +82,10 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         _showProgressDialog(getResources().getString(resId), true);
     }
 
+    protected void showProgressDialog(String msg, boolean cancelable) {
+        _showProgressDialog(msg, cancelable);
+    }
+
     protected void showProgressDialog(int resId, boolean cancelable) {
         _showProgressDialog(getResources().getString(resId), cancelable);
     }
@@ -118,6 +124,15 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         return TextUtils.isEmpty(str);
     }
 
+    protected <T> boolean isEmpty(List<T> data) {
+        return data == null || data.size() <= 0;
+    }
+
+    protected <T> T pickFirst(List<T> data) {
+        if (isEmpty(data)) return null;
+        return data.get(0);
+    }
+
     protected void log(String msg) {
         AppLogger.e("---------------- " + msg + " ----------------");
     }
@@ -141,16 +156,16 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         startActivity(intent);
     }
 
-    protected void requestUpdateDeviceInfo(_PadDeviceInfo deviceInfo) {
+    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo) {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
         send(url, new UpdateDeviceInfoListener(deviceInfo));
     }
 
     private class UpdateDeviceInfoListener extends SimpleRequestListener {
 
-        _PadDeviceInfo deviceInfo;
+        PadDeviceInfo deviceInfo;
 
-        private UpdateDeviceInfoListener(_PadDeviceInfo deviceInfo) {
+        private UpdateDeviceInfoListener(PadDeviceInfo deviceInfo) {
             this.deviceInfo = deviceInfo;
         }
 
@@ -168,7 +183,18 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         }
     }
 
-    protected void onDeviceUpdateSuccess(_PadDeviceInfo deviceInfo) {};
-    protected void onDeviceUpdateFailed(_PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
+
+    protected String buildActivityPath(String activityPath) {
+        String packageName = getPackageName();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(packageName).append(".").append(activityPath);
+        return buffer.toString();
+    }
+
+    protected void backToDeviceAuthorityActivity() {
+        startActivity(new Intent(mCtx, DeviceAuthorityActivity.class));
+    }
 
 }

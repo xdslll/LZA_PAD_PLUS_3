@@ -1,0 +1,181 @@
+package com.lza.pad.app2.service;
+
+import android.content.Intent;
+
+import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadScene;
+import com.lza.pad.db.model.pad.PadSceneSwitching;
+import com.lza.pad.db.model.pad.PadSwitching;
+import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.SimpleRequestListener;
+import com.lza.pad.helper.UrlHelper;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import de.greenrobot.event.EventBus;
+
+/**
+ * Say something about this class
+ *
+ * @author xiads
+ * @Date 3/12/15.
+ */
+public class SceneSwitchingService extends BaseIntentService {
+
+    PadDeviceInfo mPadDeviceInfo;
+    PadScene mPadScene;
+
+    PadScene mNextScene;
+
+    PadSceneSwitching mPadSceneSwitching;
+
+    PadSwitching mPadSwitchingMode;
+
+    public SceneSwitchingService() {
+        super("SceneSwitchingService");
+    }
+
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        if (intent == null) return;
+        /**
+         * [SP101]接收当前场景
+         */
+        log("[SP101]接收当前场景");
+        mPadScene = intent.getParcelableExtra(KEY_PAD_SCENE);
+        mPadDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
+        if (mPadScene == null || mPadDeviceInfo == null) return;
+        getSceneSwitching();
+    }
+
+    /**
+     * [SP102]查询当前场景是否存在切换服务
+     */
+    private void getSceneSwitching() {
+        log("[SP102]查询当前场景是否存在切换服务");
+        String sceneSwitchingUrl = UrlHelper.getPadSceneSwitching(mPadDeviceInfo, mPadScene);
+        send(sceneSwitchingUrl, new SceneSwitchingListener());
+    }
+
+    /**
+     * [SP103]是否存在下一个场景
+     */
+    private void checkSceneSwitching() {
+        log("[SP103]是否存在下一个场景");
+        if (mPadSceneSwitching.getNext_scene() == null ||
+                mPadSceneSwitching.getNext_scene().size() <= 0) return;
+        mNextScene = mPadSceneSwitching.getNext_scene().get(0);
+        if (mNextScene == null) return;
+        checkSceneDuplicated();
+    }
+
+    /**
+     * [SP104]下一个场景是否为当前场景
+     */
+    private void checkSceneDuplicated() {
+        log("[SP104]下一个场景是否为当前场景");
+        if (mNextScene.equals(mPadScene)) return;
+        startSwitchingService();
+    }
+
+    /**
+     * [SP105]启动场景切换服务
+     */
+    private void startSwitchingService() {
+        log("[SP105]启动场景切换服务");
+        if (mPadSceneSwitching.getSwitching_mode() == null ||
+                mPadSceneSwitching.getSwitching_mode().size() <= 0) return;
+        mPadSwitchingMode = mPadSceneSwitching.getSwitching_mode().get(0);
+        String mode = mPadSwitchingMode.getTigger_mode();
+        if (mode.equals(PadSwitching.TRIGGER_MODE_FIX_DAY)) {
+            log("固定日期时触发场景切换");
+        } else if (mode.equals(PadSwitching.TRIGGER_MODE_FIX_TIME)) {
+            log("固定时间时触发场景切换");
+        } else if (mode.equals(PadSwitching.TRIGGER_MODE_FIX_DELAY)) {
+            log("固定延迟后触发场景切换");
+            int delay = parseInt(mPadSwitchingMode.getTrigger_interval());
+            switchingScene(delay);
+        }
+    }
+
+
+    /**
+     * 已经走过的时间
+     */
+    private int mHasElapse = 0;
+    /**
+     * 隔多久执行一次服务，以秒的单位
+     */
+    private int FIXED_DELAY = 10;
+
+    /**
+     * 定时器服务
+     */
+    private ScheduledExecutorService mService;
+
+    /**
+     * 通过计时器转换场景
+     *
+     * @param delay
+     */
+    private void switchingScene(final int delay) {
+        EventBus.getDefault().register(this);
+        mService = Executors.newSingleThreadScheduledExecutor();
+        mService.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                mHasElapse += FIXED_DELAY;
+                if (mHasElapse >= delay) {
+                    sendSceneSwitchingBroadcast();
+                }
+                log("当前延迟：" + mHasElapse);
+            }
+        }, 0, FIXED_DELAY, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 发送场景切换的请求
+     */
+    private void sendSceneSwitchingBroadcast() {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_SCENE_SWITCHING_RECEIVER);
+        intent.putExtra(KEY_PAD_SCENE, mNextScene);
+        sendBroadcast(intent);
+        mService.shutdownNow();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEvent(ServiceMode mode) {
+        if (mode == ServiceMode.MODE_RESET_SERVICE) {
+            mHasElapse = 0;
+        }
+    }
+
+    public enum ServiceMode {
+        MODE_RESET_SERVICE
+    }
+
+    private class SceneSwitchingListener extends SimpleRequestListener<PadSceneSwitching> {
+
+        @Override
+        public ResponseData<PadSceneSwitching> parseJson(String json) {
+            return JsonParseHelper.parsePadSceneSwitchingResponse(json);
+        }
+
+        @Override
+        public void handleRespone(List<PadSceneSwitching> content) {
+            mPadSceneSwitching = content.get(0);
+            checkSceneSwitching();
+        }
+
+        @Override
+        public void handleResponseFailed() {
+
+        }
+    }
+
+}

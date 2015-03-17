@@ -4,11 +4,17 @@ import com.google.gson.reflect.TypeToken;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.douban.DoubanReview;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
-import com.lza.pad.db.model.pad.PadImageCollection;
-import com.lza.pad.db.model.pad.PadLayoutModule;
-import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad.PadAuthority;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadModuleWidget;
+import com.lza.pad.db.model.pad.PadSceneModule;
+import com.lza.pad.db.model.pad._old.PadImageCollection;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
+import com.lza.pad.db.model.pad.PadScene;
+import com.lza.pad.db.model.pad.PadSceneSwitching;
+import com.lza.pad.db.model.pad.PadSchool;
 import com.lza.pad.db.model.pad.PadVersionInfo;
 
 import java.lang.reflect.Type;
@@ -34,9 +40,9 @@ public class JsonParseHelper {
         }
     }
 
-    public static ResponseData<_PadDeviceInfo> parseDeviceInfoResponse(String json) {
+    public static ResponseData<PadDeviceInfo> parseDeviceInfoResponse(String json) {
         try {
-            Type type = new TypeToken<ResponseData<_PadDeviceInfo>>() {}.getType();
+            Type type = new TypeToken<ResponseData<PadDeviceInfo>>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -107,6 +113,66 @@ public class JsonParseHelper {
     public static ResponseData<PadVersionInfo> pareseVersionInfo(String json) {
         try {
             Type type = new TypeToken<ResponseData<PadVersionInfo>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadScene> parseDeviceSceneResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadScene>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadSchool> parsePadSchoolResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadSchool>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadAuthority> parsePadAuthorityResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadAuthority>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadSceneSwitching> parsePadSceneSwitchingResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadSceneSwitching>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadSceneModule> parseSceneModulesResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadSceneModule>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadModuleWidget> parseModuleWidgetsResponse(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadModuleWidget>>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -16,7 +16,7 @@ import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.app.home.HomeActivity;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.wifi.admin._WifiAdmin;
 import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.db.model.DownloadFile;
@@ -56,7 +56,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
     boolean mIsWifiApEnable = false;
     int mWifiState;
 
-    private _PadDeviceInfo mPadDeviceInfo;
+    private PadDeviceInfo mPadDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,7 +227,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
      *
      * @param deviceInfo
      */
-    private void saveDeviceInfo(_PadDeviceInfo deviceInfo) {
+    private void saveDeviceInfo(PadDeviceInfo deviceInfo) {
 
     }
 
@@ -236,7 +236,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
      *
      * @param deviceInfo
      */
-    private void showDeviceInfo(final _PadDeviceInfo deviceInfo) {
+    private void showDeviceInfo(final PadDeviceInfo deviceInfo) {
         StringBuilder sb = new StringBuilder();
         sb.append("----------- 设备清单 -----------\n");
         sb.append(deviceInfo.toString());
@@ -245,12 +245,12 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 //发送更新启动状态的请求
-                requestUpdateDeviceInfo(deviceInfo, "state", _PadDeviceInfo.TAG_STATE_ON);
+                requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
             }
         });
     }
 
-    private void gotoHomeActivity(_PadDeviceInfo deviceInfo) {
+    private void gotoHomeActivity(PadDeviceInfo deviceInfo) {
         dismissProgressDialog();
         Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
         intent.putExtra(KEY_PAD_DEVICE_INFO, deviceInfo);
@@ -268,7 +268,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
         ResponseEventTag tag = response.getTag();
         if (tag == ResponseEventTag.ON_RESONSE) {
             String json = response.getResponseData();
-            final ResponseData<_PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
+            final ResponseData<PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
             if (data == null) {
                 dismissProgressDialog();
                 UniversalUtility.showDialog(mCtx, "提示", "服务器异常，点击确定重试", new DialogInterface.OnClickListener() {
@@ -283,11 +283,11 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
             String message = data.getMessage();
             if (state.equals(ResponseData.RESPONSE_STATE_OK)) {
                 if (data.getContent() == null || data.getContent().size() == 0) return;
-                final _PadDeviceInfo deviceInfo = data.getContent().get(0);
+                final PadDeviceInfo deviceInfo = data.getContent().get(0);
                 mPadDeviceInfo = deviceInfo;
                 //判断是否需要打开热点
                 String isHotspotOn = deviceInfo.getHotspot_switch();
-                if (isHotspotOn.equals(_PadDeviceInfo.TAG_HOTSPOT_ON)) {
+                if (isHotspotOn.equals(PadDeviceInfo.TAG_HOTSPOT_ON)) {
                     updateProgressDialog("正在打开热点");
                     //打开热点
                     _WifiApAdmin wifiApAdmin = _WifiApAdmin.instance(mCtx);
@@ -343,14 +343,14 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
         }
     }
 
-    private void updateDeviceInfo(_PadDeviceInfo deviceInfo) {
+    private void updateDeviceInfo(PadDeviceInfo deviceInfo) {
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
                 updateProgressDialog("正在更新设备状态...");
             }
         });
-        deviceInfo.setState(_PadDeviceInfo.TAG_STATE_ON);
+        deviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
         deviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
         //读取设备的版本号，比对现有的版本号
         int currentVersionCode = UniversalUtility.getVersionCode(mCtx);
@@ -370,7 +370,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
         }
     }
 
-    protected void updateNewVersion(_PadDeviceInfo deviceInfo) {
+    protected void updateNewVersion(PadDeviceInfo deviceInfo) {
         //查询该版本是否存在
         String requestUrl = UrlHelper.getVersionUrl(deviceInfo);
         //如果存在则下载该版本
@@ -379,9 +379,9 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
 
     private class UpdateNewVersionListener extends SimpleRequestListener<PadVersionInfo> {
 
-        _PadDeviceInfo deviceInfo;
+        PadDeviceInfo deviceInfo;
 
-        private UpdateNewVersionListener(_PadDeviceInfo deviceInfo) {
+        private UpdateNewVersionListener(PadDeviceInfo deviceInfo) {
             this.deviceInfo = deviceInfo;
         }
 
@@ -451,12 +451,12 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
     }
 
     @Override
-    protected void onDeviceUpdateSuccess(_PadDeviceInfo deviceInfo) {
+    protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
         gotoHomeActivity(deviceInfo);
     }
 
     @Override
-    protected void onDeviceUpdateFailed(_PadDeviceInfo deviceInfo) {
+    protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
         gotoHomeActivity(deviceInfo);
     }
 }

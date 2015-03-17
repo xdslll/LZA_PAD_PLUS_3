@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.android.volley.VolleyError;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
 import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.helper.event.state.ResponseEventTag;
@@ -38,7 +38,7 @@ import de.greenrobot.event.EventBus;
  */
 public class UpdateDeviceService extends IntentService implements Consts, RequestHelper.OnRequestListener {
 
-    private _PadDeviceInfo mDeviceInfo;
+    private PadDeviceInfo mDeviceInfo;
     private Context mContext;
     private String mRequestUrl;
     private String mUpdateTag;
@@ -121,7 +121,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         }
         if (response.getTag() == ResponseEventTag.ON_RESONSE) {
             String json = response.getResponseData();
-            final ResponseData<_PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
+            final ResponseData<PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
             if (data == null) {
                 mHandler.sendEmptyMessageDelayed(REQUEST_UPDATE_STATE, mUpdateTime);
                 return;
@@ -151,7 +151,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     /**
      * 检查版本
      */
-    private boolean checkVersion(_PadDeviceInfo deviceInfo) {
+    private boolean checkVersion(PadDeviceInfo deviceInfo) {
         //读取设备的版本号，比对现有的版本号
         int currentVersionCode = UniversalUtility.getVersionCode(getBaseContext());
         String newVersionCode = deviceInfo.getVersion();
@@ -171,7 +171,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     /**
      * 更新版本
      */
-    private void updateVersion(_PadDeviceInfo deviceInfo) {
+    private void updateVersion(PadDeviceInfo deviceInfo) {
         //查询该版本是否存在
         String requestUrl = UrlHelper.getVersionUrl(deviceInfo);
         //如果存在则下载该版本
@@ -186,11 +186,11 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         mUpdateTag = mDeviceInfo.getUpdate_tag();
         //获取更新时间
         mUpdateTime = Integer.parseInt(mDeviceInfo.getUpdate_time()) * 1000;
-        if (mUpdateTag.equals(_PadDeviceInfo.TAG_NEED_UDPATE)) {
+        if (mUpdateTag.equals(PadDeviceInfo.TAG_NEED_UDPATE)) {
             log("需要更新");
             //检查自动更新标识
             String autoUpdateTag = mDeviceInfo.getAuto_update();
-            if (autoUpdateTag.equals(_PadDeviceInfo.TAG_AUTO_UPDATE)) {
+            if (autoUpdateTag.equals(PadDeviceInfo.TAG_AUTO_UPDATE)) {
                 //允许自动更新
                 Intent intentReceiver = new Intent(ACTION_UPDATE_DEVICE_RECEIVER);
                 intentReceiver.putExtra(KEY_PAD_DEVICE_INFO, mDeviceInfo);
@@ -200,7 +200,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
                 //不允许自动更新
                 log("不允许自动更新，界面将不会更新");
             }
-        } else if (mUpdateTag.equals(_PadDeviceInfo.TAG_HAVE_UDPATE)) {
+        } else if (mUpdateTag.equals(PadDeviceInfo.TAG_HAVE_UDPATE)) {
             log("已经更新");
         } else {
             log("未知状态");
@@ -210,7 +210,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     private void updateDevice() {
         log("开始更新设备状态");
         mDeviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
-        mDeviceInfo.setState(_PadDeviceInfo.TAG_STATE_ON);
+        mDeviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
         int currentVersion = UniversalUtility.getVersionCode(mContext);
         mDeviceInfo.setVersion(String.valueOf(currentVersion));
         String updateDeviceUrl = UrlHelper.updateDeviceInfoUrl(mDeviceInfo);
@@ -245,16 +245,16 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         mIsRunning = callback.isRunning;
         mIsUpdating = callback.isUpdating;
         if (mDeviceInfo != null) {
-            mDeviceInfo.setUpdate_tag(_PadDeviceInfo.TAG_HAVE_UDPATE);
+            mDeviceInfo.setUpdate_tag(PadDeviceInfo.TAG_HAVE_UDPATE);
             updateDevice();
         }
     }
 
     private class UpdateNewVersionListener extends SimpleRequestListener<PadVersionInfo> {
 
-        _PadDeviceInfo deviceInfo;
+        PadDeviceInfo deviceInfo;
 
-        private UpdateNewVersionListener(_PadDeviceInfo deviceInfo) {
+        private UpdateNewVersionListener(PadDeviceInfo deviceInfo) {
             this.deviceInfo = deviceInfo;
         }
 

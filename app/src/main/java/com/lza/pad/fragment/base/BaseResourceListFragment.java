@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadModuleControl;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;

@@ -76,9 +76,45 @@ public interface Consts {
      */
     public static final String CONTROL_GET_UPGRADE_VERSION = "get_upgrade_version";
 
+    /**
+     * 查询设备信息明细
+     */
+    public static final String CONTROL_GET_DEVICE_DETAIL = "get_device_detail";
+
+    /**
+     * 获取设备场景
+     */
+    public static final String CONTROL_GET_DEVICE_SCENCE = "get_device_scene";
+
+    /**
+     * 获取学校信息
+     */
+    public static final String CONTROL_GET_SCHOOL_INFO = "get_school_info";
+
+    /**
+     * 获取场景处理权限
+     */
+    public static final String CONTROL_GET_SCENE_AUTHORITY = "get_scene_authority";
+
+    /**
+     * 获取场景切换
+     */
+    public static final String CONTROL_GET_SCENE_SWITCHING = "get_scence_switching";
+
+    /**
+     * 获取场景下的所有模块
+     */
+    public static final String CONTROL_GET_SCENE_MODULES = "get_scene_modules";
+
+    /**
+     * 获取模块下的所有组件
+     */
+    public static final String CONTROL_GET_MODULE_WIDGETS = "get_module_widgets";
 
 
 
+    public static final String KEY_PAD_SCENE = "key_pad_scene";
+    public static final String KEY_PAD_AUTHORITY = "key_pad_authority";
     public static final String KEY_CANCELABLE = "key_cancelable";
     public static final String KEY_GRID_NUM_COLUMNS = "key_grid_num_columns";
     public static final String KEY_CURRENT_PAGE = "key_current_page";
@@ -103,6 +139,9 @@ public interface Consts {
     public static final String ACTION_UPDATE_DEVICE_RECEIVER = "LZA_PAD_UPDATE_DEVICE_RECEIVER";
     public static final String ACTION_UPDATE_DEVICE_SERVICE = "LZA_PAD_UPDATE_DEVICE_SERIVCE";
     public static final String ACTION_MINA_SERVICE = "LZA_PAD_MINA_SERVICE";
+    public static final String ACTION_SCENE_SWITCHING_SERVICE = "LZA_PAD_SCENE_SWITCHING_SERVICE";
+    public static final String ACTION_SCENE_SWITCHING_RECEIVER = "LZA_PAD_SCENE_SWITCHING_RECEIVER";
+
     public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
 
     public static final String KEY_MAP_FUNC_TEXT = "key_map_func_title";

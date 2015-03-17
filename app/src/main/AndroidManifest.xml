@@ -62,7 +62,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".app2.ui.parse.MainParseActivity" android:screenOrientation="portrait"
+        <activity android:name=".app2.ui.scene.MainParseActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+        <activity android:name=".app2.ui.scene.StandardParseActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask"/>
 
         <service android:name=".app.socket.admin.server.MinaService" android:enabled="true">
@@ -79,6 +81,12 @@
             </intent-filter>
         </service>
 
+        <service android:name=".app2.service.SceneSwitchingService" android:enabled="true">
+            <intent-filter>
+                <action android:name="LZA_PAD_SCENE_SWITCHING_SERVICE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
         <!--<receiver android:name=".broadcast.RunOnBoot" >
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

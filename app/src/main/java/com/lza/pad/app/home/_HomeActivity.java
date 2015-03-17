@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
-import com.lza.pad.db.model.pad._PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.ToastUtils;
@@ -18,13 +18,13 @@ import com.lza.pad.support.utils.ToastUtils;
 @Deprecated
 public class _HomeActivity extends _BaseActivity {
 
-    private _PadDeviceInfo mDeviceInfo;
+    private PadDeviceInfo mDeviceInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.common_main_container);
+        setContentView(R.layout.main_scene_container);
 
         mDeviceInfo = getIntent().getParcelableExtra("key_pad_device");
         if (mDeviceInfo == null) {

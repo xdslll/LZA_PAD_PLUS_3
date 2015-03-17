@@ -1,4 +1,4 @@
-package com.lza.pad.db.model.pad;
+package com.lza.pad.db.model.pad._old;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,6 +12,7 @@ import java.util.Map;
  * @author xiads
  * @Date 15/2/6.
  */
+@Deprecated
 public class PadLayoutModule implements Parcelable {
 
     public static Map<String, String> SUBJECT_TYPE = new HashMap<String, String>();

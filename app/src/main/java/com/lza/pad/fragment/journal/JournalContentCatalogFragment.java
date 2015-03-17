@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadJournalArticle;
+import com.lza.pad.db.model.pad._old.PadJournalArticle;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
