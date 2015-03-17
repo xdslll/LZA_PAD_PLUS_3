@@ -19,6 +19,12 @@ public class PadWidgetLayout implements Parcelable {
 
     private String height;
 
+    private String width;
+
+    private String x_axis;
+
+    private String y_axis;
+
     private int widget_width;
 
     private int widget_height;
@@ -63,6 +69,30 @@ public class PadWidgetLayout implements Parcelable {
         this.widget_height = widget_height;
     }
 
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public String getX_axis() {
+        return x_axis;
+    }
+
+    public void setX_axis(String x_axis) {
+        this.x_axis = x_axis;
+    }
+
+    public String getY_axis() {
+        return y_axis;
+    }
+
+    public void setY_axis(String y_axis) {
+        this.y_axis = y_axis;
+    }
+
     public PadWidgetLayout() {
     }
 
@@ -76,6 +106,9 @@ public class PadWidgetLayout implements Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeString(this.height);
+        dest.writeString(this.width);
+        dest.writeString(this.x_axis);
+        dest.writeString(this.y_axis);
         dest.writeInt(this.widget_width);
         dest.writeInt(this.widget_height);
     }
@@ -84,6 +117,9 @@ public class PadWidgetLayout implements Parcelable {
         this.id = in.readString();
         this.name = in.readString();
         this.height = in.readString();
+        this.width = in.readString();
+        this.x_axis = in.readString();
+        this.y_axis = in.readString();
         this.widget_width = in.readInt();
         this.widget_height = in.readInt();
     }

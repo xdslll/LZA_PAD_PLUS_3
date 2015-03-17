@@ -35,8 +35,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
 
     protected Context mCtx;
 
-    private int mDefaultDelay = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,23 +57,19 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         mProgressDialog.show();
     }
 
-    private void _showProgressDialog(String msg) {
-        _showProgressDialog(msg, true);
-    }
-
     protected void dismissProgressDialog() {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
     }
 
-    private void _updateProgressDialog(String msg) {
+    protected void updateProgressDialog(String msg) {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) return;
         mProgressDialog.setMessage(msg);
     }
 
     protected void showProgressDialog(String msg) {
-        _showProgressDialog(msg);
+        _showProgressDialog(msg, true);
     }
 
     protected void showProgressDialog(int resId) {
@@ -90,10 +84,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         _showProgressDialog(getResources().getString(resId), cancelable);
     }
 
-    protected void updateProgressDialog(String msg) {
-        _updateProgressDialog(msg);
-    }
-
     protected void updateProgressDialog(int resId) {
         updateProgressDialog(getResources().getString(resId));
     }
@@ -103,10 +93,6 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     }
 
     private Handler mHandler = new Handler();
-
-    protected void setDefaultDelay(int defaultDelay) {
-        this.mDefaultDelay = defaultDelay;
-    }
 
     protected void send(String url, RequestHelper.OnRequestListener listener) {
         RequestHelper.getInstance(mCtx, url, listener).send();
@@ -186,7 +172,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {};
     protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {};
 
-    protected String buildActivityPath(String activityPath) {
+    protected String buildCodePath(String activityPath) {
         String packageName = getPackageName();
         StringBuffer buffer = new StringBuffer();
         buffer.append(packageName).append(".").append(activityPath);

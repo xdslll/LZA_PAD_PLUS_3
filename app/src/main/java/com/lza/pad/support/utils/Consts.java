@@ -113,6 +113,7 @@ public interface Consts {
 
 
 
+    public static final String KEY_PAD_WIDGETS = "key_pad_widgets";
     public static final String KEY_PAD_SCENE = "key_pad_scene";
     public static final String KEY_PAD_AUTHORITY = "key_pad_authority";
     public static final String KEY_CANCELABLE = "key_cancelable";

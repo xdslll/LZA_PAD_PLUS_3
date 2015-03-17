@@ -2,6 +2,7 @@ package com.lza.pad.app2.ui.scene;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -12,6 +13,7 @@ import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadModuleType;
 import com.lza.pad.db.model.pad.PadModuleWidget;
 import com.lza.pad.db.model.pad.PadSceneModule;
+import com.lza.pad.db.model.pad.PadWidget;
 import com.lza.pad.db.model.pad.PadWidgetLayout;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
@@ -143,10 +145,10 @@ public class StandardParseActivity extends BaseParseActivity {
         log("[P306]渲染模块");
         dismissProgressDialog();
         if (hasGuide) {
-            getModuleWidgets(mGuideModule.get(0).getModule_id().get(0), PadModuleType.MODULE_TYPE_GUIDE, 0);
+            getModuleWidgets(mGuideModule.get(0));
             log("开始渲染引导页");
         } else {
-            getModuleWidgets(mHomeModule.get(0).getModule_id().get(0), PadModuleType.MODULE_TYPE_HOME, 0);
+            getModuleWidgets(mHomeModule.get(0));
             log("开始渲染首页");
         }
 
@@ -180,21 +182,23 @@ public class StandardParseActivity extends BaseParseActivity {
      * [SP201]获取模块组件
      *
      * @param module
-     * @param type
-     * @param index
      */
-    private void getModuleWidgets(PadModule module, int type, int index) {
+    private void getModuleWidgets(PadSceneModule module) {
         log("[SP201]获取模块组件");
-        String getWidgetsUrl = UrlHelper.getMoudleWidgets(mPadDeviceInfo, module);
-        send(getWidgetsUrl, new GetModuleWidgetsListener(type, index));
+        PadModule mod = pickFirst(module.getModule_id());
+        if (mod == null) {
+            handleErrorProcess("提示", "获取模块失败，请重试！");
+            return;
+        }
+        String getWidgetsUrl = UrlHelper.getMoudleWidgets(mPadDeviceInfo, mod);
+        send(getWidgetsUrl, new GetModuleWidgetsListener(module));
     }
 
     private class GetModuleWidgetsListener extends SimpleRequestListener<PadModuleWidget> {
 
-        int type, index;
-        public GetModuleWidgetsListener(int type, int index) {
-            this.type = type;
-            this.index = index;
+        PadSceneModule module;
+        public GetModuleWidgetsListener(PadSceneModule module) {
+            this.module = module;
         }
 
         @Override
@@ -209,17 +213,23 @@ public class StandardParseActivity extends BaseParseActivity {
 
         @Override
         public void handleRespone(List<PadModuleWidget> content) {
+            PadModuleType moduleType = pickFirst(module.getModule_type_id());
+            if (moduleType == null) {
+                handleErrorProcess("提示", "获取模块类型失败，请重试！");
+                return;
+            }
+            int type = parseInt(moduleType.getType());
             if (type == PadModuleType.MODULE_TYPE_GUIDE) {
                 mGuideModuleWidgets.add(content);
-                renderModule(content, PadModuleType.MODULE_TYPE_GUIDE);
+                renderModule(module, content);
             } else if (type == PadModuleType.MODULE_TYPE_HOME) {
                 mHomeModuleWidgets.add(content);
-                renderModule(content, PadModuleType.MODULE_TYPE_HOME);
+                renderModule(module, content);
             }
         }
     }
 
-    private void renderModule(List<PadModuleWidget> content, int type) {
+    private void renderModule(PadSceneModule module, List<PadModuleWidget> content) {
         int screenWidth = RuntimeUtility.getScreenWidth(this);
         int screenHeight = RuntimeUtility.getScreenHeight(this);
         int totalHeight = 0;
@@ -237,8 +247,34 @@ public class StandardParseActivity extends BaseParseActivity {
                 layout.setWidget_height((int) (screenHeight * rateHeight));
             }
             FrameLayout subLayout = new FrameLayout(this);
+            //避免使用0作为id号
+            subLayout.setId(i + 1);
             subLayout.setLayoutParams(new LinearLayout.LayoutParams(layout.getWidget_width(), layout.getWidget_height()));
             subLayout.setBackgroundColor(Color.YELLOW);
+            //解析组件
+            PadWidget widget = pickFirst(content.get(i).getWidget_id());
+            if (widget == null) continue;
+            String fragmentPath = buildCodePath(widget.getParse_code());
+            try {
+                Fragment frg = (Fragment) Class.forName(fragmentPath).newInstance();
+                Bundle arg = new Bundle();
+                arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+                arg.putParcelable(KEY_PAD_SCHOOL, mPadSchool);
+                arg.putParcelable(KEY_PAD_SCENE, mPadScene);
+                arg.putParcelable(KEY_PAD_MODULE_INFO, module);
+                arg.putParcelableArrayList(KEY_PAD_WIDGETS, (ArrayList<PadModuleWidget>) content);
+                frg.setArguments(arg);
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(i + 1, frg)
+                        .commit();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             mMainLayout.addView(subLayout);
         }
     }

@@ -181,7 +181,7 @@ public class MainParseActivity extends BaseActivity {
      */
     private void parseScene() {
         dismissProgressDialog();
-        String activityPath = buildActivityPath(mPadAuthority.getScene_parse_code());
+        String activityPath = buildCodePath(mPadAuthority.getScene_parse_code());
         log("activity path=" + activityPath);
         Intent intent = new Intent();
         intent.setClassName(mCtx, activityPath);
