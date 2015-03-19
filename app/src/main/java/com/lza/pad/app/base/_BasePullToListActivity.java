@@ -16,7 +16,8 @@ import com.lza.pad.R;
  * @author xiads
  * @Date 15/2/14.
  */
-public abstract class BasePullToListActivity extends _BaseActivity {
+@Deprecated
+public abstract class _BasePullToListActivity extends _BaseActivity {
 
     private PullToRefreshListView mRefreshListView;
     private TextView mTxtHome, mTxtModule, mTxtType, mTxtSearch;

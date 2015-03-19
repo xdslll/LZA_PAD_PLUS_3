@@ -22,7 +22,7 @@ import com.lza.pad.app.ebook.EbookContentActivity2;
 import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.fragment.base.BaseImageFragment;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -41,7 +41,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/23/15.
  */
-public class NewslistFragment extends BaseImageFragment {
+public class NewslistFragment extends _BaseImageFragment {
 
     public static final int DEFAULT_START_PAGE = 1;
     protected int mDataSize = 0;

@@ -14,7 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.file.FileTools;
 
@@ -29,7 +29,7 @@ import java.io.File;
  * @author xiads
  * @Date 15/2/11.
  */
-public class PosterFragment1 extends BaseFragment {
+public class PosterFragment1 extends _BaseFragment {
 
     private final String PATH = "image";
     private final String FILE_NAME = "nju";

@@ -20,7 +20,7 @@ import com.lza.pad.app.journal.JournalContentActivity;
 import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.fragment.base.BaseImageFragment;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -38,7 +38,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/22/15.
  */
-public class EbookgridFragment extends BaseImageFragment {
+public class EbookgridFragment extends _BaseImageFragment {
 
     public static final int DEFAULT_START_PAGE = 1;
     int mGridNumColumns;

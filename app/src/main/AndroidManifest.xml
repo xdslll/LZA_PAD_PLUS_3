@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
 
     <application android:allowBackup="true" android:label="@string/app_name"
-        android:icon="@drawable/ic_launcher" android:name=".app.base._MainApplication"
+        android:icon="@drawable/ic_launcher" android:name=".app2.application.MainApplication"
         android:theme="@style/BaseTheme">
         <activity android:name=".app.SplashActivity" android:screenOrientation="portrait" android:launchMode="singleTask">
 
@@ -66,6 +66,14 @@
             android:launchMode="singleTask"/>
         <activity android:name=".app2.ui.scene.StandardParseActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask"/>
+        <activity android:name=".app2.ui.module.StandardModuleActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".app2.ui.module.content.ebook.EbookContentActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask" android:theme="@style/DialogTheme"/>
+        <activity android:name=".app2.ui.module.content.news.NewsContentActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask" android:theme="@style/DialogTheme"/>
+        <activity android:name=".app2.ui.module.content.journal.JournalContentActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask" android:theme="@style/DialogTheme"/>
+
 
         <service android:name=".app.socket.admin.server.MinaService" android:enabled="true">
             <intent-filter>
@@ -87,6 +95,13 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </service>
+        <service android:name=".app2.service.ModuleSwitchingService" android:enabled="true">
+            <intent-filter>
+                <action android:name="LZA_PAD_MODULE_SWITCHING_SERVICE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
+
         <!--<receiver android:name=".broadcast.RunOnBoot" >
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

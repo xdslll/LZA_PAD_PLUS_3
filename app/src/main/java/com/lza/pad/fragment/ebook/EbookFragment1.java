@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.lza.pad.db.model.pad._old.PadLayoutModule;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.fragment.base.BaseGridFragment;
+import com.lza.pad.fragment.base._BaseGridFragment;
 import com.lza.pad.fragment.base.BaseResourceListFragment;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class EbookFragment1 extends BaseResourceListFragment {
         List<PadResource> _data = getDataSource().subList(start, end);
         ArrayList<PadResource> data = new ArrayList<PadResource>(_data);
         //生成Fragment，填充ViewPager
-        Fragment fragment = new BaseGridFragment();
+        Fragment fragment = new _BaseGridFragment();
         fragment.setArguments(createArgument(data));
         return fragment;
     }

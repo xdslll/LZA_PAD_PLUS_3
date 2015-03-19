@@ -3,6 +3,7 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,15 +16,25 @@ public class PadSceneModule implements Parcelable {
 
     private String id;
 
-    private List<PadScene> scene_id;
+    private List<PadScene> scene_id = new ArrayList<PadScene>();
 
-    private List<PadModule> module_id;
+    private List<PadModule> module_id = new ArrayList<PadModule>();
 
-    private List<PadModuleType> module_type_id;
+    private List<PadModuleType> module_type_id = new ArrayList<PadModuleType>();
 
     private String menu_group_id;
 
     private String index;
+
+    private String label;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public String getId() {
         return id;
@@ -89,6 +100,7 @@ public class PadSceneModule implements Parcelable {
         dest.writeTypedList(module_type_id);
         dest.writeString(this.menu_group_id);
         dest.writeString(this.index);
+        dest.writeString(this.label);
     }
 
     private PadSceneModule(Parcel in) {
@@ -98,6 +110,7 @@ public class PadSceneModule implements Parcelable {
         in.readTypedList(module_type_id, PadModuleType.CREATOR);
         this.menu_group_id = in.readString();
         this.index = in.readString();
+        this.label = in.readString();
     }
 
     public static final Creator<PadSceneModule> CREATOR = new Creator<PadSceneModule>() {

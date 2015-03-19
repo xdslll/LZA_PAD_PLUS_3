@@ -1,6 +1,6 @@
 package com.lza.pad.app.guide;
 
-import com.lza.pad.app.base.BaseNormalModuleActivity;
+import com.lza.pad.app.base._BaseNormalModuleActivity;
 
 /**
  * Say something about this class
@@ -8,6 +8,6 @@ import com.lza.pad.app.base.BaseNormalModuleActivity;
  * @author xiads
  * @Date 3/10/15.
  */
-public class GuideActivity extends BaseNormalModuleActivity {
+public class GuideActivity extends _BaseNormalModuleActivity {
 
 }

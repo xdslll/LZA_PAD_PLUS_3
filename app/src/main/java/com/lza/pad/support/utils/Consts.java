@@ -111,9 +111,18 @@ public interface Consts {
      */
     public static final String CONTROL_GET_MODULE_WIDGETS = "get_module_widgets";
 
+    /**
+     * 获取模块切换信息
+     */
+    public static final String CONTROL_GET_MODULE_SWITCHING = "get_module_switching";
 
 
-    public static final String KEY_PAD_WIDGETS = "key_pad_widgets";
+
+
+
+
+    public static final String KEY_PAD_WIDGET = "key_pad_widget";
+    public static final String KEY_PAD_WIDGET_DATA = "key_pad_widget_data";
     public static final String KEY_PAD_SCENE = "key_pad_scene";
     public static final String KEY_PAD_AUTHORITY = "key_pad_authority";
     public static final String KEY_CANCELABLE = "key_cancelable";
@@ -136,12 +145,16 @@ public interface Consts {
     public static final String KEY_DEVICE_IS_UPDATING = "key_device_is_updating";
     public static final String KEY_UPDATE_DEVICE_IS_RUNNING = "key_update_device_is_running";
 
+    public static final String ACTION_START_HOME_MODULE = "ACTION_START_HOME_MODULE";
     public static final String ACTION_UPDATE_DEVICE_CALLBACK = "LZA_PAD_UPDATE_CALLBACK";
     public static final String ACTION_UPDATE_DEVICE_RECEIVER = "LZA_PAD_UPDATE_DEVICE_RECEIVER";
     public static final String ACTION_UPDATE_DEVICE_SERVICE = "LZA_PAD_UPDATE_DEVICE_SERIVCE";
     public static final String ACTION_MINA_SERVICE = "LZA_PAD_MINA_SERVICE";
     public static final String ACTION_SCENE_SWITCHING_SERVICE = "LZA_PAD_SCENE_SWITCHING_SERVICE";
     public static final String ACTION_SCENE_SWITCHING_RECEIVER = "LZA_PAD_SCENE_SWITCHING_RECEIVER";
+    public static final String ACTION_MODULE_SWITCHING_SERVICE = "LZA_PAD_MODULE_SWITCHING_SERVICE";
+    public static final String ACTION_MODULE_SWITCHING_RECEIVER = "LZA_PAD_MODULE_SWITCHING_MODULE";
+
 
     public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
 

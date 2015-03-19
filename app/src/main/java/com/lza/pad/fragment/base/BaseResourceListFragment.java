@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit;
  * @author xiads
  * @Date 1/7/15.
  */
-public abstract class BaseResourceListFragment extends BaseFragment {
+public abstract class BaseResourceListFragment extends _BaseFragment {
 
     protected TextView mTxtMore, mTxtTitle;
     protected LinearLayout mLayoutTitle;

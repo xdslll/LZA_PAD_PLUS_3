@@ -9,9 +9,10 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.lza.pad.app2.service.SceneSwitchingService;
+import com.lza.pad.app2.service.SwitchingServiceMode;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.db.model.pad.PadModuleType;
 import com.lza.pad.db.model.pad.PadScene;
 import com.lza.pad.db.model.pad.PadSceneModule;
 import com.lza.pad.db.model.pad.PadSchool;
@@ -58,10 +59,15 @@ public abstract class BaseParseActivity extends BaseActivity {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 log("触摸时重置场景切换服务");
-                EventBus.getDefault().post(SceneSwitchingService.ServiceMode.MODE_RESET_SERVICE);
+                EventBus.getDefault().post(SwitchingServiceMode.MODE_RESET_SERVICE);
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -89,6 +95,18 @@ public abstract class BaseParseActivity extends BaseActivity {
     protected abstract void getSceneModules();
 
     /**
+     * 启动模块
+     */
+    protected abstract void launchModule(PadSceneModule module);
+
+    protected void launchModuleByType(PadModuleType moduleType) {
+        int type = parseInt(moduleType.getType());
+        launchModuleByType(type);
+    }
+
+    protected void launchModuleByType(int type) {}
+
+    /**
      * 重置场景切换后的数据
      */
     protected abstract void resetSceneData();
@@ -96,6 +114,7 @@ public abstract class BaseParseActivity extends BaseActivity {
     protected void registerSceneSwitchingReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_SCENE_SWITCHING_RECEIVER);
+        filter.addAction(ACTION_MODULE_SWITCHING_RECEIVER);
         registerReceiver(mSwitchingReceiver, filter);
     }
 
@@ -108,24 +127,30 @@ public abstract class BaseParseActivity extends BaseActivity {
     }
 
     protected void stopSceneSwitchingService() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_SCENE_SWITCHING_SERVICE);
-        stopService(intent);
+        EventBus.getDefault().post(SwitchingServiceMode.MODE_STOP_SCENE_SERVICE);
     }
 
     private class SceneSwitchingReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            dismissProgressDialog();
             if (intent == null) return;
-            mPadScene = intent.getParcelableExtra(KEY_PAD_SCENE);
-            if (mPadScene == null) return;
-            log("加载切换后的场景:" + mPadScene.getName());
-            showProgressDialog("开始解析场景", false);
-            resetSceneData();
-            getSceneModules();
-            startSceneSwitchingService();
+            if (intent.getAction().equals(ACTION_SCENE_SWITCHING_RECEIVER)) {
+                dismissProgressDialog();
+                mPadScene = intent.getParcelableExtra(KEY_PAD_SCENE);
+                if (mPadScene == null) return;
+                log("加载切换后的场景:" + mPadScene.getName());
+                showProgressDialog("开始解析场景", false);
+                resetSceneData();
+                getSceneModules();
+                startSceneSwitchingService();
+            } else if (intent.getAction().equals(ACTION_MODULE_SWITCHING_RECEIVER)) {
+                PadModuleType moduleType = intent.getParcelableExtra(KEY_PAD_MODULE_INFO);
+                if (moduleType != null) {
+                    log("加载切换后的模块类型:" + moduleType.getType());
+                    launchModuleByType(moduleType);
+                }
+            }
         }
     }
 

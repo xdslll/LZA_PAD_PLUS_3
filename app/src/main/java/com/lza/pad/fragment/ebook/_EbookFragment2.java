@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -15,7 +15,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @Date 15/2/7.
  */
 @Deprecated
-public class _EbookFragment2 extends BaseFragment {
+public class _EbookFragment2 extends _BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

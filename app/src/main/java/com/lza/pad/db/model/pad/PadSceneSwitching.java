@@ -3,6 +3,7 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,11 +16,11 @@ public class PadSceneSwitching implements Parcelable {
 
     String id;
 
-    List<PadScene> pre_scene;
+    List<PadScene> pre_scene = new ArrayList<PadScene>();
 
-    List<PadScene> next_scene;
+    List<PadScene> next_scene = new ArrayList<PadScene>();
 
-    List<PadSwitching> switching_mode;
+    List<PadSwitching> switching_mode = new ArrayList<PadSwitching>();
 
     public String getId() {
         return id;

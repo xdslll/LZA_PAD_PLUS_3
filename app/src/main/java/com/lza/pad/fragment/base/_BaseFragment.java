@@ -26,7 +26,8 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 1/13/15.
  */
-public class BaseFragment extends Fragment implements Consts {
+@Deprecated
+public class _BaseFragment extends Fragment implements Consts {
 
     protected Activity mActivity;
     protected boolean mIsHome = true;

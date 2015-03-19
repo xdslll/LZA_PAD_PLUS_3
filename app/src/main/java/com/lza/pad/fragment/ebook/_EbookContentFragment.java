@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -17,7 +17,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @Date 1/18/15.
  */
 @Deprecated
-public class _EbookContentFragment extends BaseFragment {
+public class _EbookContentFragment extends _BaseFragment {
 
     private TextView mTxtLabIntro, mTxtLabList, mTxtLabRead, mTxtLabCol, mTxtIntro;
     private FrameLayout mLayoutSubContainer;

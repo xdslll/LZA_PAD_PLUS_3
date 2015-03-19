@@ -4,10 +4,11 @@ import android.text.TextUtils;
 
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadModule;
-import com.lza.pad.db.model.pad._old.PadLayoutModule;
-import com.lza.pad.db.model.pad._old.PadModuleControl;
+import com.lza.pad.db.model.pad.PadModuleType;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadScene;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
 
@@ -89,7 +90,7 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_SCENE_ID = "scene_id";
 
-
+    public static final String PAR_PRE_MODULE = "pre_module";
 
 
     public static String generateUrl(Map<String, String> par) {
@@ -277,10 +278,18 @@ public class UrlHelper implements Consts {
         return generateUrl(par);
     }
 
-    public static String getMoudleWidgets(PadDeviceInfo deviceInfo, PadModule moudle) {
+    public static String getMoudleWidgets(PadDeviceInfo deviceInfo, PadModule module) {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MODULE_WIDGETS);
-        par.put(PAR_MODULE_ID, moudle.getId());
+        par.put(PAR_MODULE_ID, module.getId());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getPadModuleSwitching(PadDeviceInfo deviceInfo, PadModuleType module) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_MODULE_SWITCHING);
+        par.put(PAR_PRE_MODULE, module.getId());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return generateUrl(par);
     }

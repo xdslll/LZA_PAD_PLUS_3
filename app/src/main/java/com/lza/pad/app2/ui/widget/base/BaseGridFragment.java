@@ -1,4 +1,4 @@
-package com.lza.pad.fragment.base;
+package com.lza.pad.app2.ui.widget.base;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,9 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.app.ebook.EbookContentActivity2;
-import com.lza.pad.app.journal.JournalContentActivity;
-import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.widget.DefaultEbookCover;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -41,10 +38,10 @@ public class BaseGridFragment extends BaseImageFragment {
     GridView mGrid;
     ArrayList<PadResource> mPadResources;
 
-    int mPageSize;
+    int mEachPageSize;
     int mTotalPage;
-    int mDataSize;
-    int mGridColumns;
+    int mPageSize;
+    int mWidth, mHeight;
 
     String mSourceType = "";
 
@@ -52,58 +49,42 @@ public class BaseGridFragment extends BaseImageFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPageSize = getArguments().getInt(KEY_PAGE_SIZE);
+            mEachPageSize = getArguments().getInt(KEY_PAGE_SIZE);
             mTotalPage = getArguments().getInt(KEY_TOTAL_PAGE);
-            mDataSize = getArguments().getInt(KEY_DATA_SIZE);
-            mGridColumns = getArguments().getInt(KEY_GRID_NUM_COLUMNS);
+            mPageSize = getArguments().getInt(KEY_DATA_SIZE);
             mPadResources = getArguments().getParcelableArrayList(KEY_PAD_RESOURCE_INFOS);
+            mWidth = getArguments().getInt(KEY_FRAGMENT_WIDTH);
+            mHeight = getArguments().getInt(KEY_FRAGMENT_HEIGHT);
         }
+        mSourceType = mPadWidgetData.getType();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_grid, container, false);
         mGrid = (GridView) view.findViewById(R.id.common_grid_grid);
-        if (mPadControlInfo != null) {
-            mSourceType = mPadControlInfo.getSource_type();
-            if (mSourceType.equals(PadResource.RESOURCE_NEWS)) {
-                //如果是新闻，则会自动拉伸
-                mGrid.setNumColumns(mPageSize);
-            } else {
-                //如果是电子书，则一行显示的数量是固定的
-                mGrid.setNumColumns(mGridColumns);
-            }
-        }
+        mGrid.setNumColumns(mEachPageSize);
+        mGrid.setOnScrollListener(new PauseOnScrollListener(getImageLoader(), true, false));
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mGrid.setOnScrollListener(new PauseOnScrollListener(getImageLoader(), true, false));
         mGrid.setAdapter(new BookGridAdapter());
         mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mPadResources == null || mPadResources.size() <= position) return;
+                if (isEmpty(mPadResources) || mPadEvent == null || isEmpty(mPadEvent.getEvent_code_path())) return;
                 PadResource res = mPadResources.get(position);
                 if (res == null) return;
-                Intent intent = null;
-                String sourceType = res.getSource_type();
-                if (sourceType.equals(PadResource.RESOURCE_EBOOK) || sourceType.equals(PadResource.RESOURCE_EBOOK_JC)
-                        || sourceType.equals(PadResource.RESOURCE_HOT_BOOK) || sourceType.equals(PadResource.RESOURCE_NEW_BOOK)) {
-                    intent = new Intent(mActivity, EbookContentActivity2.class);
-                } else if (sourceType.equals(PadResource.RESOURCE_NEWS)) {
-                    intent = new Intent(mActivity, NewsContentActivity.class);
-                } else if (sourceType.equals(PadResource.RESOURCE_JOURNAL)) {
-                    intent = new Intent(mActivity, JournalContentActivity.class);
-                }
-                if (intent != null) {
-                    intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
-                    intent.putExtra(KEY_PAD_CONTROL_INFO, mPadControlInfo);
-                    intent.putExtra(KEY_PAD_RESOURCE_INFO, res);
-                    startActivity(intent);
-                }
+                String activityPath = buildCodePath(mPadEvent.getEvent_code_path());
+                Intent intent = new Intent();
+                intent.setClassName(mActivity, activityPath);
+                intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+                intent.putExtra(KEY_PAD_WIDGET, mPadModuleWidget);
+                intent.putExtra(KEY_PAD_RESOURCE_INFO, res);
+                startActivity(intent);
             }
         });
     }
@@ -117,7 +98,7 @@ public class BaseGridFragment extends BaseImageFragment {
 
         @Override
         public int getCount() {
-            return mPageSize;
+            return mEachPageSize;
         }
 
         @Override
@@ -139,20 +120,14 @@ public class BaseGridFragment extends BaseImageFragment {
             ViewHolder holder = getHolder(convertView);
 
             if (mSourceType.equals(PadResource.RESOURCE_NEWS)) {
-                holder.layout.setLayoutParams(new GridView.LayoutParams(W / getCount(), H));
+                holder.layout.setLayoutParams(new GridView.LayoutParams(mWidth / getCount(), mHeight));
             } else {
-                holder.layout.setLayoutParams(new GridView.LayoutParams(W / mGridColumns, H));
+                holder.layout.setLayoutParams(new GridView.LayoutParams(mWidth / mEachPageSize, mHeight));
             }
 
             //水平垂直边距,如果不在首页，则拉大间距，保持界面美观
-            int paddingHor, paddingVer;
-            if (mIsHome) {
-                paddingHor = (int) getResources().getDimension(R.dimen.small_padding);
-                paddingVer = (int) getResources().getDimension(R.dimen.small_padding);
-            } else {
-                paddingHor = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_hor2);
-                paddingVer = (int) getResources().getDimension(R.dimen.ebook_list_book_padding_ver2);
-            }
+            int paddingHor = (int) getResources().getDimension(R.dimen.small_padding);
+            int paddingVer = (int) getResources().getDimension(R.dimen.small_padding);
             holder.layout.setPadding(paddingHor, paddingVer, paddingHor, paddingVer);
 
             if (mSourceType.equals(PadResource.RESOURCE_EBOOK) || mSourceType.equals(PadResource.RESOURCE_EBOOK_JC)
@@ -163,6 +138,9 @@ public class BaseGridFragment extends BaseImageFragment {
             } else if (mSourceType.equals(PadResource.RESOURCE_JOURNAL)) {
                 handleJournalCover(holder, data);
             }
+            //holder.bookImg.setVisibility(View.VISIBLE);
+            //holder.bookImg.setImageResource(R.drawable.default_ebook_cover);
+
             return convertView;
         }
 
@@ -170,8 +148,8 @@ public class BaseGridFragment extends BaseImageFragment {
 
     private void handleEbookCover(final ViewHolder holder, final PadResource data) {
         //计算图片的尺寸
-        int width = W / mGridColumns;
-        int height = H;
+        int width = mWidth / mEachPageSize;
+        int height = mHeight;
         ImageSize size = new ImageSize(width, height);
         String imgUrl = data.getIco();
         loadImage(imgUrl, size, new SimpleImageLoadingListener() {
@@ -200,8 +178,8 @@ public class BaseGridFragment extends BaseImageFragment {
 
     private void handleNewsCover(final ViewHolder holder, final PadResource data) {
         //计算图片的尺寸
-        int width = W / mPageSize;
-        int height = H;
+        int width = mWidth / mEachPageSize;
+        int height = mHeight;
         ImageSize size = new ImageSize(width, height);
         String imgUrl = data.getIco();
         loadImage(imgUrl, size, new SimpleImageLoadingListener() {
@@ -231,8 +209,8 @@ public class BaseGridFragment extends BaseImageFragment {
 
     private void handleJournalCover(final ViewHolder holder, final PadResource data) {
         //计算图片的尺寸
-        int width = W / mGridColumns;
-        int height = H;
+        int width = mWidth / mEachPageSize;
+        int height = mHeight;
         ImageSize size = new ImageSize(width, height);
         String imgUrl = data.getIco();
         loadImage(imgUrl, size, new SimpleImageLoadingListener() {

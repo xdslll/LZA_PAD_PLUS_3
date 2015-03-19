@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.widget.WritableView;
 
 /**
@@ -17,7 +17,7 @@ import com.lza.pad.widget.WritableView;
  * @author xiads
  * @Date 15/1/22.
  */
-public class WritableLayoutFragment extends BaseFragment {
+public class WritableLayoutFragment extends _BaseFragment {
 
     @Nullable
     @Override

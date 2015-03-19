@@ -1,4 +1,4 @@
-package com.lza.pad.db.model.pad._old;
+package com.lza.pad.db.model.pad;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,6 @@ import android.os.Parcelable;
  * @author xiads
  * @Date 2/28/15.
  */
-@Deprecated
 public class PadJournalArticle implements Parcelable {
 
     private String id;

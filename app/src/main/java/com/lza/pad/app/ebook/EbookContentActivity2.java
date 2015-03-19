@@ -2,7 +2,7 @@ package com.lza.pad.app.ebook;
 
 import android.support.v4.app.Fragment;
 
-import com.lza.pad.app.base.BaseContentActivity;
+import com.lza.pad.app.base._BaseContentActivity;
 import com.lza.pad.fragment.ebook.EbookContentFragment2;
 
 /**
@@ -11,7 +11,7 @@ import com.lza.pad.fragment.ebook.EbookContentFragment2;
  * @author xiads
  * @Date 2/16/15.
  */
-public class EbookContentActivity2 extends BaseContentActivity {
+public class EbookContentActivity2 extends _BaseContentActivity {
 
     @Override
     protected String getModName() {

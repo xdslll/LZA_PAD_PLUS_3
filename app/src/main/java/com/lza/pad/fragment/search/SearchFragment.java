@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseImageFragment;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.helper.UrlHelper;
 
 /**
@@ -19,7 +19,7 @@ import com.lza.pad.helper.UrlHelper;
  * @author xiads
  * @Date 3/2/15.
  */
-public class SearchFragment extends BaseImageFragment {
+public class SearchFragment extends _BaseImageFragment {
 
     EditText mEdtSearchText;
     Button mBtnDoSearch;

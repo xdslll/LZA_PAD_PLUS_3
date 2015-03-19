@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.lza.pad.R;
 import com.lza.pad.app.ebook._EbookActivity;
 import com.lza.pad.app.ebook._EbookContentActivity;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.widget.DefaultEbookCover;
 
 /**
@@ -21,7 +21,7 @@ import com.lza.pad.widget.DefaultEbookCover;
  * @Date 1/7/15.
  */
 @Deprecated
-public class _EbookFragment5 extends BaseFragment {
+public class _EbookFragment5 extends _BaseFragment {
 
     private TextView mTxtMore;
     private LinearLayout mLayoutTitle, mLayoutPages;

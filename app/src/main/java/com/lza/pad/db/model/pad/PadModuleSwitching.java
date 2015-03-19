@@ -3,6 +3,7 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,11 +16,11 @@ public class PadModuleSwitching implements Parcelable {
 
     String id;
 
-    List<PadModule> pre_module;
+    List<PadModuleType> pre_module = new ArrayList<PadModuleType>();
 
-    List<PadModule> next_module;
+    List<PadModuleType> next_module = new ArrayList<PadModuleType>();
 
-    List<PadSwitching> switching_mode;
+    List<PadSwitching> switching_mode = new ArrayList<PadSwitching>();
 
     public String getId() {
         return id;
@@ -29,19 +30,19 @@ public class PadModuleSwitching implements Parcelable {
         this.id = id;
     }
 
-    public List<PadModule> getPre_module() {
+    public List<PadModuleType> getPre_module() {
         return pre_module;
     }
 
-    public void setPre_module(List<PadModule> pre_module) {
+    public void setPre_module(List<PadModuleType> pre_module) {
         this.pre_module = pre_module;
     }
 
-    public List<PadModule> getNext_module() {
+    public List<PadModuleType> getNext_module() {
         return next_module;
     }
 
-    public void setNext_module(List<PadModule> next_module) {
+    public void setNext_module(List<PadModuleType> next_module) {
         this.next_module = next_module;
     }
 
@@ -71,8 +72,8 @@ public class PadModuleSwitching implements Parcelable {
 
     private PadModuleSwitching(Parcel in) {
         this.id = in.readString();
-        in.readTypedList(pre_module, PadModule.CREATOR);
-        in.readTypedList(next_module, PadModule.CREATOR);
+        in.readTypedList(pre_module, PadModuleType.CREATOR);
+        in.readTypedList(next_module, PadModuleType.CREATOR);
         in.readTypedList(switching_mode, PadSwitching.CREATOR);
     }
 

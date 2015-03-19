@@ -14,7 +14,7 @@ import com.lza.pad.R;
  * @author xiads
  * @Date 15/1/23.
  */
-public class TestFragment extends BaseFragment {
+public class TestFragment extends _BaseFragment {
 
     @Nullable
     @Override

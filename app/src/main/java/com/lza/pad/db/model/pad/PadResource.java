@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
-import com.lza.pad.db.model.pad._old.PadJournalArticle;
 
 import java.util.ArrayList;
 import java.util.List;

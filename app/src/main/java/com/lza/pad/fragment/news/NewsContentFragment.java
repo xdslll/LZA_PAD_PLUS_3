@@ -9,7 +9,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -17,7 +17,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @author xiads
  * @Date 1/21/15.
  */
-public class NewsContentFragment extends BaseFragment {
+public class NewsContentFragment extends _BaseFragment {
 
     TextView mTxtTitle, mTxtDate;
     WebView mWebView;

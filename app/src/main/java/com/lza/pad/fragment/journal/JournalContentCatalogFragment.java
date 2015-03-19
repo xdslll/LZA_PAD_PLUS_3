@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad._old.PadJournalArticle;
+import com.lza.pad.db.model.pad.PadJournalArticle;
 import com.lza.pad.db.model.pad.PadResource;
-import com.lza.pad.fragment.base.BaseImageFragment;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/28/15.
  */
-public class JournalContentCatalogFragment extends BaseImageFragment {
+public class JournalContentCatalogFragment extends _BaseImageFragment {
 
     ListView mListJournal;
 

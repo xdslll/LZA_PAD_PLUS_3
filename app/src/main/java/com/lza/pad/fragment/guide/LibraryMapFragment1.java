@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.widget.LibraryMap;
 import com.lza.pad.widget.panoramic.shadow.ball.PanoramicActivity;
 
@@ -23,7 +23,7 @@ import com.lza.pad.widget.panoramic.shadow.ball.PanoramicActivity;
  * @author xiads
  * @Date 15/1/24.
  */
-public class LibraryMapFragment1 extends BaseFragment {
+public class LibraryMapFragment1 extends _BaseFragment {
 
     LibraryMap mLibraryMap;
     ImageView mLibraryImg;

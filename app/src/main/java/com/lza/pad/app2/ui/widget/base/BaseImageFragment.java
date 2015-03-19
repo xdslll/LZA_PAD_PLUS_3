@@ -1,4 +1,4 @@
-package com.lza.pad.fragment.base;
+package com.lza.pad.app2.ui.widget.base;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

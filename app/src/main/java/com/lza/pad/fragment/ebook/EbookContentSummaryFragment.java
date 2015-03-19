@@ -15,7 +15,7 @@ import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -30,7 +30,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/18/15.
  */
-public class EbookContentSummaryFragment extends BaseFragment {
+public class EbookContentSummaryFragment extends _BaseFragment {
 
     DoubanBook mDoubanBook;
     TextView mTxtSummary;

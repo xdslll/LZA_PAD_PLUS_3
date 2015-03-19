@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.lza.pad.R;
 import com.lza.pad.app.ebook._EbookActivity;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -22,7 +22,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @Date 1/7/15.
  */
 @Deprecated
-public class _NewbookListFragment extends BaseFragment {
+public class _NewbookListFragment extends _BaseFragment {
 
     private TextView mTxtMore;
     private LinearLayout mLayoutTitle, mLayoutPages;

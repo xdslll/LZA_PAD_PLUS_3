@@ -155,4 +155,11 @@ public class PadModule implements Parcelable {
             return new PadModule[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o) {
+        return o != null &&
+                o instanceof PadModule &&
+                ((PadModule) o).id.equals(id);
+    }
 }

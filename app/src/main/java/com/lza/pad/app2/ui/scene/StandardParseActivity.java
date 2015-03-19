@@ -1,24 +1,18 @@
 package com.lza.pad.app2.ui.scene;
 
-import android.graphics.Color;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
-import com.lza.pad.R;
 import com.lza.pad.app2.ui.base.BaseParseActivity;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadModuleType;
-import com.lza.pad.db.model.pad.PadModuleWidget;
 import com.lza.pad.db.model.pad.PadSceneModule;
-import com.lza.pad.db.model.pad.PadWidget;
-import com.lza.pad.db.model.pad.PadWidgetLayout;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
-import com.lza.pad.support.utils.RuntimeUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,19 +35,16 @@ public class StandardParseActivity extends BaseParseActivity {
     ArrayList<PadSceneModule> mContentModule = new ArrayList<PadSceneModule>();
     ArrayList<PadSceneModule> mHelpModule = new ArrayList<PadSceneModule>();
 
-    List<List<PadModuleWidget>> mGuideModuleWidgets = new ArrayList<List<PadModuleWidget>>();
-    List<List<PadModuleWidget>> mHomeModuleWidgets = new ArrayList<List<PadModuleWidget>>();
-    List<List<PadModuleWidget>> mSubpageModuleWidgets = new ArrayList<List<PadModuleWidget>>();
-    List<List<PadModuleWidget>> mContentModuleWidgets = new ArrayList<List<PadModuleWidget>>();
-    List<List<PadModuleWidget>> mHelpModuleWidgets = new ArrayList<List<PadModuleWidget>>();
-
-    LinearLayout mMainLayout;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_scene_container);
-        mMainLayout = (LinearLayout) findViewById(R.id.home);
+        registerLaunchModuleReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterLaunchModuleReceiver();
     }
 
     /**
@@ -62,20 +53,12 @@ public class StandardParseActivity extends BaseParseActivity {
     @Override
     protected void resetSceneData() {
         log("[P308]获取场景下的所有模块");
-        if (mMainLayout != null) {
-            mMainLayout.removeAllViews();
-        }
+
         clear(mGuideModule);
         clear(mHomeModule);
         clear(mSubpageModule);
         clear(mContentModule);
         clear(mHelpModule);
-
-        clear(mGuideModuleWidgets);
-        clear(mHomeModuleWidgets);
-        clear(mSubpageModuleWidgets);
-        clear(mContentModuleWidgets);
-        clear(mHelpModuleWidgets);
     }
 
     /**
@@ -144,14 +127,70 @@ public class StandardParseActivity extends BaseParseActivity {
     private void renderModule(boolean hasGuide) {
         log("[P306]渲染模块");
         dismissProgressDialog();
+        PadSceneModule module;
         if (hasGuide) {
-            getModuleWidgets(mGuideModule.get(0));
+            module = mGuideModule.get(0);
             log("开始渲染引导页");
         } else {
-            getModuleWidgets(mHomeModule.get(0));
+            module = mHomeModule.get(0);
             log("开始渲染首页");
         }
+        launchModule(module);
+    }
 
+    @Override
+    protected void launchModule(PadSceneModule module) {
+        String activityPath = buildCodePath(mPadAuthority.getModule_parse_code());
+        log("activity path=" + activityPath);
+        Intent intent = new Intent();
+        intent.setClassName(mCtx, activityPath);
+        Bundle arg = new Bundle();
+        arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+        arg.putParcelable(KEY_PAD_SCHOOL, mPadSchool);
+        arg.putParcelable(KEY_PAD_SCENE, mPadScene);
+        arg.putParcelable(KEY_PAD_AUTHORITY, mPadAuthority);
+        arg.putParcelable(KEY_PAD_MODULE_INFO, module);
+        arg.putParcelableArrayList(KEY_PAD_MODULE_INFOS, mSubpageModule);
+        intent.putExtras(arg);
+
+        startActivity(intent);
+    }
+
+    @Override
+    protected void launchModuleByType(int type) {
+        if (type == PadModuleType.MODULE_TYPE_GUIDE) {
+            if (!isEmpty(mGuideModule)) {
+                launchModule(mGuideModule.get(0));
+            } else {
+                if (isEmpty(mHomeModule)) {
+                    launchModule(mHomeModule.get(0));
+                } else {
+                    handleErrorProcess("提示", "缺少引导模块和首页，请检查后重试！");
+                }
+            }
+        } else if (type == PadModuleType.MODULE_TYPE_HOME) {
+            if (!isEmpty(mHomeModule)) {
+                launchModule(mHomeModule.get(0));
+            } else {
+                if (isEmpty(mGuideModule)) {
+                    launchModule(mGuideModule.get(0));
+                } else {
+                    handleErrorProcess("提示", "缺少引导模块和首页，请检查后重试！");
+                }
+            }
+        } else if (type == PadModuleType.MODULE_TYPE_HELP) {
+            if (!isEmpty(mHelpModule)) {
+                launchModule(mHelpModule.get(0));
+            } else {
+                if (isEmpty(mGuideModule)) {
+                    launchModule(mGuideModule.get(0));
+                } else if (isEmpty(mHomeModule)) {
+                    launchModule(mHomeModule.get(0));
+                } else {
+                    handleErrorProcess("提示", "缺少引导模块和首页，请检查后重试！");
+                }
+            }
+        }
     }
 
     /**
@@ -178,110 +217,34 @@ public class StandardParseActivity extends BaseParseActivity {
         checkGuidePage();
     }
 
-    /**
-     * [SP201]获取模块组件
-     *
-     * @param module
-     */
-    private void getModuleWidgets(PadSceneModule module) {
-        log("[SP201]获取模块组件");
-        PadModule mod = pickFirst(module.getModule_id());
-        if (mod == null) {
-            handleErrorProcess("提示", "获取模块失败，请重试！");
-            return;
-        }
-        String getWidgetsUrl = UrlHelper.getMoudleWidgets(mPadDeviceInfo, mod);
-        send(getWidgetsUrl, new GetModuleWidgetsListener(module));
-    }
-
-    private class GetModuleWidgetsListener extends SimpleRequestListener<PadModuleWidget> {
-
-        PadSceneModule module;
-        public GetModuleWidgetsListener(PadSceneModule module) {
-            this.module = module;
-        }
-
-        @Override
-        public ResponseData<PadModuleWidget> parseJson(String json) {
-            return JsonParseHelper.parseModuleWidgetsResponse(json);
-        }
-
-        @Override
-        public void handleResponseFailed() {
-            handleErrorProcess("提示", "获取组件失败，请重试！");
-        }
-
-        @Override
-        public void handleRespone(List<PadModuleWidget> content) {
-            PadModuleType moduleType = pickFirst(module.getModule_type_id());
-            if (moduleType == null) {
-                handleErrorProcess("提示", "获取模块类型失败，请重试！");
-                return;
-            }
-            int type = parseInt(moduleType.getType());
-            if (type == PadModuleType.MODULE_TYPE_GUIDE) {
-                mGuideModuleWidgets.add(content);
-                renderModule(module, content);
-            } else if (type == PadModuleType.MODULE_TYPE_HOME) {
-                mHomeModuleWidgets.add(content);
-                renderModule(module, content);
-            }
-        }
-    }
-
-    private void renderModule(PadSceneModule module, List<PadModuleWidget> content) {
-        int screenWidth = RuntimeUtility.getScreenWidth(this);
-        int screenHeight = RuntimeUtility.getScreenHeight(this);
-        int totalHeight = 0;
-        for (int i = 0; i < content.size(); i++) {
-            //计算高度
-            PadWidgetLayout layout = pickFirst(content.get(i).getWidget_layout_id());
-            if (layout == null) continue;
-            String strHeight = layout.getHeight();
-            if (strHeight.equals(PadWidgetLayout.MATCH_PARENT)) {
-                layout.setWidget_width(screenWidth);
-                layout.setWidget_height(screenHeight - totalHeight);
-            } else {
-                float rateHeight = Float.parseFloat(strHeight);
-                layout.setWidget_width(screenWidth);
-                layout.setWidget_height((int) (screenHeight * rateHeight));
-            }
-            FrameLayout subLayout = new FrameLayout(this);
-            //避免使用0作为id号
-            subLayout.setId(i + 1);
-            subLayout.setLayoutParams(new LinearLayout.LayoutParams(layout.getWidget_width(), layout.getWidget_height()));
-            subLayout.setBackgroundColor(Color.YELLOW);
-            //解析组件
-            PadWidget widget = pickFirst(content.get(i).getWidget_id());
-            if (widget == null) continue;
-            String fragmentPath = buildCodePath(widget.getParse_code());
-            try {
-                Fragment frg = (Fragment) Class.forName(fragmentPath).newInstance();
-                Bundle arg = new Bundle();
-                arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
-                arg.putParcelable(KEY_PAD_SCHOOL, mPadSchool);
-                arg.putParcelable(KEY_PAD_SCENE, mPadScene);
-                arg.putParcelable(KEY_PAD_MODULE_INFO, module);
-                arg.putParcelableArrayList(KEY_PAD_WIDGETS, (ArrayList<PadModuleWidget>) content);
-                frg.setArguments(arg);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(i + 1, frg)
-                        .commit();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            mMainLayout.addView(subLayout);
-        }
-    }
-
     private <T> void clear(List<T> data) {
         if (isEmpty(data)) return;
         data.clear();
     }
 
+    LaunchModuleReceiver mLauncheModuleReceiver = new LaunchModuleReceiver();
+
+    private void registerLaunchModuleReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_START_HOME_MODULE);
+        registerReceiver(mLauncheModuleReceiver, filter);
+    }
+
+    private void unregisterLaunchModuleReceiver() {
+        try {
+            unregisterReceiver(mLauncheModuleReceiver);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    private class LaunchModuleReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_START_HOME_MODULE)) {
+                launchModuleByType(PadModuleType.MODULE_TYPE_HOME);
+            }
+        }
+    }
 }

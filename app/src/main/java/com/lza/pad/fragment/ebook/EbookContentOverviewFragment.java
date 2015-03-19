@@ -23,7 +23,7 @@ import com.lza.pad.db.model.douban.DoubanRating;
 import com.lza.pad.db.model.douban.DoubanReview;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DoubanRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
@@ -43,7 +43,7 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 2/17/15.
  */
-public class EbookContentOverviewFragment extends BaseFragment {
+public class EbookContentOverviewFragment extends _BaseFragment {
 
     TextView mTxtAbstract, mTxtContent, mTxtAbstractMore, mTxtContentMore,
             mTxtDoubanReviewsTitle, mTxtDoubanReviewsCount, mTxtDoubanReviewsAll,

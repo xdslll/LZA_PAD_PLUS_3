@@ -20,11 +20,11 @@ import android.widget.TextView;
 import com.lza.pad.R;
 import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.app.socket.model.MinaClient;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad._old.PadImageCollection;
 import com.lza.pad.db.model.pad._old.PadLayoutModule;
-import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * @author xiads
  * @Date 1/13/15.
  */
-public class TitleFragment1 extends BaseImageFragment {
+public class TitleFragment1 extends _BaseImageFragment {
 
     private Calendar mCalendar;
     private TextView mTxtTime, mTxtDate, mTxtConnectUser, mTxtVersion;
@@ -63,7 +63,7 @@ public class TitleFragment1 extends BaseImageFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.title1, container, false);
+        View view = inflater.inflate(R.layout.common_nav1, container, false);
 
         mTxtConnectUser = (TextView) view.findViewById(R.id.title_current_connect_user);
         mTxtTime = (TextView) view.findViewById(R.id.title_time_text);

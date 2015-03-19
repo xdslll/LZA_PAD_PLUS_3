@@ -131,6 +131,8 @@ public class SceneSwitchingService extends BaseIntentService {
                 mHasElapse += FIXED_DELAY;
                 if (mHasElapse >= delay) {
                     sendSceneSwitchingBroadcast();
+                    mService.shutdownNow();
+                    stopSelf();
                 }
                 log("当前延迟：" + mHasElapse);
             }
@@ -145,18 +147,17 @@ public class SceneSwitchingService extends BaseIntentService {
         intent.setAction(ACTION_SCENE_SWITCHING_RECEIVER);
         intent.putExtra(KEY_PAD_SCENE, mNextScene);
         sendBroadcast(intent);
-        mService.shutdownNow();
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(ServiceMode mode) {
-        if (mode == ServiceMode.MODE_RESET_SERVICE) {
+    public void onEvent(SwitchingServiceMode mode) {
+        if (mode == SwitchingServiceMode.MODE_RESET_SERVICE) {
             mHasElapse = 0;
+        } else if (mode == SwitchingServiceMode.MODE_STOP_SCENE_SERVICE) {
+            if (mService != null) {
+                mService.shutdownNow();
+            }
         }
-    }
-
-    public enum ServiceMode {
-        MODE_RESET_SERVICE
     }
 
     private class SceneSwitchingListener extends SimpleRequestListener<PadSceneSwitching> {

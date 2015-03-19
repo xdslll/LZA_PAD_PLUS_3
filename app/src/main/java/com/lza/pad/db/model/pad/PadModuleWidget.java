@@ -3,6 +3,7 @@ package com.lza.pad.db.model.pad;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,21 +16,31 @@ public class PadModuleWidget implements Parcelable {
 
     private String id;
 
-    private List<PadModule> module_id;
+    private List<PadModule> module_id = new ArrayList<PadModule>();
 
-    private List<PadWidget> widget_id;
+    private List<PadWidget> widget_id = new ArrayList<PadWidget>();
 
-    private List<PadWidgetLayout> widget_layout_id;
+    private List<PadWidgetLayout> widget_layout_id = new ArrayList<PadWidgetLayout>();
 
-    private List<PadWidgetData> widget_data_id;
+    private List<PadWidgetData> widget_data_id = new ArrayList<PadWidgetData>();
 
-    private List<PadEvent> event_id;
+    private List<PadEvent> event_id = new ArrayList<PadEvent>();
 
-    private List<PadSwitching> switching_id;
+    private List<PadSwitching> switching_id = new ArrayList<PadSwitching>();
 
     private String index;
 
     private String can_touch;
+
+    private String label;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public String getCan_touch() {
         return can_touch;
@@ -122,6 +133,7 @@ public class PadModuleWidget implements Parcelable {
         dest.writeTypedList(switching_id);
         dest.writeString(this.index);
         dest.writeString(this.can_touch);
+        dest.writeString(this.label);
     }
 
     private PadModuleWidget(Parcel in) {
@@ -134,6 +146,7 @@ public class PadModuleWidget implements Parcelable {
         in.readTypedList(switching_id, PadSwitching.CREATOR);
         this.index = in.readString();
         this.can_touch = in.readString();
+        this.label = in.readString();
     }
 
     public static final Creator<PadModuleWidget> CREATOR = new Creator<PadModuleWidget>() {

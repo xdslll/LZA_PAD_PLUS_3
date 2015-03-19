@@ -1,6 +1,6 @@
 package com.lza.pad.app.search;
 
-import com.lza.pad.app.base.BaseNormalModuleActivity;
+import com.lza.pad.app.base._BaseNormalModuleActivity;
 
 /**
  * Say something about this class
@@ -8,7 +8,7 @@ import com.lza.pad.app.base.BaseNormalModuleActivity;
  * @author xiads
  * @Date 3/2/15.
  */
-public class SearchActivity extends BaseNormalModuleActivity {
+public class SearchActivity extends _BaseNormalModuleActivity {
 
 
 

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -16,7 +16,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @author xiads
  * @Date 2/22/15.
  */
-public class TestFragment extends BaseFragment {
+public class TestFragment extends _BaseFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

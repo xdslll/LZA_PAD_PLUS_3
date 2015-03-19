@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 1/7/15.
  */
 @Deprecated
-public abstract class _BaseResourceListFragment extends BaseFragment {
+public abstract class _BaseResourceListFragment extends _BaseFragment {
 
     protected TextView mTxtMore, mTxtTitle;
     protected LinearLayout mLayoutTitle;

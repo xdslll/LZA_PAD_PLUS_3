@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -18,7 +18,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @author xiads
  * @Date 2/28/15.
  */
-public class JournalContentSummaryFragment extends BaseFragment {
+public class JournalContentSummaryFragment extends _BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

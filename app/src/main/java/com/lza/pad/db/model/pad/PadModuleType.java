@@ -28,6 +28,8 @@ public class PadModuleType implements Parcelable {
 
     private String type;
 
+    private String is_dialog;
+
     public String getId() {
         return id;
     }
@@ -52,6 +54,17 @@ public class PadModuleType implements Parcelable {
         this.type = type;
     }
 
+    public String getIs_dialog() {
+        return is_dialog;
+    }
+
+    public void setIs_dialog(String is_dialog) {
+        this.is_dialog = is_dialog;
+    }
+
+    public PadModuleType() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -62,18 +75,17 @@ public class PadModuleType implements Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeString(this.type);
-    }
-
-    public PadModuleType() {
+        dest.writeString(this.is_dialog);
     }
 
     private PadModuleType(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
         this.type = in.readString();
+        this.is_dialog = in.readString();
     }
 
-    public static final Parcelable.Creator<PadModuleType> CREATOR = new Parcelable.Creator<PadModuleType>() {
+    public static final Creator<PadModuleType> CREATOR = new Creator<PadModuleType>() {
         public PadModuleType createFromParcel(Parcel source) {
             return new PadModuleType(source);
         }

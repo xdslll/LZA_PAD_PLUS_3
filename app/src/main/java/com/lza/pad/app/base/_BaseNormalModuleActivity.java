@@ -31,7 +31,8 @@ import java.util.List;
  * @author xiads
  * @Date 1/18/15.
  */
-public abstract class BaseNormalModuleActivity extends _BaseActivity {
+@Deprecated
+public abstract class _BaseNormalModuleActivity extends _BaseActivity {
 
     private LinearLayout mMainContainer;
     private TextView mTxtBack, mTxtType, mTxtSearch, mTxtModName, mTxtDivider;

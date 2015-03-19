@@ -2,7 +2,7 @@ package com.lza.pad.app.news;
 
 import android.support.v4.app.Fragment;
 
-import com.lza.pad.app.base.BaseContentActivity;
+import com.lza.pad.app.base._BaseContentActivity;
 import com.lza.pad.fragment.news.NewsContentFragment;
 
 /**
@@ -11,7 +11,7 @@ import com.lza.pad.fragment.news.NewsContentFragment;
  * @author xiads
  * @Date 1/21/15.
  */
-public class NewsContentActivity extends BaseContentActivity {
+public class NewsContentActivity extends _BaseContentActivity {
 
     @Override
     protected String getModName() {

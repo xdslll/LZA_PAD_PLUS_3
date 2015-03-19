@@ -14,8 +14,8 @@ import android.widget.TextView;
 import com.lza.pad.R;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.admin.server.MinaServerHelper;
+import com.lza.pad.fragment.base._BaseFragment;
 import com.lza.pad.wifi.admin._WifiApAdmin;
-import com.lza.pad.fragment.base.BaseFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @author xiads
  * @Date 1/13/15.
  */
-public class TitleFragment2 extends BaseFragment {
+public class TitleFragment2 extends _BaseFragment {
 
     private Calendar mCalendar;
     private TextView mTxtTime, mTxtDate, mTxtConnectUser;

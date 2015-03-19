@@ -17,7 +17,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseFragment;
+import com.lza.pad.fragment.base._BaseFragment;
 
 /**
  * Say something about this class
@@ -25,7 +25,7 @@ import com.lza.pad.fragment.base.BaseFragment;
  * @author xiads
  * @Date 1/21/15.
  */
-public class SubjectFragment extends BaseFragment {
+public class SubjectFragment extends _BaseFragment {
 
     private GridView mGrid;
     private String[] mData;

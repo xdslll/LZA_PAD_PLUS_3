@@ -29,8 +29,8 @@ import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.douban.DoubanRating;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.helper.event.model.ResponseEventInfo;
-import com.lza.pad.fragment.base.BaseImageFragment;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
@@ -54,7 +54,7 @@ import java.util.List;
  * @author xiads
  * @Date 1/18/15.
  */
-public class EbookContentFragment2 extends BaseImageFragment {
+public class EbookContentFragment2 extends _BaseImageFragment {
 
     DefaultEbookCover mEbookCover;
     TextView mTxtTitle, mTxtAuthor, mTxtPubdate, mTxtPress, mTxtIsbn,

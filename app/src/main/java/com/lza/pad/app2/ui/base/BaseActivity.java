@@ -1,11 +1,15 @@
 package com.lza.pad.app2.ui.base;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
@@ -181,6 +185,23 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
 
     protected void backToDeviceAuthorityActivity() {
         startActivity(new Intent(mCtx, DeviceAuthorityActivity.class));
+    }
+
+    protected String getTopActivityName() {
+        ActivityManager manager = (ActivityManager) mCtx.getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = manager.getRunningTasks(1);
+        if (runningTasks == null || runningTasks.size() == 0) return null;
+        String className = runningTasks.get(0).topActivity.getShortClassName();
+        if (TextUtils.isEmpty(className) || !className.contains(".")) return null;
+        int index = className.lastIndexOf(".");
+        return className.substring(index + 1, className.length());
+    }
+
+    protected void launchFragment(Fragment fragment, int id) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(id, fragment);
+        ft.commit();
     }
 
 }

@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lza.pad.R;
-import com.lza.pad.fragment.base.BaseImageFragment;
+import com.lza.pad.fragment.base._BaseImageFragment;
 import com.lza.pad.widget.DefaultEbookCover;
 import com.lza.pad.widget.PagerSlidingTabStrip;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -30,7 +30,7 @@ import java.util.List;
  * @author xiads
  * @Date 2/27/15.
  */
-public class JournalContentFragment extends BaseImageFragment {
+public class JournalContentFragment extends _BaseImageFragment {
 
     TextView mTxtTitle, mTxtAuthor, mTxtFrequency, mTxtPubplace, mTxtLang, mTxtFormat, mTxtISSN;
     DefaultEbookCover mJournalCover;
