@@ -123,6 +123,11 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         return data.get(0);
     }
 
+    protected  <T> void clear(List<T> data) {
+        if (isEmpty(data)) return;
+        data.clear();
+    }
+
     protected void log(String msg) {
         AppLogger.e("---------------- " + msg + " ----------------");
     }
@@ -195,6 +200,15 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         if (TextUtils.isEmpty(className) || !className.contains(".")) return null;
         int index = className.lastIndexOf(".");
         return className.substring(index + 1, className.length());
+    }
+
+    protected int getRunningActivities() {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = manager.getRunningTasks(1);
+        if (isEmpty(runningTasks)) return 0;
+        int numActivities = runningTasks.get(0).numActivities;
+        log("numActivities:" + numActivities);
+        return numActivities;
     }
 
     protected void launchFragment(Fragment fragment, int id) {

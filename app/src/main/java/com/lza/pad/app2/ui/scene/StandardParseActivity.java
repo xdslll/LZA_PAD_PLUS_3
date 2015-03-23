@@ -1,9 +1,6 @@
 package com.lza.pad.app2.ui.scene;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
 import com.lza.pad.app2.ui.base.BaseParseActivity;
@@ -38,13 +35,13 @@ public class StandardParseActivity extends BaseParseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerLaunchModuleReceiver();
+        //registerLaunchModuleReceiver();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterLaunchModuleReceiver();
+        //unregisterLaunchModuleReceiver();
     }
 
     /**
@@ -154,6 +151,8 @@ public class StandardParseActivity extends BaseParseActivity {
         intent.putExtras(arg);
 
         startActivity(intent);
+
+        getRunningActivities();
     }
 
     @Override
@@ -217,12 +216,7 @@ public class StandardParseActivity extends BaseParseActivity {
         checkGuidePage();
     }
 
-    private <T> void clear(List<T> data) {
-        if (isEmpty(data)) return;
-        data.clear();
-    }
-
-    LaunchModuleReceiver mLauncheModuleReceiver = new LaunchModuleReceiver();
+    /*LaunchModuleReceiver mLauncheModuleReceiver = new LaunchModuleReceiver();
 
     private void registerLaunchModuleReceiver() {
         IntentFilter filter = new IntentFilter();
@@ -238,6 +232,10 @@ public class StandardParseActivity extends BaseParseActivity {
         }
     }
 
+    *//**
+     * 启动指定类型模块
+     * ACTION_START_HOME_MODULE - 启动首页
+     *//*
     private class LaunchModuleReceiver extends BroadcastReceiver {
 
         @Override
@@ -246,5 +244,5 @@ public class StandardParseActivity extends BaseParseActivity {
                 launchModuleByType(PadModuleType.MODULE_TYPE_HOME);
             }
         }
-    }
+    }*/
 }

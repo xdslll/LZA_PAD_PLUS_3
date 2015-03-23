@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lza.pad.R;
+import com.lza.pad.app2.event.base.OnClickListener;
 import com.lza.pad.app2.ui.widget.base.BaseImageFragment;
 import com.lza.pad.db.model.pad.PadModuleType;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -33,10 +34,12 @@ public class GuideFragment extends BaseImageFragment {
         mImageView = (ImageView) view.findViewById(R.id.common_img);
         mTxtEmpty = (TextView) view.findViewById(R.id.common_empty_text);
         if (parseInt(mPadModuleType.getType()) == PadModuleType.MODULE_TYPE_GUIDE) {
-            view.setOnClickListener(new View.OnClickListener() {
+            view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    super.onClick(v);
                     launchHomeModule();
+                    mActivity.finish();
                 }
             });
         }

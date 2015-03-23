@@ -1,11 +1,13 @@
 package com.lza.pad.app2.ui.scene;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 
+import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.app2.ui.base.BaseActivity;
 import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
 import com.lza.pad.db.model.ResponseData;
@@ -19,6 +21,8 @@ import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.UniversalUtility;
 
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Say something about this class
@@ -37,14 +41,15 @@ public class MainParseActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        registerStartParseReceiver();
         checkDeviceParam();
-        getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterStartParseReceiver();
+        EventBus.getDefault().post(ServiceMode.MODE_STOP_SCENE_SERVICE);
     }
 
     /**
@@ -108,7 +113,7 @@ public class MainParseActivity extends BaseActivity {
      * @param message
      */
     private void handleSceneParseFailed(String title, String message) {
-        log("[P205]错误提示");
+        log("[P205]错误提示 : " + message);
         dismissProgressDialog();
         UniversalUtility.showDialog(mCtx,
                 title,
@@ -180,7 +185,7 @@ public class MainParseActivity extends BaseActivity {
      * [P208]处理场景
      */
     private void parseScene() {
-        dismissProgressDialog();
+        updateProgressDialog("正在解析场景");
         String activityPath = buildCodePath(mPadAuthority.getScene_parse_code());
         log("activity path=" + activityPath);
         Intent intent = new Intent();
@@ -189,8 +194,8 @@ public class MainParseActivity extends BaseActivity {
         intent.putExtra(KEY_PAD_SCHOOL, mPadSchool);
         intent.putExtra(KEY_PAD_SCENE, mPadScene);
         intent.putExtra(KEY_PAD_AUTHORITY, mPadAuthority);
-        startActivity(intent);
-        finish();
+        //startActivity(intent);
+        startService(intent);
     }
 
     private class GetAuthorityListener extends SimpleRequestListener<PadAuthority> {
@@ -244,6 +249,30 @@ public class MainParseActivity extends BaseActivity {
         @Override
         public void handleResponseFailed() {
             handleSceneParseFailed("提示", "场景解析失败，请重试");
+        }
+    }
+
+    private StartParseReceiver mReceiver = new StartParseReceiver();
+    private void registerStartParseReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_START_PARSE_RECEIVER);
+        filter.addAction(ACTION_START_PARSE_ERROR_RECEIVER);
+        registerReceiver(mReceiver, filter);
+    }
+    private void unregisterStartParseReceiver() {
+        unregisterReceiver(mReceiver);
+    }
+    private class StartParseReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_START_PARSE_RECEIVER)) {
+                dismissProgressDialog();
+                finish();
+            } else if (intent.getAction().equals(ACTION_START_PARSE_ERROR_RECEIVER)) {
+                dismissProgressDialog();
+                handleSceneParseFailed("提示", intent.getStringExtra(KEY_START_PARSE_ERROR));
+            }
         }
     }
 }

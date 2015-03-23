@@ -1,15 +1,10 @@
 package com.lza.pad.app2.ui.base;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
 
-import com.lza.pad.app2.service.SwitchingServiceMode;
+import com.lza.pad.app2.service.SceneSwitchingHandler;
+import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadModuleType;
@@ -37,9 +32,9 @@ public abstract class BaseParseActivity extends BaseActivity {
     protected PadSchool mPadSchool;
     protected PadAuthority mPadAuthority;
 
-    private SceneSwitchingReceiver mSwitchingReceiver = new SceneSwitchingReceiver();
-
     protected List<PadSceneModule> mPadSceneModules = new ArrayList<PadSceneModule>();
+
+    protected SceneSwitchingHandler mSceneSwitchingHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +46,8 @@ public abstract class BaseParseActivity extends BaseActivity {
             mPadAuthority = getIntent().getParcelableExtra(KEY_PAD_AUTHORITY);
         }
         showProgressDialog("开始解析场景", false);
-        registerSceneSwitchingReceiver();
         startSceneSwitchingService();
         getSceneModules();
-
-        getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                log("触摸时重置场景切换服务");
-                EventBus.getDefault().post(SwitchingServiceMode.MODE_RESET_SERVICE);
-                return false;
-            }
-        });
     }
 
     @Override
@@ -73,8 +58,7 @@ public abstract class BaseParseActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterSceneSwitchingReceiver();
-        stopSceneSwitchingService();
+        mSceneSwitchingHandler.release();
     }
 
     /**
@@ -82,12 +66,71 @@ public abstract class BaseParseActivity extends BaseActivity {
      */
     protected void startSceneSwitchingService() {
         log("[P301]启动场景切换服务");
-        Intent intent = new Intent();
+        /*Intent intent = new Intent();
         intent.setAction(ACTION_SCENE_SWITCHING_SERVICE);
         intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         intent.putExtra(KEY_PAD_SCENE, mPadScene);
-        startService(intent);
+        startService(intent);*/
+        mSceneSwitchingHandler = new SceneSwitchingHandler(mCtx,
+                mPadDeviceInfo, mPadScene, new OnSceneSwitchingListener());
+        mSceneSwitchingHandler.startService();
     }
+
+    protected void restartSceneSwitchingService(PadScene scene) {
+        mSceneSwitchingHandler.init(scene);
+        mSceneSwitchingHandler.startService();
+    }
+
+    protected void stopSceneSwitchingService() {
+        //EventBus.getDefault().post(SwitchingServiceMode.MODE_STOP_SCENE_SERVICE);
+        log("关闭场景切换服务");
+        mSceneSwitchingHandler.stopService();
+    }
+
+    public void onEvent(ServiceMode mode) {
+        log("接收到服务：" + mode);
+        if (mode == ServiceMode.MODE_RESET_SERVICE) {
+            mSceneSwitchingHandler.reset();
+        } else if (mode == ServiceMode.MODE_STOP_SCENE_SERVICE) {
+            stopSceneSwitchingService();
+        }
+    }
+
+    private class OnSceneSwitchingListener implements SceneSwitchingHandler.OnSceneSwitching {
+
+        @Override
+        public void onSwitching(final PadScene nextScene) {
+            getMainHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    switchScene(nextScene);
+                }
+            });
+        }
+    }
+
+    /**
+     * 切换场景
+     *
+     * @param nextScene
+     */
+    private void switchScene(PadScene nextScene) {
+        dismissProgressDialog();
+        stopSceneSwitchingService();
+        EventBus.getDefault().post(ServiceMode.MODE_SWITCH_SCENE);
+        mPadScene = nextScene;
+        if (mPadScene == null) return;
+        log("加载切换后的场景:" + mPadScene.getName());
+        showProgressDialog("开始解析场景", false);
+
+        getRunningActivities();
+
+        resetSceneData();
+        getSceneModules();
+        restartSceneSwitchingService(mPadScene);
+    }
+
+
 
     /**
      * [P302]获取场景下的所有模块
@@ -111,7 +154,27 @@ public abstract class BaseParseActivity extends BaseActivity {
      */
     protected abstract void resetSceneData();
 
-    protected void registerSceneSwitchingReceiver() {
+
+    protected void handleErrorProcess(String title, String message) {
+        dismissProgressDialog();
+        UniversalUtility.showDialog(mCtx, title, message,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startSceneSwitchingService();
+                        getSceneModules();
+                    }
+                },
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        backToDeviceAuthorityActivity();
+                    }
+                });
+    }
+}
+/*protected void registerSceneSwitchingReceiver() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_SCENE_SWITCHING_RECEIVER);
         filter.addAction(ACTION_MODULE_SWITCHING_RECEIVER);
@@ -126,9 +189,7 @@ public abstract class BaseParseActivity extends BaseActivity {
         }
     }
 
-    protected void stopSceneSwitchingService() {
-        EventBus.getDefault().post(SwitchingServiceMode.MODE_STOP_SCENE_SERVICE);
-    }
+
 
     private class SceneSwitchingReceiver extends BroadcastReceiver {
 
@@ -154,22 +215,5 @@ public abstract class BaseParseActivity extends BaseActivity {
         }
     }
 
-    protected void handleErrorProcess(String title, String message) {
-        dismissProgressDialog();
-        UniversalUtility.showDialog(mCtx, title, message,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        startSceneSwitchingService();
-                        getSceneModules();
-                    }
-                },
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        backToDeviceAuthorityActivity();
-                    }
-                });
-    }
-}
+    private SceneSwitchingReceiver mSwitchingReceiver = new SceneSwitchingReceiver();
+    */

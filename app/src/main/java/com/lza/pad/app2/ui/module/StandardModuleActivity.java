@@ -1,27 +1,17 @@
 package com.lza.pad.app2.ui.module;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.lza.pad.R;
-import com.lza.pad.app2.service.SwitchingServiceMode;
-import com.lza.pad.app2.ui.base.BaseActivity;
+import com.lza.pad.app2.ui.base.BaseModuleActivity;
 import com.lza.pad.db.model.ResponseData;
-import com.lza.pad.db.model.pad.PadAuthority;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadModuleType;
 import com.lza.pad.db.model.pad.PadModuleWidget;
-import com.lza.pad.db.model.pad.PadScene;
-import com.lza.pad.db.model.pad.PadSceneModule;
-import com.lza.pad.db.model.pad.PadSchool;
 import com.lza.pad.db.model.pad.PadWidget;
 import com.lza.pad.db.model.pad.PadWidgetLayout;
 import com.lza.pad.helper.JsonParseHelper;
@@ -30,10 +20,7 @@ import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
 import com.lza.pad.support.utils.UniversalUtility;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
 
 /**
  * 生成模块界面
@@ -41,70 +28,55 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 15/3/18.
  */
-public class StandardModuleActivity extends BaseActivity {
-
-    private PadDeviceInfo mPadDeviceInfo;
-    private PadScene mPadScene;
-
-    private PadSchool mPadSchool;
-    private PadAuthority mPadAuthority;
-    private PadSceneModule mPadSceneModule;
-    private ArrayList<PadSceneModule> mPadSubpageModule;
+public class StandardModuleActivity extends BaseModuleActivity {
 
     private LinearLayout mMainLayout;
 
-    private List<PadModuleWidget> mPadModuleWidgets = new ArrayList<PadModuleWidget>();
+    private List<PadModuleWidget> mPadModuleWidgets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent() != null) {
-            mPadDeviceInfo = getIntent().getParcelableExtra(KEY_PAD_DEVICE_INFO);
-            mPadScene = getIntent().getParcelableExtra(KEY_PAD_SCENE);
-            mPadSchool = getIntent().getParcelableExtra(KEY_PAD_SCHOOL);
-            mPadAuthority = getIntent().getParcelableExtra(KEY_PAD_AUTHORITY);
-            mPadSceneModule = getIntent().getParcelableExtra(KEY_PAD_MODULE_INFO);
-            mPadSubpageModule = getIntent().getParcelableArrayListExtra(KEY_PAD_MODULE_INFOS);
-        }
-
         setContentView(R.layout.main_scene_container);
         mMainLayout = (LinearLayout) findViewById(R.id.home);
 
+        /*ImageView img = new ImageView(this);
+        img.setImageResource(R.drawable.test_panoramic_p1);
+        mMainLayout.addView(img);*/
+
         getModuleWidgets();
-        startModuleSwitchingService();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerSceneSwitchingReceiver();
+        //startModuleSwitchingService();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterSceneSwitchingReceiver();
-        stopModuleSwitchingService();
+        //stopModuleSwitchingService();
     }
 
     @Override
-    public void onBackPressed() {
-        //禁止用户点击返回键退出
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     /**
      * [P406]启动模块切换服务
      */
     private void startModuleSwitchingService() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_MODULE_SWITCHING_SERVICE);
-        intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
-        intent.putExtra(KEY_PAD_MODULE_INFO, pickFirst(mPadSceneModule.getModule_type_id()));
-        startService(intent);
+        //Intent intent = new Intent();
+        //intent.setAction(ACTION_MODULE_SWITCHING_SERVICE);
+        //intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
+        //intent.putExtra(KEY_PAD_MODULE_INFO, pickFirst(mPadSceneModule.getModule_type_id()));
+        //startService(intent);
     }
 
     private void stopModuleSwitchingService() {
-        EventBus.getDefault().post(SwitchingServiceMode.MODE_STOP_MODULE_SERVICE);
+        //EventBus.getDefault().post(SwitchingServiceMode.MODE_STOP_MODULE_SERVICE);
     }
 
     /**
@@ -112,7 +84,7 @@ public class StandardModuleActivity extends BaseActivity {
      */
     private void getModuleWidgets() {
         log("[P401]获取模块组件");
-        PadModule mod = pickFirst(mPadSceneModule.getModule_id());
+        final PadModule mod = pickFirst(mPadSceneModule.getModule_id());
         if (mod == null) {
             handleErrorProcess("提示", "获取模块失败，请重试！");
             return;
@@ -164,7 +136,7 @@ public class StandardModuleActivity extends BaseActivity {
                 arg.putParcelable(KEY_PAD_AUTHORITY, mPadAuthority);
                 arg.putParcelable(KEY_PAD_MODULE_INFO, mPadSceneModule);
                 arg.putParcelable(KEY_PAD_WIDGET, mPadModuleWidgets.get(i));
-                arg.putParcelableArrayList(KEY_PAD_MODULE_INFOS, mPadSubpageModule);
+                arg.putParcelableArrayList(KEY_PAD_MODULE_SUBPAGE, mSubpageModule);
                 frg.setArguments(arg);
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -205,13 +177,15 @@ public class StandardModuleActivity extends BaseActivity {
         }
     }
 
-    private class SceneSwitchingReceiver extends BroadcastReceiver {
+    /*private class SceneSwitchingReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ACTION_SCENE_SWITCHING_RECEIVER)) {
+                log("场景切换，关闭：" + StandardModuleActivity.class.getSimpleName());
                 finish();
-            } else if (intent.getAction().equals(ACTION_SCENE_SWITCHING_RECEIVER)) {
+            } else if (intent.getAction().equals(ACTION_MODULE_SWITCHING_RECEIVER)) {
+                log("模块切换，关闭：" + StandardModuleActivity.class.getSimpleName());
                 finish();
             }
         }
@@ -232,7 +206,7 @@ public class StandardModuleActivity extends BaseActivity {
         } catch (Exception ex) {
 
         }
-    }
+    }*/
 
     protected void handleErrorProcess(String title, String message) {
         dismissProgressDialog();

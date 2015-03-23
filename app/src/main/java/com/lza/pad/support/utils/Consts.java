@@ -120,6 +120,11 @@ public interface Consts {
 
 
 
+    public static final String KEY_PAD_MODULE_GUIDE = "key_pad_module_guide";
+    public static final String KEY_PAD_MODULE_HOME = "key_pad_module_home";
+    public static final String KEY_PAD_MODULE_SUBPAGE = "key_pad_module_subpage";
+    public static final String KEY_PAD_MODULE_CONTENT = "key_pad_module_content";
+    public static final String KEY_PAD_MODULE_HELP = "key_pad_module_help";
 
     public static final String KEY_PAD_WIDGET = "key_pad_widget";
     public static final String KEY_PAD_WIDGET_DATA = "key_pad_widget_data";
@@ -154,7 +159,8 @@ public interface Consts {
     public static final String ACTION_SCENE_SWITCHING_RECEIVER = "LZA_PAD_SCENE_SWITCHING_RECEIVER";
     public static final String ACTION_MODULE_SWITCHING_SERVICE = "LZA_PAD_MODULE_SWITCHING_SERVICE";
     public static final String ACTION_MODULE_SWITCHING_RECEIVER = "LZA_PAD_MODULE_SWITCHING_MODULE";
-
+    public static final String ACTION_START_PARSE_RECEIVER = "LZA_PAD_START_PARSE_RECEIVER";
+    public static final String ACTION_START_PARSE_ERROR_RECEIVER = "LZA_PAD_START_PARSE_ERROR_RECEIVER";
 
     public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
 
@@ -169,6 +175,7 @@ public interface Consts {
     public static final String KEY_IS_HOME = "key_is_home";
     public static final String KEY_FRAGMENT_WIDTH = "fragment_width";
     public static final String KEY_FRAGMENT_HEIGHT = "fragment_height";
+    public static final String KEY_START_PARSE_ERROR = "key_start_parse_error";
 
     public static final String GLOBAL_TYPE_SCHOOL = "School";
     public static final String GLOBAL_TYPE_RUN_TIME = "Runtime";
@@ -211,4 +218,8 @@ public interface Consts {
      * 首页归属的模块编号为1
      */
     public static final int INDEX_HOME_MODULE = 1;
+
+    public static final String SEPERATOR = "||||";
+    public static final String SEPERATOR_SPLIT = "\\|\\|\\|\\|";
+
 }

@@ -8,6 +8,8 @@ import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.UniversalUtility;
 
+import java.util.List;
+
 /**
  * Say something about this class
  *
@@ -41,8 +43,29 @@ public abstract class BaseIntentService extends IntentService implements Consts 
         return TextUtils.isEmpty(str);
     }
 
+    protected <T> boolean isEmpty(List<T> data) {
+        return data == null || data.size() <= 0;
+    }
+
     protected void log(String msg) {
         AppLogger.e("---------------- " + msg + " ----------------");
+    }
+
+    protected <T> T pickFirst(List<T> data) {
+        if (isEmpty(data)) return null;
+        return data.get(0);
+    }
+
+    protected  <T> void clear(List<T> data) {
+        if (isEmpty(data)) return;
+        data.clear();
+    }
+
+    protected String buildCodePath(String activityPath) {
+        String packageName = getPackageName();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(packageName).append(".").append(activityPath);
+        return buffer.toString();
     }
 
 }

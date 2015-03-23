@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
+import com.lza.pad.app2.event.base.OnItemClickListener;
 import com.lza.pad.app2.ui.widget.base.BaseImageFragment;
 import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadSceneModule;

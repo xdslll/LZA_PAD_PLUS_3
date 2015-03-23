@@ -67,6 +67,7 @@
         <activity android:name=".app2.ui.scene.StandardParseActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask"/>
         <activity android:name=".app2.ui.module.StandardModuleActivity" android:screenOrientation="portrait"/>
+
         <activity android:name=".app2.ui.module.content.ebook.EbookContentActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask" android:theme="@style/DialogTheme"/>
         <activity android:name=".app2.ui.module.content.news.NewsContentActivity" android:screenOrientation="portrait"
@@ -98,6 +99,12 @@
         <service android:name=".app2.service.ModuleSwitchingService" android:enabled="true">
             <intent-filter>
                 <action android:name="LZA_PAD_MODULE_SWITCHING_SERVICE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".app2.ui.scene.StandardParseService" android:enabled="true">
+            <intent-filter>
+                <action android:name="LZA_PAD_STARDARD_PARSE_SERVICE"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </service>

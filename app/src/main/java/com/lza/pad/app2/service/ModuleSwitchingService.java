@@ -150,10 +150,10 @@ public class ModuleSwitchingService extends BaseIntentService {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(SwitchingServiceMode mode) {
-        if (mode == SwitchingServiceMode.MODE_RESET_SERVICE) {
+    public void onEvent(ServiceMode mode) {
+        if (mode == ServiceMode.MODE_RESET_SERVICE) {
             mHasElapse = 0;
-        } else if (mode == SwitchingServiceMode.MODE_STOP_MODULE_SERVICE) {
+        } else if (mode == ServiceMode.MODE_STOP_MODULE_SERVICE) {
             if (mService != null) {
                 mService.shutdownNow();
             }

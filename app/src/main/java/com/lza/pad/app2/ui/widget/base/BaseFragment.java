@@ -1,17 +1,12 @@
 package com.lza.pad.app2.ui.widget.base;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.AdapterView;
 
-import com.lza.pad.app2.service.SwitchingServiceMode;
+import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadEvent;
 import com.lza.pad.db.model.pad.PadModule;
@@ -70,7 +65,7 @@ public class BaseFragment extends Fragment implements Consts {
             mPadScene = getArguments().getParcelable(KEY_PAD_SCENE);
             mPadSchool = getArguments().getParcelable(KEY_PAD_SCHOOL);
             mPadSceneModule = getArguments().getParcelable(KEY_PAD_MODULE_INFO);
-            mPadSubpageModule = getArguments().getParcelableArrayList(KEY_PAD_MODULE_INFOS);
+            mPadSubpageModule = getArguments().getParcelableArrayList(KEY_PAD_MODULE_SUBPAGE);
             mPadResource = getArguments().getParcelable(KEY_PAD_RESOURCE_INFO);
         }
         if (mPadSceneModule != null) {
@@ -85,17 +80,9 @@ public class BaseFragment extends Fragment implements Consts {
         }
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mActivity.getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                log("触摸时重置场景切换服务");
-                EventBus.getDefault().post(SwitchingServiceMode.MODE_RESET_SERVICE);
-                return false;
-            }
-        });
+    protected void resetSwitching() {
+        log("重置切换服务");
+        EventBus.getDefault().post(ServiceMode.MODE_RESET_SERVICE);
     }
 
     private Handler mHandler = new Handler();
@@ -152,18 +139,6 @@ public class BaseFragment extends Fragment implements Consts {
      * 发出启动首页模块的广播
      */
     protected void launchHomeModule() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_START_HOME_MODULE);
-        mActivity.sendBroadcast(intent);
-        mActivity.finish();
-    }
-
-    protected class OnItemClickListener implements AdapterView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            log("重置切换服务");
-            EventBus.getDefault().post(SwitchingServiceMode.MODE_RESET_SERVICE);
-        }
+        EventBus.getDefault().post(ServiceMode.MODE_START_HOME_MODULE);
     }
 }

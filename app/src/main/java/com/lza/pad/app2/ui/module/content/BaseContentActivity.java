@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.lza.pad.R;
+import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.app2.ui.base.BaseActivity;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadResource;
@@ -54,6 +55,18 @@ public abstract class BaseContentActivity extends BaseActivity {
         launchFragment(frg, R.id.ebook_content_container);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerEventBus();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterEventBus();
+    }
+
     protected abstract String getModName();
 
     protected abstract Fragment getFragment();
@@ -65,5 +78,11 @@ public abstract class BaseContentActivity extends BaseActivity {
         arg.putParcelable(KEY_PAD_RESOURCE_INFO, mPadResource);
         arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         return arg;
+    }
+
+    public void onEvent(ServiceMode mode) {
+        if (mode == ServiceMode.MODE_SWITCH_SCENE) {
+            finish();
+        }
     }
 }

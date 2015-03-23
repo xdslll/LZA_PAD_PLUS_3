@@ -194,6 +194,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        showProgressDialog(R.string.getting_mac_address);
                         authorityDevice();
                     }
                 },
@@ -293,6 +294,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
      */
     @Override
     protected void onDeviceUpdateSuccess(PadDeviceInfo deviceInfo) {
+        dismissProgressDialog();
         gotoParseActivity();
     }
 
@@ -303,6 +305,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
      */
     @Override
     protected void onDeviceUpdateFailed(PadDeviceInfo deviceInfo) {
+        dismissProgressDialog();
         gotoParseActivity();
     }
 

@@ -1,6 +1,7 @@
 package com.lza.pad.app2.service;
 
-import android.content.Intent;
+import android.content.Context;
+import android.text.TextUtils;
 
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -8,8 +9,12 @@ import com.lza.pad.db.model.pad.PadScene;
 import com.lza.pad.db.model.pad.PadSceneSwitching;
 import com.lza.pad.db.model.pad.PadSwitching;
 import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.debug.AppLogger;
+import com.lza.pad.support.utils.Consts;
+import com.lza.pad.support.utils.UniversalUtility;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -22,9 +27,9 @@ import de.greenrobot.event.EventBus;
  * Say something about this class
  *
  * @author xiads
- * @Date 3/12/15.
+ * @Date 15/3/19.
  */
-public class SceneSwitchingService extends BaseIntentService {
+public class SceneSwitchingHandler implements Consts {
 
     PadDeviceInfo mPadDeviceInfo;
     PadScene mPadScene;
@@ -35,21 +40,40 @@ public class SceneSwitchingService extends BaseIntentService {
 
     PadSwitching mPadSwitchingMode;
 
-    public SceneSwitchingService() {
-        super("SceneSwitchingService");
-    }
+    Context mCtx;
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        if (intent == null) return;
+    boolean mIsServiceStarted = false;
+
+    OnSceneSwitching mOnSceneSwitching;
+
+    public SceneSwitchingHandler(Context c, PadDeviceInfo padDeviceInfo, PadScene padScene, OnSceneSwitching onSceneSwitching) {
+        this.mPadDeviceInfo = padDeviceInfo;
+        this.mPadScene = padScene;
+        this.mCtx = c;
+        this.mOnSceneSwitching = onSceneSwitching;
+
         /**
          * [SP101]接收当前场景
          */
         log("[SP101]接收当前场景");
-        mPadScene = intent.getParcelableExtra(KEY_PAD_SCENE);
-        mPadDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
         if (mPadScene == null || mPadDeviceInfo == null) return;
-        getSceneSwitching();
+
+        register();
+    }
+
+    public void startService() {
+        if (!mIsServiceStarted) {
+            stopService();
+            mService = Executors.newSingleThreadScheduledExecutor();
+            getSceneSwitching();
+        }
+    }
+
+    public void stopService() {
+        if (mService != null && !mService.isShutdown()) {
+            mService.shutdownNow();
+        }
+        mIsServiceStarted = false;
     }
 
     /**
@@ -123,18 +147,16 @@ public class SceneSwitchingService extends BaseIntentService {
      * @param delay
      */
     private void switchingScene(final int delay) {
-        EventBus.getDefault().register(this);
-        mService = Executors.newSingleThreadScheduledExecutor();
         mService.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
+                log("当前延迟(计算前)：" + mHasElapse);
                 mHasElapse += FIXED_DELAY;
+                log("当前延迟(计算后)：" + mHasElapse);
                 if (mHasElapse >= delay) {
-                    sendSceneSwitchingBroadcast();
-                    mService.shutdownNow();
-                    stopSelf();
+                    sceneSwitching();
+                    stopService();
                 }
-                log("当前延迟：" + mHasElapse);
             }
         }, FIXED_DELAY, FIXED_DELAY, TimeUnit.SECONDS);
     }
@@ -142,21 +164,40 @@ public class SceneSwitchingService extends BaseIntentService {
     /**
      * 发送场景切换的请求
      */
-    private void sendSceneSwitchingBroadcast() {
-        Intent intent = new Intent();
-        intent.setAction(ACTION_SCENE_SWITCHING_RECEIVER);
-        intent.putExtra(KEY_PAD_SCENE, mNextScene);
-        sendBroadcast(intent);
+    private void sceneSwitching() {
+        if (mOnSceneSwitching != null) {
+            mOnSceneSwitching.onSwitching(mNextScene);
+        }
+    }
+
+    public interface OnSceneSwitching {
+        void onSwitching(PadScene nextScene);
+    }
+
+    public void reset() {
+        mHasElapse = 0;
+    }
+
+    public void init(PadScene scene) {
+        mPadScene = scene;
+        mNextScene = null;
+        mPadSwitchingMode = null;
+        mPadSceneSwitching = null;
+        mHasElapse = 0;
+    }
+
+    public void register() {
+        EventBus.getDefault().register(this);
+    }
+
+    public void release() {
+        stopService();
         EventBus.getDefault().unregister(this);
     }
 
     public void onEvent(ServiceMode mode) {
         if (mode == ServiceMode.MODE_RESET_SERVICE) {
-            mHasElapse = 0;
-        } else if (mode == ServiceMode.MODE_STOP_SCENE_SERVICE) {
-            if (mService != null) {
-                mService.shutdownNow();
-            }
+            reset();
         }
     }
 
@@ -179,4 +220,23 @@ public class SceneSwitchingService extends BaseIntentService {
         }
     }
 
+    protected void send(String url, RequestHelper.OnRequestListener listener) {
+        RequestHelper.getInstance(mCtx, url, listener).send();
+    }
+
+    protected String wrap(String value, String defaultValue) {
+        return TextUtils.isEmpty(value) ? defaultValue : value;
+    }
+
+    protected int parseInt(String value) {
+        return UniversalUtility.safeIntParse(value, 0);
+    }
+
+    protected boolean isEmpty(String str) {
+        return TextUtils.isEmpty(str);
+    }
+
+    protected void log(String msg) {
+        AppLogger.e("---------------- " + msg + " ----------------");
+    }
 }
