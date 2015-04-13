@@ -34,7 +34,7 @@ public final class WifiAdmin {
 
     private WifiManager.WifiLock mWifiLock;
 
-    private static WifiAdmin sInstance;
+    //private static WifiAdmin sInstance;
 
     private ConnectivityManager mConnManager;
 
@@ -42,14 +42,14 @@ public final class WifiAdmin {
 
     private Context mCtx;
 
-    public synchronized static WifiAdmin getInstance(Context c) {
+    /*public synchronized static WifiAdmin getInstance(Context c) {
         if (sInstance == null) {
             sInstance = new WifiAdmin(c);
         }
         return sInstance;
-    }
+    }*/
 
-    private WifiAdmin(Context c) {
+    public WifiAdmin(Context c) {
         mWifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
         mConnManager = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifiInfo = mWifiManager.getConnectionInfo();
@@ -66,7 +66,7 @@ public final class WifiAdmin {
         setOnWifiStateChange(listener);
         registerWifiReceiver();
         mAction = ACTION_OPEN_WIFI;
-        WifiApAdmin wifiApAdmin = WifiApAdmin.getInstance(mCtx);
+        WifiApAdmin wifiApAdmin = new WifiApAdmin(mCtx);
         if (!wifiApAdmin.isWifiApEnable()) {
             openWifi();
         } else {

@@ -31,4 +31,7 @@
     <string name="service_expiration">服务过期</string>
     <string name="service_expiration_detail">设备服务过期，请与代理商联系申请延长服务期限</string>
     <string name="updating_device_info">正在更新设备信息</string>
+    <string name="dialog_button_retry">重试</string>
+
+    <string name="loading">正在加载...</string>
 </resources>

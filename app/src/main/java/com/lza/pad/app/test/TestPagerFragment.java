@@ -22,7 +22,7 @@ import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.debug.AppLogger;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -96,7 +96,7 @@ public class TestPagerFragment extends Fragment {
         mInflater = LayoutInflater.from(getActivity());
 
         mPadDeviceInfo = new PadDeviceInfo();
-        mPadDeviceInfo.setMac_add(UniversalUtility.getMacAddress(getActivity()));
+        mPadDeviceInfo.setMac_add(Utility.getMacAddress(getActivity()));
         String url = UrlHelper.getResourcesUrl(mPadDeviceInfo, PadResource.RESOURCE_EBOOK, 4, index + 1);
         RequestHelper.getInstance(getActivity(), url, mResourceListener).send();
     }

@@ -24,10 +24,11 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 3/12/15.
  */
+@Deprecated
 public class ModuleSwitchingService extends BaseIntentService {
 
     PadDeviceInfo mPadDeviceInfo;
-    PadModuleType mPadModule;
+    PadModuleType mPadModuleType;
 
     PadModuleType mNextModule;
 
@@ -46,9 +47,9 @@ public class ModuleSwitchingService extends BaseIntentService {
          * [SP101]接收当前模块
          */
         log("[SP101]接收当前模块");
-        mPadModule = intent.getParcelableExtra(KEY_PAD_MODULE_INFO);
+        mPadModuleType = intent.getParcelableExtra(KEY_PAD_MODULE_INFO);
         mPadDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
-        if (mPadModule == null || mPadDeviceInfo == null) return;
+        if (mPadModuleType == null || mPadDeviceInfo == null) return;
         getModuleSwitching();
     }
 
@@ -57,7 +58,7 @@ public class ModuleSwitchingService extends BaseIntentService {
      */
     private void getModuleSwitching() {
         log("[SP102]查询当前模块是否存在切换服务");
-        String modSwitchingUrl = UrlHelper.getPadModuleSwitching(mPadDeviceInfo, mPadModule);
+        String modSwitchingUrl = UrlHelper.getPadModuleSwitching(mPadDeviceInfo, mPadModuleType);
         send(modSwitchingUrl, new SceneSwitchingListener());
     }
 
@@ -78,7 +79,7 @@ public class ModuleSwitchingService extends BaseIntentService {
      */
     private void checkModuleDuplicated() {
         log("[SP104]下一个模块是否为当前模块");
-        if (mNextModule.equals(mPadModule)) return;
+        if (mNextModule.equals(mPadModuleType)) return;
         startSwitchingService();
     }
 

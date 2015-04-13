@@ -35,6 +35,9 @@ public class MinaFileServerAdmin {
 
     private MinaFileServerAdmin() {}
 
+    public boolean isDisposed() {
+        return mAcceptor != null && mAcceptor.isDisposed();
+    }
     public boolean isActive() {
         return mAcceptor != null && mAcceptor.isActive();
     }

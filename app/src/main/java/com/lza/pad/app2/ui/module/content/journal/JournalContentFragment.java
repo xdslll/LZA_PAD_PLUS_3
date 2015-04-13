@@ -45,7 +45,7 @@ public class JournalContentFragment extends BaseImageFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTitles.add("目录");
-        mTitles.add("简介");
+        //mTitles.add("简介");
     }
 
     @Override

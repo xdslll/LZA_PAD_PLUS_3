@@ -1,7 +1,6 @@
 package com.lza.pad.app2.ui.device;
 
 import android.app.DownloadManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -19,7 +18,7 @@ import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.file.FileTools;
 import com.lza.pad.support.utils.RuntimeUtility;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 import com.lza.pad.wifi.admin.WifiAdmin;
 import com.lza.pad.wifi.admin.WifiApAdmin;
 
@@ -67,7 +66,8 @@ public class DeviceAuthorityActivity extends BaseActivity {
         if (!isProgressDialogShowing()) {
             showProgressDialog(R.string.verify_if_network_connected, false);
         }
-        mWifiAdmin = WifiAdmin.getInstance(mCtx);
+        //mWifiAdmin = WifiAdmin.getInstance(mCtx);
+        mWifiAdmin = new WifiAdmin(mCtx);
         boolean isNetworkConnected = mWifiAdmin.isNetworkConnected();
         if (isNetworkConnected) {
             checkWifiState();
@@ -95,7 +95,8 @@ public class DeviceAuthorityActivity extends BaseActivity {
     private void authorityDevice() {
         log("[P103]向服务器请求设备授权");
         updateProgressDialog(R.string.getting_mac_address);
-        String macAddress = mWifiAdmin.getMacAddress();
+        //String macAddress = mWifiAdmin.getMacAddress();
+        String macAddress = Utility.getMacAddress(mCtx);
         updateProgressDialog(R.string.authority_device_info);
         String authorityUrl = UrlHelper.getDeviceUrl(macAddress);
         send(authorityUrl, new AuthorityDeviceListener());
@@ -186,25 +187,35 @@ public class DeviceAuthorityActivity extends BaseActivity {
      */
     private void handleAuthorityFailed(String title, String message) {
         log("[P108]设备授权信息验证失败");
-        dismissProgressDialog();
-        UniversalUtility.showDialog(mCtx,
-                title,
-                message,
-                new DialogInterface.OnClickListener() {
+        /*dismissProgressDialog();
+        final AlertDialog dialog = new AlertDialog.Builder(mCtx)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(R.string.dialog_button_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         showProgressDialog(R.string.getting_mac_address);
                         authorityDevice();
                     }
-                },
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
+                })
+                .create();
+        dialog.show();
+        getMainHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+                showProgressDialog(R.string.getting_mac_address);
+                authorityDevice();
+            }
+        }, RETRY_TIMEOUT);*/
+        handleErrorProcess(title, message, new Runnable() {
+            @Override
+            public void run() {
+                showProgressDialog(R.string.getting_mac_address);
+                authorityDevice();
+            }
+        });
     }
 
     /**
@@ -226,7 +237,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
     private void checkVersionUpdate() {
         log("[P110]检查是否需要升级版本");
         String deviceVersion = mPadDeviceInfo.getVersion();
-        int currentVersion = UniversalUtility.getVersionCode(mCtx);
+        int currentVersion = Utility.getVersionCode(mCtx);
         if (!isEmpty(deviceVersion)) {
             log("当前版本号：" + currentVersion + ",新版本号：" + deviceVersion);
             if (currentVersion < parseInt(deviceVersion)) {
@@ -258,7 +269,8 @@ public class DeviceAuthorityActivity extends BaseActivity {
         updateProgressDialog("正在检查Wi-Fi热点");
         String wifiApSwitch = mPadDeviceInfo.getHotspot_switch();
         if (wifiApSwitch.equals(PadDeviceInfo.TAG_HOTSPOT_ON)) {
-            mWifiApAdmin = WifiApAdmin.getInstance(mCtx);
+            //mWifiApAdmin = WifiApAdmin.getInstance(mCtx);
+            mWifiApAdmin = new WifiApAdmin(mCtx);
             openWifiAp();
         } else {
             updateDeviceInfo();
@@ -315,7 +327,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
     private void gotoParseActivity() {
         Intent intent = new Intent(mCtx, MainParseActivity.class);
         intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
-        overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
+        //overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
         startActivity(intent);
         finish();
     }
@@ -368,7 +380,9 @@ public class DeviceAuthorityActivity extends BaseActivity {
 
         }
         DownloadHelper helper = new DownloadHelper(mCtx, version, fileName, apkFile);
-        registerEventBus();
+        if (!isRegisterEventBus()) {
+            registerEventBus();
+        }
         try {
             helper.download();
         } catch (Exception ex) {
@@ -384,7 +398,9 @@ public class DeviceAuthorityActivity extends BaseActivity {
      * @param downloadFile
      */
     public void onEventAsync(DownloadFile downloadFile) {
-        unregisterEventBus();
+        if (isRegisterEventBus()) {
+            unregisterEventBus();
+        }
         if (downloadFile == null) {
             log("新版本APK下载失败！");
             checkWifiApState();

@@ -22,6 +22,8 @@ public class PadModuleSwitching implements Parcelable {
 
     List<PadSwitching> switching_mode = new ArrayList<PadSwitching>();
 
+    List<PadSchool> school_bh = new ArrayList<PadSchool>();
+
     public String getId() {
         return id;
     }
@@ -54,6 +56,14 @@ public class PadModuleSwitching implements Parcelable {
         this.switching_mode = switching_mode;
     }
 
+    public List<PadSchool> getSchool_bh() {
+        return school_bh;
+    }
+
+    public void setSchool_bh(List<PadSchool> school_bh) {
+        this.school_bh = school_bh;
+    }
+
     public PadModuleSwitching() {
     }
 
@@ -68,6 +78,7 @@ public class PadModuleSwitching implements Parcelable {
         dest.writeTypedList(pre_module);
         dest.writeTypedList(next_module);
         dest.writeTypedList(switching_mode);
+        dest.writeTypedList(school_bh);
     }
 
     private PadModuleSwitching(Parcel in) {
@@ -75,6 +86,7 @@ public class PadModuleSwitching implements Parcelable {
         in.readTypedList(pre_module, PadModuleType.CREATOR);
         in.readTypedList(next_module, PadModuleType.CREATOR);
         in.readTypedList(switching_mode, PadSwitching.CREATOR);
+        in.readTypedList(school_bh, PadSchool.CREATOR);
     }
 
     public static final Creator<PadModuleSwitching> CREATOR = new Creator<PadModuleSwitching>() {

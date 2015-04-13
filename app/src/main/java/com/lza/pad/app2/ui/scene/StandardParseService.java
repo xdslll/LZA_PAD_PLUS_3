@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.lza.pad.app2.base.IScene;
-import com.lza.pad.app2.service.BaseIntentService;
+import com.lza.pad.app2.service.BaseService;
+import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -17,9 +18,15 @@ import com.lza.pad.db.model.pad.PadSwitching;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Say something about this class
@@ -27,7 +34,7 @@ import java.util.List;
  * @author xiads
  * @Date 15/3/20.
  */
-public class StandardParseService extends BaseIntentService implements IScene {
+public class StandardParseService extends BaseService implements IScene {
 
     PadDeviceInfo mPadDeviceInfo;
     PadScene mPadScene;
@@ -59,40 +66,45 @@ public class StandardParseService extends BaseIntentService implements IScene {
     /**
      * 定时器服务
      */
-    //private ScheduledExecutorService mService;
+    private ScheduledExecutorService mService;
 
-    public StandardParseService() {
-        super("StandardParseService");
+    @Override
+    public void onCreate() {
+        log("StandardParseService onCreate");
+        super.onCreate();
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        log("StandardParseService onStartCommand");
         if (intent != null) {
             mPadDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
             mPadScene = intent.getParcelableExtra(KEY_PAD_SCENE);
             mPadSchool = intent.getParcelableExtra(KEY_PAD_SCHOOL);
             mPadAuthority = intent.getParcelableExtra(KEY_PAD_AUTHORITY);
-            //startSceneSwitchingService();
-            getSceneModules(mPadScene);
         }
+        if (mPadDeviceInfo == null || mPadScene == null) {
+            log("服务启动异常，请检查！");
+            return super.onStartCommand(intent, flags, startId);
+        }
+        getSceneModules();
+        return START_STICKY;
     }
 
-    /*public void onEvent(ServiceMode mode) {
-        if (mode == ServiceMode.MODE_RESET_SERVICE) {
-            mHasElapse = 0;
-        } else if (mode == ServiceMode.MODE_STOP_SCENE_SERVICE) {
-            release();
-        } else if (mode == ServiceMode.MODE_START_HOME_MODULE) {
-            launchModuleByType(PadModuleType.MODULE_TYPE_HOME);
-        }
-    }*/
+    @Override
+    public void onDestroy() {
+        log("StandardParseService onDestroy");
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        stopSwitchingService();
+    }
 
     /**
-     * [P302]获取场景下的所有模块
+     * [P301]获取场景下的所有模块
      */
-    @Override
-    public void getSceneModules(PadScene scene) {
-        log("[P302]获取场景下的所有模块");
+    protected void getSceneModules() {
+        log("[P301]获取场景下的所有模块");
         String getSceneModulesUrl = UrlHelper.getSceneModules(mPadDeviceInfo, mPadScene);
         send(getSceneModulesUrl, new GetSceneModulesListener());
     }
@@ -106,11 +118,12 @@ public class StandardParseService extends BaseIntentService implements IScene {
         @Override
         public void handleRespone(List<PadSceneModule> content) {
             /**
-             * [P303]模块数量大于等于1
+             * [P302]判断模块数量是否大于等于1
              */
-            log("[P303]模块数量大于等于1");
+            log("[P302]模块数量大于0");
             mPadSceneModules = content;
             parseModuleList();
+            getSceneSwitching();
         }
 
         @Override
@@ -120,10 +133,11 @@ public class StandardParseService extends BaseIntentService implements IScene {
     }
 
     /**
-     * [P307]解析所有模块
+     * [P303]解析所有模块
      */
-    private void parseModuleList() {
-        log("[P307]解析所有模块");
+    @Override
+    public void parseModuleList() {
+        log("[P303]解析所有模块");
         for (int i = 0; i < mPadSceneModules.size(); i++) {
             PadModuleType moduleType = pickFirst(mPadSceneModules.get(i).getModule_type_id());
             if (moduleType == null) continue;
@@ -174,7 +188,7 @@ public class StandardParseService extends BaseIntentService implements IScene {
      *
      * @param hasGuide 是否包含引导页
      */
-    private void renderModule(boolean hasGuide) {
+    public void renderModule(boolean hasGuide) {
         log("[P306]渲染模块");
         PadSceneModule module;
         if (hasGuide) {
@@ -192,7 +206,7 @@ public class StandardParseService extends BaseIntentService implements IScene {
         String activityPath = buildCodePath(mPadAuthority.getModule_parse_code());
         log("activity path=" + activityPath);
         Intent intent = new Intent();
-        intent.setClassName(getBaseContext(), activityPath);
+        intent.setClassName(mCtx, activityPath);
         Bundle arg = new Bundle();
         arg.putParcelable(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         arg.putParcelable(KEY_PAD_SCHOOL, mPadSchool);
@@ -207,30 +221,177 @@ public class StandardParseService extends BaseIntentService implements IScene {
         arg.putParcelableArrayList(KEY_PAD_MODULE_HELP, mHelpModule);
         intent.putExtras(arg);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
 
-        Intent intent2 = new Intent(ACTION_START_PARSE_RECEIVER);
-        sendBroadcast(intent2);
+        startActivity(intent);
     }
 
     /**
      * [P308]清空场景数据
      */
     public void resetSceneData() {
-        log("[P308]清空场景下的所有模块");
+        log("[P308]清空场景数据");
 
         clear(mGuideModule);
         clear(mHomeModule);
         clear(mSubpageModule);
         clear(mContentModule);
         clear(mHelpModule);
+
+        mHasElapse = 0;
     }
 
     /**
-     * 通过模块类型启动模块
+     * [P309]处理失败流程
      *
+     * @param message
      */
-    /*protected void launchModuleByType(int type) {
+    protected void handleErrorProcess(String message) {
+        ToastUtils.showLong(mCtx, message);
+    }
+
+    /**
+     * [SP101]查询当前场景是否存在切换服务
+     */
+    private void getSceneSwitching() {
+        log("[SP101]查询当前场景是否存在切换服务");
+        String sceneSwitchingUrl = UrlHelper.getPadSceneSwitching(mPadDeviceInfo, mPadScene);
+        send(sceneSwitchingUrl, new SceneSwitchingListener());
+    }
+
+    private class SceneSwitchingListener extends SimpleRequestListener<PadSceneSwitching> {
+
+        @Override
+        public ResponseData<PadSceneSwitching> parseJson(String json) {
+            return JsonParseHelper.parsePadSceneSwitchingResponse(json);
+        }
+
+        @Override
+        public void handleRespone(List<PadSceneSwitching> content) {
+            if (content.size() > 1) {
+                handleErrorProcess("切换场景数大于1，请查看并调整！");
+            } else {
+                mPadSceneSwitching = content.get(0);
+                checkSceneSwitching();
+            }
+        }
+
+        @Override
+        public void handleResponseFailed() {
+            log("当前场景不存在场景切换服务");
+        }
+    }
+
+    /**
+     * [SP102]是否存在下一个场景
+     */
+    private void checkSceneSwitching() {
+        log("[SP102]是否存在下一个场景");
+        if (mPadSceneSwitching == null ||
+                mPadSceneSwitching.getNext_scene() == null ||
+                mPadSceneSwitching.getNext_scene().size() <= 0) {
+            log("不存在切换场景");
+            return;
+        }
+        mNextScene = mPadSceneSwitching.getNext_scene().get(0);
+        if (mNextScene == null) return;
+        checkSceneDuplicated();
+    }
+
+    /**
+     * [SP103]下一个场景是否为当前场景
+     */
+    private void checkSceneDuplicated() {
+        log("[SP103]下一个场景是否为当前场景");
+        if (mNextScene.equals(mPadScene)) return;
+        startSwitchingService();
+    }
+
+    /**
+     * [SP104]启动场景切换服务
+     */
+    private void startSwitchingService() {
+        log("[SP104]启动场景切换服务");
+        if (mPadSceneSwitching.getSwitching_mode() == null ||
+                mPadSceneSwitching.getSwitching_mode().size() <= 0) return;
+        mPadSwitchingMode = mPadSceneSwitching.getSwitching_mode().get(0);
+        String mode = mPadSwitchingMode.getTigger_mode();
+        if (mode.equals(PadSwitching.TRIGGER_MODE_FIX_DAY)) {
+            log("固定日期时触发场景切换");
+        } else if (mode.equals(PadSwitching.TRIGGER_MODE_FIX_TIME)) {
+            log("固定时间时触发场景切换");
+        } else if (mode.equals(PadSwitching.TRIGGER_MODE_FIX_DELAY)) {
+            log("固定延迟后触发场景切换");
+            int delay = parseInt(mPadSwitchingMode.getTrigger_interval());
+            switchingScene(delay);
+        }
+    }
+
+    /**
+     * 通过计时器转换场景
+     *
+     * @param delay
+     */
+    private void switchingScene(final int delay) {
+        log("启动定时器，延迟：" + delay + "s");
+        stopSwitchingService();
+        mService = Executors.newSingleThreadScheduledExecutor();
+        mService.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                log("当前延迟（计算前）：" + mHasElapse);
+                mHasElapse += FIXED_DELAY;
+                log("当前延迟（计算后）：" + mHasElapse);
+                if (mHasElapse >= delay) {
+                    switchScene(mNextScene);
+                    log("关闭场景切换服务");
+                    mService.shutdownNow();
+                }
+            }
+        }, FIXED_DELAY, FIXED_DELAY, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 切换场景
+     *
+     * @param nextScene
+     */
+    private void switchScene(PadScene nextScene) {
+        //发送场景切换广播，关闭所有已经打开的模块
+        EventBus.getDefault().post(ServiceMode.MODE_SWITCH_SCENE);
+        mPadScene = nextScene;
+        if (mPadScene == null) return;
+        log("加载切换后的场景:" + mPadScene.getName());
+        //resetSceneData();
+        //getSceneModules();
+        //发送广播请求切换场景
+        mPadDeviceInfo.setScene_id(mPadScene.getId());
+        EventBus.getDefault().post(mPadDeviceInfo);
+        //关闭服务
+        stopSelf();
+    }
+
+    private void stopSwitchingService() {
+        if (mService != null && !mService.isShutdown()) {
+            mService.shutdownNow();
+        }
+    }
+
+    /**
+     * 监听器
+     *
+     * @param mode
+     */
+    public void onEvent(ServiceMode mode) {
+        if (mode == ServiceMode.MODE_RESET_SERVICE) {
+            log("启动重置服务");
+            mHasElapse = 0;
+        } else if (mode == ServiceMode.MODE_START_HOME_MODULE) {
+            log("启动首页");
+            launchModuleByType(PadModuleType.MODULE_TYPE_HOME);
+        }
+    }
+
+    protected void launchModuleByType(int type) {
         if (type == PadModuleType.MODULE_TYPE_GUIDE) {
             if (!isEmpty(mGuideModule)) {
                 launchModule(mGuideModule.get(0));
@@ -264,19 +425,5 @@ public class StandardParseService extends BaseIntentService implements IScene {
                 }
             }
         }
-    }*/
-
-    private void handleErrorProcess(String message) {
-        Intent intent = new Intent(ACTION_START_PARSE_ERROR_RECEIVER);
-        intent.putExtra(KEY_START_PARSE_ERROR, message);
-        sendBroadcast(intent);
     }
 }
-
-/*private void release() {
-        log("关闭场景服务");
-        if (mService != null && !mService.isShutdown()) {
-            mService.shutdownNow();
-        }
-    }*/
-

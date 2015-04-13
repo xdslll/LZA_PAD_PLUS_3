@@ -1,6 +1,5 @@
 package com.lza.pad.app2.base;
 
-import com.lza.pad.db.model.pad.PadScene;
 import com.lza.pad.db.model.pad.PadSceneModule;
 
 /**
@@ -12,9 +11,14 @@ import com.lza.pad.db.model.pad.PadSceneModule;
 public interface IScene {
 
     /**
-     * 获取某一场景下的所有模块
+     * 解析所有模块
      */
-    void getSceneModules(PadScene scene);
+    void parseModuleList();
+
+    /**
+     * 重置场景切换后的数据
+     */
+    void resetSceneData();
 
     /**
      * 启动模块

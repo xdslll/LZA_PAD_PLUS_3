@@ -1,6 +1,5 @@
 package com.lza.pad.helper;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.helper.event.state.ResponseEventTag;
@@ -13,7 +12,7 @@ import java.util.List;
  * @author xiads
  * @Date 15/2/10.
  */
-public class    SimpleRequestListener<T> implements RequestHelper.OnRequestListener {
+public class SimpleRequestListener<T> implements RequestHelper.OnRequestListener {
 
     @Override
     public void onResponse(ResponseEventInfo response) {
@@ -125,7 +124,7 @@ public class    SimpleRequestListener<T> implements RequestHelper.OnRequestListe
      *
      * @param error
      */
-    public void handleRespone(VolleyError error) {
+    public void handleRespone(Throwable error) {
         handleResponseFailed();
     }
 

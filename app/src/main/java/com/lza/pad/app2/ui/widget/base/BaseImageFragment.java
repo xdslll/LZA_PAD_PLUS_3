@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
  * @author xiads
  * @Date 2/20/15.
  */
-public class BaseImageFragment extends BaseFragment {
+public abstract class BaseImageFragment extends BaseFragment {
 
     protected LayoutInflater mInflater;
 

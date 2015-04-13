@@ -26,7 +26,7 @@ import com.lza.pad.wifi.admin._WifiAdmin;
 import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.ToastUtils;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.List;
 
@@ -124,7 +124,7 @@ public class WifiApActivity extends _BaseActivity implements _WifiApAdmin.OnWifi
                         mIsWifiEnable = mWifiManager.isWifiEnabled();
                         if (!mIsWifiEnable) {
                             if (mIsWifiApEnable) {
-                                UniversalUtility.showDialog(mCtx, "提示", "Wifi启动失败，是否关闭热点后重试？",
+                                Utility.showDialog(mCtx, "提示", "Wifi启动失败，是否关闭热点后重试？",
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {

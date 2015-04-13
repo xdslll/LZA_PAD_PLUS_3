@@ -3,13 +3,18 @@ package com.lza.pad.helper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.support.debug.AppLogger;
+import com.lza.pad.support.network.VolleySingleton;
 import com.lza.pad.support.utils.Consts;
 
-import java.util.Map;
+import org.apache.http.Header;
 
 /**
  * Say something about this class
@@ -29,24 +34,25 @@ public class RequestHelper implements Consts {
 
     private Context mCtx;
 
-    //private MyStringRequest mRequest;
-
     private OnRequestListener mListener = new SimpleRequestListener();
 
     private RequestHelper(Context c) {
         mCtx = c;
         setOnRequestListener(mListener);
+        mHttpClient.setMaxRetriesAndTimeout(AsyncHttpClient.DEFAULT_MAX_RETRIES,
+                AsyncHttpClient.DEFAULT_SOCKET_TIMEOUT);
     }
 
     private RequestHelper(Context c, OnRequestListener listener) {
         mCtx = c;
         setOnRequestListener(listener);
+        mHttpClient.setMaxRetriesAndTimeout(AsyncHttpClient.DEFAULT_MAX_RETRIES,
+                AsyncHttpClient.DEFAULT_SOCKET_TIMEOUT);
     }
 
     private RequestHelper(Context c, OnRequestListener listener, String url) {
         this(c, listener);
         this.mRequestUrl = url;
-        //this.mRequest = createRequest(mRequestUrl);
     }
 
     public synchronized static RequestHelper getInstance(Context c) {
@@ -61,40 +67,32 @@ public class RequestHelper implements Consts {
         return new RequestHelper(c, listener, url);
     }
 
-    /*private MyStringRequest createRequest(String url) {
-        return new MyStringRequest(url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String json) {
-                        handleResponse(json);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        handleError(error);
-                    }
-                });
-    }*/
-
     public void send() {
         log("url-->" + mRequestUrl);
-        /*if (mRequest != null) {
-            VolleySingleton.getInstance(mCtx).addToRequestQueue(mRequest);
-        } else {
-            if (!TextUtils.isEmpty(mRequestUrl)) {
-                mRequest = createRequest(mRequestUrl);
-                VolleySingleton.getInstance(mCtx).addToRequestQueue(mRequest);
-            } else {
-                log("url为空，不能发送请求！");
-            }
-        }*/
+        if (!TextUtils.isEmpty(mRequestUrl)) {
+            mHttpClient.get(mCtx, mRequestUrl, null, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    String responseString = new String(responseBody);
+                    handleResponse(responseString);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    handleError(error);
+                }
+
+                @Override
+                public void onRetry(int retryNo) {
+                    super.onRetry(retryNo);
+                }
+            });
+        }
     }
 
     public void send(String url) {
         if (TextUtils.isEmpty(url)) return;
         mRequestUrl = url;
-        //mRequest = createRequest(url);
         send();
     }
 
@@ -102,7 +100,37 @@ public class RequestHelper implements Consts {
         getInstance(c, url, listener).send();
     }
 
-    private void handleError(VolleyError error) {
+    public void sendByVolley() {
+        log("url-->" + mRequestUrl);
+        if (!TextUtils.isEmpty(mRequestUrl)) {
+            StringRequest request = new StringRequest(mRequestUrl,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                            handleResponse(s);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                           handleError(volleyError);
+                        }
+                    });
+            VolleySingleton.getInstance(mCtx).addToRequestQueue(request);
+        }
+    }
+
+    public void sendByVolley(String url) {
+        if (TextUtils.isEmpty(url)) return;
+        mRequestUrl = url;
+        sendByVolley();
+    }
+
+    public void sendByVolley(Context c, String url, OnRequestListener listener) {
+        getInstance(c, url, listener).sendByVolley();
+    }
+
+    private void handleError(Throwable error) {
         AppLogger.e("error-->" + error.getCause() + "," + error.getMessage());
         ResponseEventInfo response = new ResponseEventInfo();
         response.setUrl(mRequestUrl);
@@ -124,65 +152,18 @@ public class RequestHelper implements Consts {
         mListener.onResponse(response);
     }
 
-    private String getCookie(Map<String, String> header) {
-        if (header != null && header.containsKey("Set-Cookie")) {
-            return header.get("Set-Cookie");
-        }
-        return null;
-    }
-
     public interface OnRequestListener {
         void onResponse(ResponseEventInfo response);
-    }
-
-    public class SimpleRequestListener implements OnRequestListener {
-
-        @Override
-        public void onResponse(ResponseEventInfo response) {
-
-        }
     }
 
     public void setOnRequestListener(OnRequestListener listener) {
         mListener = listener;
     }
 
-    /*private class MyStringRequest extends StringRequest {
-
-        public static final int DEFAULT_TIMEOUT = 10 * 1000;
-        public static final int DEFAULT_RETRY_COUNT = 3;
-
-        public MyStringRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-            super(method, url, listener, errorListener);
-            setRetryPolicy(new DefaultRetryPolicy(DEFAULT_TIMEOUT, DEFAULT_RETRY_COUNT, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        }
-
-        public MyStringRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-            super(url, listener, errorListener);
-            setRetryPolicy(new DefaultRetryPolicy(DEFAULT_TIMEOUT, DEFAULT_RETRY_COUNT, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        }
-
-        public MyStringRequest(String url, Response.Listener<String> listener, Response.ErrorListener errorListener, int timeout, int maxRetryCount) {
-            super(url, listener, errorListener);
-            setRetryPolicy(new DefaultRetryPolicy(timeout, maxRetryCount, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        }
-
-        @Override
-        protected void deliverResponse(String response) {
-            super.deliverResponse(response);
-        }
-
-        @Override
-        protected Response<String> parseNetworkResponse(NetworkResponse response) {
-            mStatusCode = response.statusCode;
-            Map<String, String> headers = response.headers;
-            mCookie = getCookie(headers);
-            return super.parseNetworkResponse(response);
-        }
-    }*/
-
     private void log(String msg) {
         AppLogger.e(">>>> " + msg);
     }
+
+    private AsyncHttpClient mHttpClient = new AsyncHttpClient();
 
 }

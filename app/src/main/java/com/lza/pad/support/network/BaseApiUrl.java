@@ -3,7 +3,7 @@ package com.lza.pad.support.network;
 import android.text.TextUtils;
 
 import com.lza.pad.support.file.FileTools;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,7 +44,7 @@ public class BaseApiUrl {
     }
 
     public String getParamValue(String key) {
-        if (!UniversalUtility.isMapEmpty(mParams) && mParams.containsKey(key)) {
+        if (!Utility.isMapEmpty(mParams) && mParams.containsKey(key)) {
             return mParams.get(key);
         }
         return null;
@@ -63,11 +63,11 @@ public class BaseApiUrl {
         if (!TextUtils.isEmpty(url)) {
             urlBuilder.append(url);
         }
-        if (!UniversalUtility.isMapEmpty(params)) {
+        if (!Utility.isMapEmpty(params)) {
             if (!url.endsWith("?")) {
                 urlBuilder.append("?");
             }
-            urlBuilder.append(UniversalUtility.encodeUrl(params));
+            urlBuilder.append(Utility.encodeUrl(params));
         }
         generateUrl(urlBuilder.toString());
         mParams = params;

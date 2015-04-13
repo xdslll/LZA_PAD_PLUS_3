@@ -1,8 +1,10 @@
 package com.lza.pad.app2.ui.base;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,14 +17,18 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.lza.pad.R;
+import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
+import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.List;
@@ -38,6 +44,7 @@ import de.greenrobot.event.EventBus;
 public abstract class BaseActivity extends SherlockFragmentActivity implements Consts {
 
     protected Context mCtx;
+    protected final static int RETRY_TIMEOUT = 10 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,20 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //不显示ActionBar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        //CrashHelper.getInstance(mCtx).init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     private ProgressDialog mProgressDialog = null;
@@ -107,7 +128,11 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     }
 
     protected int parseInt(String value) {
-        return UniversalUtility.safeIntParse(value, 0);
+        return Utility.safeIntParse(value, 0);
+    }
+
+    protected int parseInt(String value, int defaultValue) {
+        return Utility.safeIntParse(value, defaultValue);
     }
 
     protected boolean isEmpty(String str) {
@@ -140,6 +165,10 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         EventBus.getDefault().unregister(this);
     }
 
+    protected boolean isRegisterEventBus() {
+        return EventBus.getDefault().isRegistered(this);
+    }
+
     protected Handler getMainHandler() {
         return mHandler;
     }
@@ -154,6 +183,11 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo) {
         String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
         send(url, new UpdateDeviceInfoListener(deviceInfo));
+    }
+
+    protected void requestUpdateDeviceInfo(PadDeviceInfo deviceInfo, SimpleRequestListener listener) {
+        String url = UrlHelper.updateDeviceInfoUrl(deviceInfo);
+        send(url, listener);
     }
 
     private class UpdateDeviceInfoListener extends SimpleRequestListener {
@@ -192,6 +226,14 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         startActivity(new Intent(mCtx, DeviceAuthorityActivity.class));
     }
 
+    protected boolean isTopActivity() {
+        String currentActivityName = getClass().getSimpleName();
+        String topActivityName = getTopActivityName();
+        boolean isTopActivity = currentActivityName.equals(topActivityName);
+        log("是否为Top Activity：" + isTopActivity);
+        return isTopActivity;
+    }
+
     protected String getTopActivityName() {
         ActivityManager manager = (ActivityManager) mCtx.getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> runningTasks = manager.getRunningTasks(1);
@@ -217,5 +259,65 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         ft.replace(id, fragment);
         ft.commit();
     }
+
+    /**
+     * 处理失败流程，10秒后会自动关闭对话框并执行重试流程
+     *
+     * @param title         标题文本
+     * @param message       内容文本
+     * @param runnable      处理事件
+     */
+    protected void handleErrorProcess(String title, String message, final Runnable runnable) {
+        log("处理失败信息");
+        try {
+            dismissProgressDialog();
+            final AlertDialog alertDialog = new AlertDialog.Builder(mCtx)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.dialog_button_retry, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (runnable != null) {
+                                runnable.run();
+                            }
+                        }
+                    })
+                    .create();
+            alertDialog.show();
+            getMainHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    alertDialog.dismiss();
+                    if (runnable != null) {
+                        runnable.run();
+                    }
+                }
+            }, RETRY_TIMEOUT);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 处理客户端连接请求
+     *
+     * @param client
+     */
+    public void onEvent(MinaClient client) {}
+
+    /**
+     * 在主线程处理客户端连接请求
+     *
+     * @param client
+     */
+    public void onEventMainThread(MinaClient client) {}
+
+    /**
+     * 处理下载事件
+     *
+     * @param downloadFile
+     */
+    public void onEventAsync(DownloadFile downloadFile) {}
 
 }

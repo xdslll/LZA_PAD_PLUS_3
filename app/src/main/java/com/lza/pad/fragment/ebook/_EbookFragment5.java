@@ -46,7 +46,7 @@ public class _EbookFragment5 extends _BaseFragment {
 
         if (!mIsHome) {
             mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list2_title);
-            mLayoutPages = (LinearLayout) view.findViewById(R.id.ebook_list_pages);
+            mLayoutPages = (LinearLayout) view.findViewById(R.id.common_container_pages);
             mLayoutTitle.setVisibility(View.INVISIBLE);
             mLayoutPages.setVisibility(View.GONE);
         }

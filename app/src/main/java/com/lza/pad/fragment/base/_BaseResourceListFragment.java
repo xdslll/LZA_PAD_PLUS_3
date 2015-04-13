@@ -23,7 +23,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad._old.PadModuleControl;
@@ -31,7 +30,7 @@ import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,14 +130,14 @@ public abstract class _BaseResourceListFragment extends _BaseFragment {
         }
         mDefaultPageSize = getGridDataSize();
         if (mPadControlInfo != null) {
-            String ifSlideShow = UniversalUtility.wrap(mPadControlInfo.getIf_show_slide(), "0");
+            String ifSlideShow = Utility.wrap(mPadControlInfo.getIf_show_slide(), "0");
             if (ifSlideShow.equals(PadModuleControl.BOOLEAN_SHOW_SLIDE)) {
                 mIfSlideShow = true;
             } else if (ifSlideShow.equals(PadModuleControl.BOOLEAN_NOT_SHOW_SLIDE)) {
                 mIfSlideShow = false;
             }
-            mSlideShowTime = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_time(), "0"));
-            mSlideShowPeriod = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_period(), "0"));
+            mSlideShowTime = Integer.valueOf(Utility.wrap(mPadControlInfo.getSlide_show_time(), "0"));
+            mSlideShowPeriod = Integer.valueOf(Utility.wrap(mPadControlInfo.getSlide_show_period(), "0"));
         }
     }
 
@@ -146,8 +145,8 @@ public abstract class _BaseResourceListFragment extends _BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_module_container, container, false);
 
-        mTxtTitle = (TextView) view.findViewById(R.id.ebook_list_title_text);
-        mTxtMore = (TextView) view.findViewById(R.id.ebook_list_more);
+        mTxtTitle = (TextView) view.findViewById(R.id.common_container_title_text);
+        mTxtMore = (TextView) view.findViewById(R.id.common_container_more);
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +157,7 @@ public abstract class _BaseResourceListFragment extends _BaseFragment {
         mTxtMore.setText(getMoreText());
 
         mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list_title);
-        mRadPages = (RadioGroup) view.findViewById(R.id.ebook_list_pages);
+        mRadPages = (RadioGroup) view.findViewById(R.id.common_container_pages);
         //如果不在首页显示，则隐藏标题和翻页按钮
         if (!mIsHome) {
             mLayoutTitle.setVisibility(View.GONE);
@@ -167,7 +166,7 @@ public abstract class _BaseResourceListFragment extends _BaseFragment {
             mPagesHeight = 0;
         }
 
-        mImgBottom = (ImageView) view.findViewById(R.id.ebook_list_bottom_img);
+        mImgBottom = (ImageView) view.findViewById(R.id.common_container_bottom_bg);
         //计算底部图片高度
         calcBottom();
 
@@ -177,7 +176,7 @@ public abstract class _BaseResourceListFragment extends _BaseFragment {
         //加载ViewPager
         mViewPager = (ViewPager) view.findViewById(R.id.ebook_list_viewpager);
         mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
-        mViewPagerTab = (PagerTabStrip) view.findViewById(R.id.ebook_list_viewpager_title);
+        mViewPagerTab = (PagerTabStrip) view.findViewById(R.id.common_container_viewpager_title);
         mViewPagerTab.setDrawFullUnderline(false);
         mViewPagerTab.setTextColor(getResources().getColor(R.color.common_blue));
         mViewPagerTab.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
@@ -266,7 +265,7 @@ public abstract class _BaseResourceListFragment extends _BaseFragment {
         }
 
         @Override
-        public void handleRespone(VolleyError error) {
+        public void handleRespone(Throwable error) {
 
         }
 

@@ -38,7 +38,7 @@ public class _NewbookListFragment extends _BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_module_container, container, false);
 
-        mTxtMore = (TextView) view.findViewById(R.id.ebook_list_more);
+        mTxtMore = (TextView) view.findViewById(R.id.common_container_more);
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +48,7 @@ public class _NewbookListFragment extends _BaseFragment {
 
         if (!mIsHome) {
             mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list2_title);
-            mLayoutPages = (LinearLayout) view.findViewById(R.id.ebook_list_pages);
+            mLayoutPages = (LinearLayout) view.findViewById(R.id.common_container_pages);
             mLayoutTitle.setVisibility(View.INVISIBLE);
             mLayoutPages.setVisibility(View.GONE);
         }

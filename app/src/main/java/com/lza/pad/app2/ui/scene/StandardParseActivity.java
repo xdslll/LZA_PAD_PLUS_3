@@ -3,16 +3,25 @@ package com.lza.pad.app2.ui.scene;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.app2.ui.base.BaseParseActivity;
+import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
 import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadModuleType;
 import com.lza.pad.db.model.pad.PadSceneModule;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 标准版的场景解析类
@@ -33,61 +42,34 @@ public class StandardParseActivity extends BaseParseActivity {
     ArrayList<PadSceneModule> mHelpModule = new ArrayList<PadSceneModule>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //registerLaunchModuleReceiver();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregisterLaunchModuleReceiver();
+        stopDeviceUpdateService();
     }
 
     /**
-     * [P308]清空场景数据
+     * [P303]解析所有模块
      */
     @Override
-    protected void resetSceneData() {
-        log("[P308]获取场景下的所有模块");
-
-        clear(mGuideModule);
-        clear(mHomeModule);
-        clear(mSubpageModule);
-        clear(mContentModule);
-        clear(mHelpModule);
-    }
-
-    /**
-     * [P302]获取场景下的所有模块
-     */
-    @Override
-    protected void getSceneModules() {
-        log("[P302]获取场景下的所有模块");
-        String getSceneModulesUrl = UrlHelper.getSceneModules(mPadDeviceInfo, mPadScene);
-        send(getSceneModulesUrl, new GetSceneModulesListener());
-    }
-
-    private class GetSceneModulesListener extends SimpleRequestListener<PadSceneModule> {
-        @Override
-        public ResponseData<PadSceneModule> parseJson(String json) {
-            return JsonParseHelper.parseSceneModulesResponse(json);
+    protected void parseModuleList() {
+        log("[P303]解析所有模块");
+        for (int i = 0; i < mPadSceneModules.size(); i++) {
+            PadModuleType moduleType = pickFirst(mPadSceneModules.get(i).getModule_type_id());
+            if (moduleType == null) continue;
+            int type = parseInt(moduleType.getType());
+            if (type == PadModuleType.MODULE_TYPE_GUIDE) {
+                mGuideModule.add(mPadSceneModules.get(i));
+            } else if (type == PadModuleType.MODULE_TYPE_HOME) {
+                mHomeModule.add(mPadSceneModules.get(i));
+            } else if (type == PadModuleType.MODULE_TYPE_SUBPAGE) {
+                mSubpageModule.add(mPadSceneModules.get(i));
+            } else if (type == PadModuleType.MODULE_TYPE_CONTENT) {
+                mContentModule.add(mPadSceneModules.get(i));
+            } else if (type == PadModuleType.MODULE_TYPE_HELP) {
+                mHelpModule.add(mPadSceneModules.get(i));
+            }
         }
-
-        @Override
-        public void handleRespone(List<PadSceneModule> content) {
-            /**
-             * [P303]模块数量大于等于1
-             */
-            log("[P303]模块数量大于等于1");
-            mPadSceneModules = content;
-            parseModuleList();
-        }
-
-        @Override
-        public void handleResponseFailed() {
-            handleErrorProcess("提示", "模块获取失败，请重试！");
-        }
+        checkGuidePage();
     }
 
     /**
@@ -121,7 +103,7 @@ public class StandardParseActivity extends BaseParseActivity {
      *
      * @param hasGuide 是否包含引导页
      */
-    private void renderModule(boolean hasGuide) {
+    public void renderModule(boolean hasGuide) {
         log("[P306]渲染模块");
         dismissProgressDialog();
         PadSceneModule module;
@@ -133,6 +115,202 @@ public class StandardParseActivity extends BaseParseActivity {
             log("开始渲染首页");
         }
         launchModule(module);
+        startDeviceUpdateService();
+    }
+
+    /**
+     * 启动设备更新服务
+     */
+    ScheduledExecutorService mUpdateDeviceService;
+    public int UPDATE_DEVICE_DELAY = 10;
+    boolean mIsUpdating = false;
+
+    public void startDeviceUpdateService() {
+        UPDATE_DEVICE_DELAY = parseInt(mPadDeviceInfo.getUpdate_time(), UPDATE_DEVICE_DELAY);
+        log("启动更新程序，[" + UPDATE_DEVICE_DELAY + "]秒轮回一次");
+        mUpdateDeviceService = Executors.newSingleThreadScheduledExecutor();
+        mUpdateDeviceService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                //在主线程中处理
+                try {
+                    getMainHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!mIsUpdating) {
+                                mIsUpdating = true;
+                                log("开始检查更新状态");
+                                checkDeviceInfo();
+                            } else {
+                                log("正在更新");
+                            }
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, UPDATE_DEVICE_DELAY, UPDATE_DEVICE_DELAY, TimeUnit.SECONDS);
+    }
+
+    private void checkDeviceInfo() {
+        String macAddress = Utility.getMacAddress(mCtx);
+        String getDeviceInfoUrl = UrlHelper.getDeviceUrl(macAddress);
+        send(getDeviceInfoUrl, mDeviceListener);
+    }
+
+    private SimpleRequestListener<PadDeviceInfo> mDeviceListener = new SimpleRequestListener<PadDeviceInfo>() {
+        @Override
+        public void handleRespone(List<PadDeviceInfo> content) {
+            mPadDeviceInfo = content.get(0);
+            log("开始检查版本更新状况");
+            if (checkVersion()) {
+                log("需要更新版本，开始启动更新程序");
+                updateVersion();
+            } else {
+                log("不需要更新版本，开始检查界面更新");
+                if (checkUpdateUI()) {
+                    log("需要更新界面，开始更新");
+                    updateUI();
+                } else {
+                    updateDeviceInfo();
+                }
+            }
+        }
+
+        @Override
+        public void handleResponseFailed() {
+            log("获取设备信息失败");
+            mIsUpdating = false;
+        }
+
+        @Override
+        public ResponseData<PadDeviceInfo> parseJson(String json) {
+            return JsonParseHelper.parseDeviceInfoResponse(json);
+        }
+    };
+
+    /**
+     * 更新版本
+     *
+     * @return true - 需要更新，false - 不需要更新
+     */
+    private boolean checkVersion() {
+        String deviceVersion = mPadDeviceInfo.getVersion();
+        int currentVersion = Utility.getVersionCode(mCtx);
+        if (!isEmpty(deviceVersion)) {
+            log("当前版本号：" + currentVersion + ",新版本号：" + deviceVersion);
+            if (currentVersion < parseInt(deviceVersion)) {
+                mPadDeviceInfo.setVersion(String.valueOf(currentVersion));
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            mPadDeviceInfo.setVersion(String.valueOf(currentVersion));
+            return false;
+        }
+    }
+
+    /**
+     * 回到设备验证界面更新版本
+     */
+    private void updateVersion() {
+        EventBus.getDefault().post(ServiceMode.MODE_UPDATE_VERSION);
+        Intent intent = new Intent(mCtx, DeviceAuthorityActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * 更新标识
+     */
+    String mUpdateTag;
+    int mUpdateTime;
+
+    /**
+     * 检查是否需要更新当前界面
+     */
+    private boolean checkUpdateUI() {
+        mUpdateTag = mPadDeviceInfo.getUpdate_tag();
+        //获取更新时间
+        mUpdateTime = parseInt(mPadDeviceInfo.getUpdate_time()) * 1000;
+        if (mUpdateTag.equals(PadDeviceInfo.TAG_NEED_UDPATE)) {
+            log("需要更新");
+            //检查自动更新标识
+            String autoUpdateTag = mPadDeviceInfo.getAuto_update();
+            if (autoUpdateTag.equals(PadDeviceInfo.TAG_AUTO_UPDATE)) {
+                return true;
+            } else {
+                //不允许自动更新
+                log("不允许自动更新，界面将不会更新");
+                return false;
+            }
+        } else if (mUpdateTag.equals(PadDeviceInfo.TAG_HAVE_UDPATE)) {
+            log("已经更新");
+            return false;
+        } else {
+            log("未知状态");
+            return false;
+        }
+    }
+
+    /**
+     * 开始更新UI
+     */
+    public void updateUI() {
+        mPadDeviceInfo.setUpdate_tag(PadDeviceInfo.TAG_HAVE_UDPATE);
+        mPadDeviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
+        mPadDeviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
+        //允许自动更新
+        requestUpdateDeviceInfo(mPadDeviceInfo, new SimpleRequestListener() {
+            @Override
+            public boolean handleResponseStatusOK(String json) {
+                log("设备状态更新成功");
+                log("开始更新程序");
+                EventBus.getDefault().post(ServiceMode.MODE_SWITCH_SCENE);
+                gotoParseActivity();
+                return true;
+            }
+
+            @Override
+            public void handleResponseFailed() {
+                log("设备状态更新失败");
+                mIsUpdating = false;
+            }
+        });
+    }
+
+    /**
+     * 更新设备信息
+     */
+    public void updateDeviceInfo() {
+        log("开始更新设备信息");
+        mPadDeviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
+        mPadDeviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
+        //允许自动更新
+        requestUpdateDeviceInfo(mPadDeviceInfo, new SimpleRequestListener() {
+            @Override
+            public boolean handleResponseStatusOK(String json) {
+                log("设备状态更新成功");
+                mIsUpdating = false;
+                return true;
+            }
+
+            @Override
+            public void handleResponseFailed() {
+                log("设备状态更新失败");
+                mIsUpdating = false;
+            }
+        });
+    }
+
+    public void stopDeviceUpdateService() {
+        try {
+            log("关闭设备巡查服务");
+            mUpdateDeviceService.shutdownNow();
+        } catch (Exception ex) {
+
+        }
     }
 
     @Override
@@ -147,12 +325,30 @@ public class StandardParseActivity extends BaseParseActivity {
         arg.putParcelable(KEY_PAD_SCENE, mPadScene);
         arg.putParcelable(KEY_PAD_AUTHORITY, mPadAuthority);
         arg.putParcelable(KEY_PAD_MODULE_INFO, module);
-        arg.putParcelableArrayList(KEY_PAD_MODULE_INFOS, mSubpageModule);
+
+        arg.putParcelableArrayList(KEY_PAD_MODULE_GUIDE, mGuideModule);
+        arg.putParcelableArrayList(KEY_PAD_MODULE_HOME, mHomeModule);
+        arg.putParcelableArrayList(KEY_PAD_MODULE_SUBPAGE, mSubpageModule);
+        arg.putParcelableArrayList(KEY_PAD_MODULE_CONTENT, mContentModule);
+        arg.putParcelableArrayList(KEY_PAD_MODULE_HELP, mHelpModule);
         intent.putExtras(arg);
 
         startActivity(intent);
+        //finish();
+    }
 
-        getRunningActivities();
+    /**
+     * [P308]清空场景数据
+     */
+    @Override
+    protected void resetSceneData() {
+        log("[P308]获取场景下的所有模块");
+
+        clear(mGuideModule);
+        clear(mHomeModule);
+        clear(mSubpageModule);
+        clear(mContentModule);
+        clear(mHelpModule);
     }
 
     @Override
@@ -191,58 +387,4 @@ public class StandardParseActivity extends BaseParseActivity {
             }
         }
     }
-
-    /**
-     * [P307]解析所有模块
-     */
-    private void parseModuleList() {
-        log("[P307]解析所有模块");
-        for (int i = 0; i < mPadSceneModules.size(); i++) {
-            PadModuleType moduleType = pickFirst(mPadSceneModules.get(i).getModule_type_id());
-            if (moduleType == null) continue;
-            int type = parseInt(moduleType.getType());
-            if (type == PadModuleType.MODULE_TYPE_GUIDE) {
-                mGuideModule.add(mPadSceneModules.get(i));
-            } else if (type == PadModuleType.MODULE_TYPE_HOME) {
-                mHomeModule.add(mPadSceneModules.get(i));
-            } else if (type == PadModuleType.MODULE_TYPE_SUBPAGE) {
-                mSubpageModule.add(mPadSceneModules.get(i));
-            } else if (type == PadModuleType.MODULE_TYPE_CONTENT) {
-                mContentModule.add(mPadSceneModules.get(i));
-            } else if (type == PadModuleType.MODULE_TYPE_HELP) {
-                mHelpModule.add(mPadSceneModules.get(i));
-            }
-        }
-        checkGuidePage();
-    }
-
-    /*LaunchModuleReceiver mLauncheModuleReceiver = new LaunchModuleReceiver();
-
-    private void registerLaunchModuleReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_START_HOME_MODULE);
-        registerReceiver(mLauncheModuleReceiver, filter);
-    }
-
-    private void unregisterLaunchModuleReceiver() {
-        try {
-            unregisterReceiver(mLauncheModuleReceiver);
-        } catch (Exception ex) {
-
-        }
-    }
-
-    *//**
-     * 启动指定类型模块
-     * ACTION_START_HOME_MODULE - 启动首页
-     *//*
-    private class LaunchModuleReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_START_HOME_MODULE)) {
-                launchModuleByType(PadModuleType.MODULE_TYPE_HOME);
-            }
-        }
-    }*/
 }

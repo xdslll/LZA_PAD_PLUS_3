@@ -10,7 +10,7 @@ import com.lza.pad.db.model.pad.PadScene;
 import com.lza.pad.db.model.pad._old.PadLayoutModule;
 import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.support.utils.Consts;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,9 +92,10 @@ public class UrlHelper implements Consts {
 
     public static final String PAR_PRE_MODULE = "pre_module";
 
+    public static final String PAR_DEVICE_ID = "device_id";
 
     public static String generateUrl(Map<String, String> par) {
-        String param = UniversalUtility.encodeUrl(par);
+        String param = Utility.encodeUrl(par);
         StringBuilder builder = new StringBuilder();
         builder.append(DEFAULT_URL).append(param);
         return builder.toString();
@@ -266,6 +267,7 @@ public class UrlHelper implements Consts {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_SCENE_SWITCHING);
         par.put(PAR_PRE_SCENE, scene.getId());
+        par.put(PAR_SCHOOL_BH, deviceInfo.getSchool_bh());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return generateUrl(par);
     }
@@ -290,6 +292,16 @@ public class UrlHelper implements Consts {
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_MODULE_SWITCHING);
         par.put(PAR_PRE_MODULE, module.getId());
+        par.put(PAR_SCHOOL_BH, deviceInfo.getSchool_bh());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getDeviceParam(PadDeviceInfo deviceInfo) {
+
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_DEVICE_PARAM);
+        par.put(PAR_DEVICE_ID, deviceInfo.getBh());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
         return generateUrl(par);
     }

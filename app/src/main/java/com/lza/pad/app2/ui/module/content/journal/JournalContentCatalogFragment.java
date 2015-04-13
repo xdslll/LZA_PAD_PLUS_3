@@ -5,7 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -17,6 +19,7 @@ import com.lza.pad.db.model.pad.PadJournalArticle;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.support.utils.ToastUtils;
 
 import java.util.List;
 
@@ -29,11 +32,23 @@ import java.util.List;
 public class JournalContentCatalogFragment extends BaseImageFragment {
 
     ListView mListJournal;
+    ViewStub mViewStubLoading;
+    LinearLayout mLayoutLoading;
+    TextView mTxtLoading;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.journal_catalog, container, false);
         mListJournal = (ListView) view.findViewById(R.id.journal_catalog_list);
+
+        mViewStubLoading = (ViewStub) view.findViewById(R.id.journal_content_viewstub_loading);
+        if (mLayoutLoading == null) {
+            mViewStubLoading.inflate();
+            mLayoutLoading = (LinearLayout) view.findViewById(R.id.common_loading_layout);
+            mTxtLoading = (TextView) view.findViewById(R.id.common_loading_layout_text);
+        } else {
+            mLayoutLoading.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -85,11 +100,12 @@ public class JournalContentCatalogFragment extends BaseImageFragment {
                 }
             };
             mListJournal.setAdapter(adapter);
+            mLayoutLoading.setVisibility(View.GONE);
         }
 
         @Override
         public void handleResponseFailed() {
-
+            ToastUtils.showLong(mActivity, "获取数据失败！");
         }
     }
 }

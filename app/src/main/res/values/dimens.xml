@@ -125,8 +125,15 @@
     <dimen name="huge_text_size">50sp</dimen>
     <dimen name="large_text_size">36sp</dimen>
     <dimen name="medium_text_size">24sp</dimen>
-    <dimen name="small_text_size">24sp</dimen>
-    <dimen name="very_small_text_size">18sp</dimen>
+    <dimen name="small_text_size">18sp</dimen>
+    <dimen name="very_small_text_size">12sp</dimen>
+
+    <!-- 通用尺寸 -->
+    <dimen name="huge_width">50dp</dimen>
+    <dimen name="large_width">36dp</dimen>
+    <dimen name="medium_width">24dp</dimen>
+    <dimen name="small_width">18dp</dimen>
+    <dimen name="very_small_widthe">12dp</dimen>
 
     <!-- padding -->
     <dimen name="large_padding">15dp</dimen>
@@ -168,4 +175,7 @@
     <!-- SearchFragment -->
     <dimen name="search_list_search_text_size">16sp</dimen>
     <dimen name="search_list_search_text_padding">10dp</dimen>
+
+    <!-- common_grid.xml -->
+    <dimen name="common_grid_page_text_size">12sp</dimen>
 </resources>

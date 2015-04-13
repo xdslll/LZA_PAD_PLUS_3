@@ -13,7 +13,12 @@ public class PadScene implements Parcelable {
 
     public static final String IS_ACTIVATE = "1";
 
-    public static final String IS_NOT_ACTIVATE = "";
+    public static final String IS_NOT_ACTIVATE = "0";
+
+    public static final String IS_PRIVACY = "1";
+
+    public static final String IS_NOT_PRIVACY = "0";
+
 
     String id;
 

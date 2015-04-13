@@ -116,10 +116,16 @@ public interface Consts {
      */
     public static final String CONTROL_GET_MODULE_SWITCHING = "get_module_switching";
 
+    /**
+     * 获取设备参数
+     */
+    public static final String CONTROL_GET_DEVICE_PARAM = "get_device_param";
 
 
-
-
+    public static final String KEY_PAD_CURRENT_MODULE_TYPE = "key_pad_current_module_type";
+    public static final String KEY_PAD_NEXT_MODULE_TYPE = "key_pad_next_module_type";
+    public static final String KEY_PAD_NEXT_SCENE = "key_pad_next_scene";
+    public static final String KEY_PAD_SCENE_SWITCHING = "key_pad_scene_switching";
     public static final String KEY_PAD_MODULE_GUIDE = "key_pad_module_guide";
     public static final String KEY_PAD_MODULE_HOME = "key_pad_module_home";
     public static final String KEY_PAD_MODULE_SUBPAGE = "key_pad_module_subpage";
@@ -159,6 +165,7 @@ public interface Consts {
     public static final String ACTION_SCENE_SWITCHING_RECEIVER = "LZA_PAD_SCENE_SWITCHING_RECEIVER";
     public static final String ACTION_MODULE_SWITCHING_SERVICE = "LZA_PAD_MODULE_SWITCHING_SERVICE";
     public static final String ACTION_MODULE_SWITCHING_RECEIVER = "LZA_PAD_MODULE_SWITCHING_MODULE";
+    public static final String ACTION_WIDGET_SWITCHING_SERVICE = "LZA_PAD_WIDGET_SWITCHING_SERVICE";
     public static final String ACTION_START_PARSE_RECEIVER = "LZA_PAD_START_PARSE_RECEIVER";
     public static final String ACTION_START_PARSE_ERROR_RECEIVER = "LZA_PAD_START_PARSE_ERROR_RECEIVER";
 

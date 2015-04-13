@@ -29,7 +29,7 @@ import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +123,7 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
 
         if (mPadControlInfo != null) {
             //判断是否启动幻灯片模式
-            String ifSlideShow = UniversalUtility.wrap(mPadControlInfo.getIf_show_slide(), "0");
+            String ifSlideShow = Utility.wrap(mPadControlInfo.getIf_show_slide(), "0");
             if (ifSlideShow.equals(PadModuleControl.BOOLEAN_SHOW_SLIDE)) {
                 mIfSlideShow = true;
             } else if (ifSlideShow.equals(PadModuleControl.BOOLEAN_NOT_SHOW_SLIDE)) {
@@ -131,9 +131,9 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
             }
             //获取幻灯片播放的参数
             //多久没有用户交互时开始播放
-            mSlideShowTime = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_time(), "60"));
+            mSlideShowTime = Integer.valueOf(Utility.wrap(mPadControlInfo.getSlide_show_time(), "60"));
             //多久开始翻页
-            mSlideShowPeriod = Integer.valueOf(UniversalUtility.wrap(mPadControlInfo.getSlide_show_period(), "5"));
+            mSlideShowPeriod = Integer.valueOf(Utility.wrap(mPadControlInfo.getSlide_show_period(), "5"));
         }
     }
 
@@ -141,8 +141,8 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_module_container, container, false);
 
-        mTxtTitle = (TextView) view.findViewById(R.id.ebook_list_title_text);
-        mTxtMore = (TextView) view.findViewById(R.id.ebook_list_more);
+        mTxtTitle = (TextView) view.findViewById(R.id.common_container_title_text);
+        mTxtMore = (TextView) view.findViewById(R.id.common_container_more);
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,7 +153,7 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
         mTxtMore.setText(getMoreText());
 
         mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list_title);
-        mRadPages = (RadioGroup) view.findViewById(R.id.ebook_list_pages);
+        mRadPages = (RadioGroup) view.findViewById(R.id.common_container_pages);
         //如果不在首页显示，则隐藏标题和翻页按钮
         if (!mIsHome) {
             mLayoutTitle.setVisibility(View.GONE);
@@ -161,7 +161,7 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
             mTitleHeight = 0;
             mPagesHeight = 0;
         }
-        mImgBottom = (ImageView) view.findViewById(R.id.ebook_list_bottom_img);
+        mImgBottom = (ImageView) view.findViewById(R.id.common_container_bottom_bg);
         //计算底部图片高度
         //calcBottom();
         //计算图书区域的高度
@@ -334,7 +334,7 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
      */
     protected int getGridNumColumns() {
         if (mPadControlInfo != null) {
-            return UniversalUtility.safeIntParse(mPadControlInfo.getControl_data_each(), DEFAULT_EVERY_PAGE_SIZE);
+            return Utility.safeIntParse(mPadControlInfo.getControl_data_each(), DEFAULT_EVERY_PAGE_SIZE);
         }
         return DEFAULT_EVERY_PAGE_SIZE;
     }
@@ -345,7 +345,7 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
      */
     protected int getGridDataSize() {
         if (mPadControlInfo != null) {
-            return UniversalUtility.safeIntParse(mPadControlInfo.getControl_data_size(), mDataSize);
+            return Utility.safeIntParse(mPadControlInfo.getControl_data_size(), mDataSize);
         }
         return mDataSize;
     }
@@ -515,7 +515,7 @@ public abstract class BaseResourceListFragment extends _BaseFragment {
             mService.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
-                    if (!UniversalUtility.isTopActivity(mActivity)) {
+                    if (!Utility.isTopActivity(mActivity)) {
                         log("当前Activity不可见，不能进行幻灯片浏览！");
                         return;
                     }

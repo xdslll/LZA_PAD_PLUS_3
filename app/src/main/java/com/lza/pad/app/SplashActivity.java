@@ -11,29 +11,28 @@ import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.app.home.HomeActivity;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.db.model.pad.PadDeviceInfo;
-import com.lza.pad.wifi.admin._WifiAdmin;
-import com.lza.pad.wifi.admin._WifiApAdmin;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
-import com.lza.pad.helper.event.model.ResponseEventInfo;
-import com.lza.pad.helper.event.state.ResponseEventTag;
-import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.helper.event.model.ResponseEventInfo;
+import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.file.FileTools;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.ToastUtils;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
+import com.lza.pad.wifi.admin._WifiAdmin;
+import com.lza.pad.wifi.admin._WifiApAdmin;
 
 import java.io.File;
 import java.util.List;
@@ -182,7 +181,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
      */
     private void getDeviceInfo() {
         updateProgressDialog("正在验证设备信息...");
-        String macAddress = UniversalUtility.getMacAddress(this);
+        String macAddress = Utility.getMacAddress(this);
         AppLogger.e("mac地址：" + macAddress);
 
         String url = UrlHelper.getDeviceUrl(macAddress);
@@ -240,7 +239,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
         StringBuilder sb = new StringBuilder();
         sb.append("----------- 设备清单 -----------\n");
         sb.append(deviceInfo.toString());
-        UniversalUtility.showDialog(mCtx, "提示", sb.toString(), new DialogInterface.OnClickListener() {
+        Utility.showDialog(mCtx, "提示", sb.toString(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -271,7 +270,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
             final ResponseData<PadDeviceInfo> data = JsonParseHelper.parseDeviceInfoResponse(json);
             if (data == null) {
                 dismissProgressDialog();
-                UniversalUtility.showDialog(mCtx, "提示", "服务器异常，点击确定重试", new DialogInterface.OnClickListener() {
+                Utility.showDialog(mCtx, "提示", "服务器异常，点击确定重试", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mMainHandler.sendEmptyMessageDelayed(REQUEST_INIT, 2000);
@@ -318,7 +317,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
                     //requestUpdateDeviceInfo(deviceInfo, "state", PadDeviceInfo.TAG_STATE_ON);
                 }
             } else if (state.equals(ResponseData.RESPONSE_STATE_NO_LAYOUT)) {
-                UniversalUtility.showDialog(this, "提示", message,
+                Utility.showDialog(this, "提示", message,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -328,7 +327,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
                             }
                         });
             } else if (state.equals(ResponseData.RESPONSE_STATE_NO_MAC_ADDRESS)) {
-                UniversalUtility.showDialog(this, "提示", message,
+                Utility.showDialog(this, "提示", message,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -339,7 +338,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
                         });
             }
         } else {
-            UniversalUtility.showDialog(mCtx, "提示", "请求设备信息失败！请重试！");
+            Utility.showDialog(mCtx, "提示", "请求设备信息失败！请重试！");
         }
     }
 
@@ -353,7 +352,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
         deviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
         deviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
         //读取设备的版本号，比对现有的版本号
-        int currentVersionCode = UniversalUtility.getVersionCode(mCtx);
+        int currentVersionCode = Utility.getVersionCode(mCtx);
         String newVersionCode = deviceInfo.getVersion();
         log("当前版本号：" + currentVersionCode + ",新版本号：" + newVersionCode);
         if (isEmpty(newVersionCode)) {
@@ -425,7 +424,7 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
         }
 
         @Override
-        public void handleRespone(VolleyError error) {
+        public void handleRespone(Throwable error) {
             log("下载失败");
             gotoHomeActivity(deviceInfo);
         }

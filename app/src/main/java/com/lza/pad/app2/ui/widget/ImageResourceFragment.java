@@ -17,9 +17,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
+import com.lza.pad.app2.event.base.OnPageChangeListener;
 import com.lza.pad.app2.ui.widget.base.BaseGridFragment;
 import com.lza.pad.app2.ui.widget.base.BaseImageFragment;
 import com.lza.pad.db.model.ResponseData;
@@ -47,11 +49,12 @@ public class ImageResourceFragment extends BaseImageFragment {
     protected ViewPager mViewPager;
     protected PagerTabStrip mViewPagerTab;
     protected ImageView mImgBottom;
+    protected LinearLayout mLayoutProgress;
 
     protected LayoutInflater mInflater;
     protected List<Integer> mRadPageIds = new ArrayList<Integer>();
 
-    protected int mPageSize, mEachPageSize, mTotalPage, mCurrentPage;
+    protected int mPageSize, mEachPageSize, mTotalPage, mCurrentPage = 0, mActualDataSize;
 
     protected List<PadResource> mPadResources;
 
@@ -75,46 +78,84 @@ public class ImageResourceFragment extends BaseImageFragment {
     protected int mBookAreaWidth = 0;
     protected int mBookAreaHeight = 0;
 
+    /**
+     * 是否为系统自动切换
+     * 如果为系统自动切换则会跳过重置场景、模块切换服务
+     *
+     */
+    protected boolean mIsAutoSwitching = false;
+
+    /**
+     * 用户是否触摸了View，如果触摸了View，则会跳过一轮自动切换和自动更新
+     */
+    protected boolean mIsTouchView = false;
+
     private EbookListPagerAdapter mAdapter;
+
+    /**
+     * 翻页控件按钮宽度和高度
+     */
+    private int mRaidoButtonWidth = 0, mRadioButtonHeight = 0;
+
+    /**
+     * 是否请求过数据
+     */
+    protected boolean mHasRequest = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_module_container, container, false);
 
-        mTxtTitle = (TextView) view.findViewById(R.id.ebook_list_title_text);
-        mTxtMore = (TextView) view.findViewById(R.id.ebook_list_more);
+        mTxtTitle = (TextView) view.findViewById(R.id.common_container_title_text);
+        mTxtTitle.setText(mPadModuleWidget.getLabel());
+        mTxtMore = (TextView) view.findViewById(R.id.common_container_more);
+        mTxtMore.setText("更多");
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ToastUtils.showLong(mActivity, "点击更多按钮");
             }
         });
-        mTxtTitle.setText(mPadModuleWidget.getLabel());
 
         mLayoutTitle = (LinearLayout) view.findViewById(R.id.ebook_list_title);
-        mRadPages = (RadioGroup) view.findViewById(R.id.ebook_list_pages);
-        mImgBottom = (ImageView) view.findViewById(R.id.ebook_list_bottom_img);
+        mRadPages = (RadioGroup) view.findViewById(R.id.common_container_pages);
+        mImgBottom = (ImageView) view.findViewById(R.id.common_container_bottom_bg);
+        mLayoutProgress = (LinearLayout) view.findViewById(R.id.common_container_progressbar);
 
         mViewPager = (ViewPager) view.findViewById(R.id.ebook_list_viewpager);
-
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+        mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
+                log("页面翻页前,mIsAutoSwitching=" + mIsAutoSwitching + ",mIsTouchView=" + mIsTouchView);
+                /**
+                 * 如果不是手动操作，将会触发重置场景、模块的切换事件
+                 */
+                if (!mIsAutoSwitching) {
+                    super.onPageSelected(position);
+                }
+                mIsAutoSwitching = false;
                 if (mRadPages.getVisibility() == View.VISIBLE) {
                     int checkId = mRadPageIds.get(position);
                     mRadPages.check(checkId);
                 }
+                log("页面翻页后,mIsAutoSwitching=" + mIsAutoSwitching + ",mIsTouchView=" + mIsTouchView);
                 log("[" + mPadModuleWidget.getLabel() + "]当前页：" + position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
+                super.onPageScrollStateChanged(state);
+                log("页面状态变更,state=" + state);
+                if (state == ViewPager.SCROLL_STATE_SETTLING) {
+                    log("页面状态变更前,mIsAutoSwitching=" + mIsAutoSwitching + ",mIsTouchView=" + mIsTouchView);
+                    if (!mIsAutoSwitching) {
+                        mIsTouchView = true;
+                    } else {
+                        mIsTouchView = false;
+                    }
+                    log("页面状态变更后,mIsAutoSwitching=" + mIsAutoSwitching + ",mIsTouchView=" + mIsTouchView);
+                }
             }
         });
 
@@ -127,9 +168,30 @@ public class ImageResourceFragment extends BaseImageFragment {
         mPageSize = parseInt(mPadWidgetData.getData_size());
         mEachPageSize = parseInt(mPadWidgetData.getData_each());
         mTotalPage = (int) Math.ceil((float) mPageSize / mEachPageSize);
-        String url = UrlHelper.getResourcesUrl(mPadDeviceInfo,
-                mPadWidgetData.getType(), mPageSize, mTotalPage);
-        send(url, new PadResourceListener());
+        requestViewData();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mHasRequest) {
+            stopWidgetSwitchingService();
+            stopWidgetUpdateService();
+            startWidgetSwitchingService();
+            startWidgetUpdateService();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopWidgetSwitchingService();
+        stopWidgetUpdateService();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     private class PadResourceListener extends SimpleRequestListener<PadResource> {
@@ -139,19 +201,45 @@ public class ImageResourceFragment extends BaseImageFragment {
         }
 
         @Override
+        public boolean handlerResponse(ResponseData<PadResource> data) {
+            mActualDataSize = parseInt(data.getTotal_nums());
+            return super.handlerResponse(data);
+        }
+
+        @Override
         public void handleRespone(List<PadResource> content) {
             mPadResources = content;
-            generateTitleView();
-            generateRaidoButton();
-            //计算底部图片高度
-            calcBottom();
-            //计算图书区域的高度
-            calcBook();
-            //先计算ViewPager的宽度和高度后再填充Adapter
-            mViewPager.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
-            mAdapter = new EbookListPagerAdapter(getChildFragmentManager());
-            mViewPager.setAdapter(mAdapter);
-            //startSlideShowService();
+            try {
+                generateTitleView();
+                generateRaidoButton();
+                //计算底部图片高度
+                calcBottom();
+                //计算图书区域的高度
+                calcBook();
+                //先计算ViewPager的宽度和高度后再填充Adapter
+                mViewPager.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mBookAreaHeight));
+                mAdapter = new EbookListPagerAdapter(getChildFragmentManager());
+                mViewPager.setAdapter(mAdapter);
+                mLayoutProgress.setVisibility(View.GONE);
+                //启动组件切换服务
+                startWidgetSwitchingService();
+                //启动组件更新服务
+                startWidgetUpdateService();
+                //将发送请求标识置为true
+                mHasRequest = true;
+            } catch (Exception ex) {
+
+            }
+        }
+
+        @Override
+        public void handleResponseFailed() {
+            getMainHandler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    requestViewData();
+                }
+            }, RETRY_DELAY);
         }
     }
 
@@ -175,15 +263,21 @@ public class ImageResourceFragment extends BaseImageFragment {
      */
     private void generateRaidoButton() {
         //设定并计算翻页控件高度
-        int buttonW = getResources().getDimensionPixelSize(R.dimen.width30);
-        int buttonH = getResources().getDimensionPixelSize(R.dimen.width8);
+        if (mRaidoButtonWidth == 0 || mRadioButtonHeight == 0) {
+            if (mActivity == null || isDetached()) {
+                return;
+            } else {
+                mRaidoButtonWidth = getResources().getDimensionPixelSize(R.dimen.width30);
+                mRadioButtonHeight = getResources().getDimensionPixelSize(R.dimen.width8);
+            }
+        }
         int paddingVer = RuntimeUtility.dip2px(mActivity, 8);
         mRadPages.setPadding(0, paddingVer, 0, paddingVer);
-        mPageHeight = buttonH + (paddingVer * 2);
+        mPageHeight = mRadioButtonHeight + (paddingVer * 2);
         for (int i = 0; i < mTotalPage; i++) {
             //添加翻页按钮
             RadioButton button = new RadioButton(mActivity);
-            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(buttonW, buttonH);
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(mRaidoButtonWidth, mRadioButtonHeight);
             params.setMargins(paddingVer, 0, paddingVer, 0);
             button.setLayoutParams(params);
             button.setBackgroundResource(R.drawable.page_selector);
@@ -258,13 +352,27 @@ public class ImageResourceFragment extends BaseImageFragment {
         mCurrentPage = position;
         //获取数据源
         int start = mCurrentPage * mEachPageSize;
-        int end = start + mEachPageSize;
-        List<PadResource> _data = mPadResources.subList(start, end);
-        ArrayList<PadResource> data = new ArrayList<PadResource>(_data);
-        //生成Fragment，填充ViewPager
-        Fragment fragment = new BaseGridFragment();
-        fragment.setArguments(createArgument(data));
-        return fragment;
+        int end = 0;
+        if (mActualDataSize < mEachPageSize) {
+            end = start + mActualDataSize;
+        } else {
+            end = start + mEachPageSize;
+        }
+        if (start >= end) return new Fragment();
+
+        try {
+            log("[" + mPadModuleWidget.getLabel() + "]组件：start=" + start +
+                    ",end=" + end + ",mCurrentPage=" + mCurrentPage +
+                    ",mEachPageSize=" + mEachPageSize);
+            List<PadResource> _data = mPadResources.subList(start, end);
+            ArrayList<PadResource> data = new ArrayList<PadResource>(_data);
+            //生成Fragment，填充ViewPager
+            Fragment fragment = new BaseGridFragment();
+            fragment.setArguments(createArgument(data));
+            return fragment;
+        } catch (Exception ex) {
+            return new Fragment();
+        }
     }
 
     private Bundle createArgument(ArrayList<PadResource> data) {
@@ -279,5 +387,81 @@ public class ImageResourceFragment extends BaseImageFragment {
         arg.putInt(KEY_DATA_SIZE, mPageSize);
         arg.putParcelableArrayList(KEY_PAD_RESOURCE_INFOS, data);
         return arg;
+    }
+
+    /**
+     * 定义组件切换时的事件
+     */
+    @Override
+    protected void onWidgetSwitching() {
+        if (mIsTouchView) {
+            log("用户触摸了View，跳过一轮切换");
+            mIsTouchView = false;
+        } else {
+            mIsAutoSwitching = true;
+            switchWidget();
+        }
+    }
+
+    private void switchWidget() {
+        log("切换组件服务启动");
+        if (mViewPager == null || mViewPager.getChildCount() == 0) return;
+        int count = mViewPager.getChildCount();
+        int currentItem = mViewPager.getCurrentItem();
+        log("切换前，第" + currentItem + "页");
+        currentItem++;
+        if (currentItem > count) {
+            currentItem = 0;
+        }
+        log("切换后，第" + currentItem + "页");
+        final int index = new Integer(currentItem);
+        getMainHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                mViewPager.setCurrentItem(index, true);
+            }
+        });
+    }
+
+    @Override
+    protected void onWidgetUpdate() {
+        if (mIsTouchView) {
+            log("用户触摸了View，跳过一轮切换");
+            mIsTouchView = false;
+        } else {
+            mIsAutoSwitching = true;
+            updateWidget();
+        }
+    }
+
+    private void updateWidget() {
+        log("更新组件服务启动");
+        getMainHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                resetView();
+                stopWidgetSwitchingService();
+                stopWidgetUpdateService();
+                requestViewData();
+            }
+        });
+    }
+
+    private void resetView() {
+        mLayoutProgress.setVisibility(View.VISIBLE);
+        if (mRadPages != null) {
+            mRadPages.removeAllViews();
+        }
+        if (mViewPager != null) {
+            mViewPager.removeAllViews();
+        }
+    }
+
+    private void requestViewData() {
+        mHasRequest = false;
+        String url = UrlHelper.getResourcesUrl(mPadDeviceInfo,
+                mPadWidgetData.getType(), mPageSize, mCurrentPage);
+        log("[" + mPadModuleWidget.getLabel() + "]组件请求数据：" + url);
+        send(url, new PadResourceListener());
     }
 }

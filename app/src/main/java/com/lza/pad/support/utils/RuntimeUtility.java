@@ -301,8 +301,8 @@ public final class RuntimeUtility implements Consts {
         while ((len = bufferedInputStream.read(buffer)) != -1) {
             bufferedOutputStream.write(buffer, 0, len);
         }
-        UniversalUtility.closeSilently(bufferedInputStream);
-        UniversalUtility.closeSilently(bufferedOutputStream);
+        Utility.closeSilently(bufferedInputStream);
+        Utility.closeSilently(bufferedOutputStream);
     }
 
     public static Rect locateView(View v) {

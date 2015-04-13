@@ -9,45 +9,69 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="电子书推荐"
+            android:text="正在加载..."
             android:textColor="@color/common_gray"
             android:textSize="@dimen/ebook_list_module_title"
             android:layout_weight="1.0"
             android:gravity="bottom"
             android:visibility="gone"
-            android:id="@+id/ebook_list_title_text"
+            android:id="@+id/common_container_title_text"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="更多"
+            android:text="正在加载..."
             android:textColor="@color/common_gray"
             android:textSize="@dimen/ebook_list_module_more"
             android:background="@drawable/common_bg"
             android:gravity="bottom"
             android:visibility="gone"
-            android:id="@+id/ebook_list_more"
+            android:id="@+id/common_container_more"
             />
     </LinearLayout>
-    <android.support.v4.view.ViewPager
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.0"
-        android:id="@+id/ebook_list_viewpager">
-        <android.support.v4.view.PagerTabStrip
-            android:layout_width="wrap_content"
+        android:layout_weight="1.0">
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ebook_list_viewpager">
+            <android.support.v4.view.PagerTabStrip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                android:id="@+id/common_container_viewpager_title"
+                />
+        </android.support.v4.view.ViewPager>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:visibility="gone"
-            android:id="@+id/ebook_list_viewpager_title"
-            />
-    </android.support.v4.view.ViewPager>
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/common_container_progressbar">
+            <ProgressBar
+                android:layout_width="@dimen/large_width"
+                android:layout_height="@dimen/large_width"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="正在加载..."
+                android:textSize="@dimen/medium_text_size"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:id="@+id/ebook_list_pages"
+        android:id="@+id/common_container_pages"
         />
     <ImageView
         android:layout_width="match_parent"
@@ -56,6 +80,6 @@
         android:scaleType="fitXY"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:id="@+id/ebook_list_bottom_img"
+        android:id="@+id/common_container_bottom_bg"
         />
 </LinearLayout>

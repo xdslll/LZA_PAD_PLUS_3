@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public abstract class BaseIntentService extends IntentService implements Consts 
     }
 
     protected int parseInt(String value) {
-        return UniversalUtility.safeIntParse(value, 0);
+        return Utility.safeIntParse(value, 0);
     }
 
     protected boolean isEmpty(String str) {

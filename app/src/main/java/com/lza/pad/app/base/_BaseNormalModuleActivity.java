@@ -11,17 +11,16 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad._old.PadLayoutModule;
 import com.lza.pad.db.model.pad._old.PadModuleControl;
-import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.debug.AppLogger;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.util.List;
 
@@ -140,7 +139,7 @@ public abstract class _BaseNormalModuleActivity extends _BaseActivity {
                     .append(controlName.substring(0, 1).toUpperCase())
                     .append(controlName.substring(1, controlName.length()))
                     .append("Fragment");
-            if (UniversalUtility.safeIntParse(controlIndex, 0) > 0) {
+            if (Utility.safeIntParse(controlIndex, 0) > 0) {
                 buffer.append(controlIndex);
             }
 
@@ -149,7 +148,7 @@ public abstract class _BaseNormalModuleActivity extends _BaseActivity {
             try {
                 //计算当前控件的宽度和高度
                 int fragmentWidth = width;
-                int controlHeight = UniversalUtility.safeIntParse(control.getControl_height(), 1);
+                int controlHeight = Utility.safeIntParse(control.getControl_height(), 1);
                 int fragmentHeight = (int) ((float) height / totalHeight * controlHeight);
                 Class clazz = Class.forName(buffer.toString());
                 Fragment frg = (Fragment) clazz.newInstance();
@@ -203,7 +202,7 @@ public abstract class _BaseNormalModuleActivity extends _BaseActivity {
         }
 
         @Override
-        public void handleRespone(VolleyError error) {
+        public void handleRespone(Throwable error) {
             dismissProgressDialog();
         }
     }

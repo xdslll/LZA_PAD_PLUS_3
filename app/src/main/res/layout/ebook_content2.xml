@@ -68,6 +68,7 @@
                 android:textSize="@dimen/ebook_content_title_text_size"
                 android:textStyle="bold"
                 android:minWidth="600dp"
+                android:text="@string/loading"
                 android:id="@+id/ebook_content_title"
                 />
             <TextView
@@ -77,6 +78,7 @@
                 android:textSize="@dimen/ebook_content_value_size"
                 android:textStyle="bold"
                 android:layout_marginTop="5dp"
+                android:text="@string/loading"
                 android:id="@+id/ebook_content_author"
                 />
             <LinearLayout
@@ -99,6 +101,7 @@
                     android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
+                    android:text="@string/loading"
                     android:id="@+id/ebook_content_press"
                     />
             </LinearLayout>
@@ -122,6 +125,7 @@
                     android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
+                    android:text="@string/loading"
                     android:id="@+id/ebook_content_pubdate"
                     />
             </LinearLayout>
@@ -145,6 +149,7 @@
                     android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
+                    android:text="@string/loading"
                     android:id="@+id/ebook_content_total_pages"
                     />
             </LinearLayout>
@@ -168,6 +173,7 @@
                     android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
+                    android:text="@string/loading"
                     android:id="@+id/ebook_content_binding"
                     />
             </LinearLayout>
@@ -191,6 +197,7 @@
                     android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
+                    android:text="@string/loading"
                     android:id="@+id/ebook_content_price"
                     />
             </LinearLayout>
@@ -214,6 +221,7 @@
                     android:textSize="@dimen/ebook_content_value_size"
                     android:singleLine="true"
                     android:layout_weight="1"
+                    android:text="@string/loading"
                     android:id="@+id/ebook_content_isbn"
                     />
             </LinearLayout>
@@ -224,14 +232,14 @@
             android:orientation="vertical"
             android:gravity="center"
             android:layout_marginRight="10dp"
-            android:visibility="gone">
+            android:id="@+id/ebook_content2_qcode_layout">
             <ImageView
                 android:layout_width="@dimen/ebook_content_qcode_width"
                 android:layout_height="@dimen/ebook_content_qcode_width"
-                android:src="@drawable/test_qc_code"
                 android:scaleType="fitXY"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:id="@+id/ebook_content2_qcode"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -247,13 +255,6 @@
                 />
         </LinearLayout>
     </LinearLayout>
-    <!--<View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:background="@color/common_light_gray"
-        />-->
 
     <com.lza.pad.widget.PagerSlidingTabStrip
         android:layout_width="match_parent"
@@ -264,10 +265,20 @@
         android:layout_marginBottom="5dp"
         android:id="@+id/ebook_content_pager_tab"
         />
-
-    <android.support.v4.view.ViewPager
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ebook_content_view_pager"
-        />
+        android:layout_height="match_parent">
+        <ViewStub
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout="@layout/common_loading_layout"
+            android:id="@+id/ebook_content_viewstub_loading"
+            />
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ebook_content_view_pager"
+            />
+    </FrameLayout>
+
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.lza.pad.R;
@@ -36,13 +37,20 @@ public class NewsContentFragment extends BaseFragment {
 
             // 设置支持JavaScript等
             mWebSettings = mWebView.getSettings();
-            mWebSettings.setJavaScriptEnabled(true);
+            mWebSettings.setJavaScriptEnabled(false);
             mWebSettings.setBuiltInZoomControls(true);
             mWebSettings.setLightTouchEnabled(true);
             mWebSettings.setSupportZoom(true);
             mWebSettings.setTextZoom(120);
-            mWebView.setHapticFeedbackEnabled(false);
+            mWebSettings.setAllowContentAccess(false);
+            mWebSettings.setAllowFileAccess(false);
 
+            mWebView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    return true;
+                }
+            });
             mWebView.loadDataWithBaseURL(null, mPadResource.getContents(), "text/html", "UTF-8", null);
         }
 

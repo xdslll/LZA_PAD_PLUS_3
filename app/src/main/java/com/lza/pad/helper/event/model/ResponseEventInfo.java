@@ -1,6 +1,5 @@
 package com.lza.pad.helper.event.model;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.helper.event.state.ResponseEventTag;
 
 /**
@@ -23,7 +22,7 @@ public class ResponseEventInfo {
 
     private String cookie;
 
-    private VolleyError error;
+    private Throwable error;
 
     public ResponseEventTag getTag() {
         return tag;
@@ -73,11 +72,11 @@ public class ResponseEventInfo {
         this.cookie = cookie;
     }
 
-    public VolleyError getError() {
+    public Throwable getError() {
         return error;
     }
 
-    public void setError(VolleyError error) {
+    public void setError(Throwable error) {
         this.error = error;
     }
 }

@@ -30,7 +30,7 @@ public final class ImageHelper {
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(c)
                 .threadPoolSize(DEFALUT_THREAD_POOL_SIZE)
                 .memoryCache(new LruMemoryCache(DEFAULT_LRU_MEMORY_CACHE_SIZE))
-                .writeDebugLogs()
+                //.writeDebugLogs()
                 .build();
         ImageLoader.getInstance().init(configuration);
 

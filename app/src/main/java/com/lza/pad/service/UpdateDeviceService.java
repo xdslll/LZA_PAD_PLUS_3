@@ -8,22 +8,21 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
-import com.lza.pad.helper.event.model.ResponseEventInfo;
-import com.lza.pad.helper.event.state.ResponseEventTag;
-import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.helper.event.model.ResponseEventInfo;
+import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.file.FileTools;
 import com.lza.pad.support.utils.Consts;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.io.File;
 import java.util.List;
@@ -61,7 +60,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     public void onCreate() {
         super.onCreate();
         mContext = getBaseContext();
-        String macAddress = UniversalUtility.getMacAddress(this);
+        String macAddress = Utility.getMacAddress(this);
         mRequestUrl = UrlHelper.getDeviceUrl(macAddress);
         if (!EventBus.getDefault().isRegistered(UpdateDeviceService.this)) {
             EventBus.getDefault().register(UpdateDeviceService.this);
@@ -109,7 +108,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
     };
 
     private String createUrl() {
-        String macAddress = UniversalUtility.getMacAddress(this);
+        String macAddress = Utility.getMacAddress(this);
         return UrlHelper.getDeviceUrl(macAddress);
     }
 
@@ -153,13 +152,13 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
      */
     private boolean checkVersion(PadDeviceInfo deviceInfo) {
         //读取设备的版本号，比对现有的版本号
-        int currentVersionCode = UniversalUtility.getVersionCode(getBaseContext());
+        int currentVersionCode = Utility.getVersionCode(getBaseContext());
         String newVersionCode = deviceInfo.getVersion();
         log("当前版本号：" + currentVersionCode + ",新版本号：" + newVersionCode);
         if (TextUtils.isEmpty(newVersionCode)) {
             return false;
         } else {
-            int newVersion = UniversalUtility.safeIntParse(newVersionCode, 0);
+            int newVersion = Utility.safeIntParse(newVersionCode, 0);
             if (currentVersionCode < newVersion) {
                 return true;
             } else {
@@ -211,7 +210,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         log("开始更新设备状态");
         mDeviceInfo.setLast_connect_time(String.valueOf(System.currentTimeMillis()));
         mDeviceInfo.setState(PadDeviceInfo.TAG_STATE_ON);
-        int currentVersion = UniversalUtility.getVersionCode(mContext);
+        int currentVersion = Utility.getVersionCode(mContext);
         mDeviceInfo.setVersion(String.valueOf(currentVersion));
         String updateDeviceUrl = UrlHelper.updateDeviceInfoUrl(mDeviceInfo);
         send(updateDeviceUrl, new SimpleRequestListener() {
@@ -222,7 +221,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
             }
 
             @Override
-            public void handleRespone(VolleyError error) {
+            public void handleRespone(Throwable error) {
                 log("更新设备状态失败！");
             }
         });
@@ -290,7 +289,7 @@ public class UpdateDeviceService extends IntentService implements Consts, Reques
         }
 
         @Override
-        public void handleRespone(VolleyError error) {
+        public void handleRespone(Throwable error) {
             log("下载失败");
             mIsUpdating = false;
         }

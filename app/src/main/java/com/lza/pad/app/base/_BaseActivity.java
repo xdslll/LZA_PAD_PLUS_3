@@ -34,7 +34,7 @@ import com.lza.pad.service.UpdateDeviceService;
 import com.lza.pad.support.debug.AppLogger;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.support.utils.ToastUtils;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import org.apache.mina.core.session.IoSession;
 
@@ -403,7 +403,7 @@ public class _BaseActivity extends FragmentActivity implements Consts {
     }
 
     protected int parseInt(String value) {
-        return UniversalUtility.safeIntParse(value, 0);
+        return Utility.safeIntParse(value, 0);
     }
 
     protected boolean isEmpty(String str) {

@@ -120,10 +120,10 @@
     <dimen name="title_wifi_img_width">60dp</dimen>
 
     <!-- 通用字体大小 -->
-    <dimen name="super_huge_text_size">60sp</dimen>
-    <dimen name="huge_text_size">50sp</dimen>
-    <dimen name="large_text_size">36sp</dimen>
-    <dimen name="medium_text_size">24sp</dimen>
+    <dimen name="super_huge_text_size">72sp</dimen>
+    <dimen name="huge_text_size">60sp</dimen>
+    <dimen name="large_text_size">48sp</dimen>
+    <dimen name="medium_text_size">36sp</dimen>
     <dimen name="small_text_size">24sp</dimen>
     <dimen name="very_small_text_size">18sp</dimen>
 
@@ -131,6 +131,13 @@
     <dimen name="large_padding">20dp</dimen>
     <dimen name="medium_padding">15dp</dimen>
     <dimen name="small_padding">10dp</dimen>
+
+    <!-- 通用尺寸 -->
+    <dimen name="huge_width">60dp</dimen>
+    <dimen name="large_width">48dp</dimen>
+    <dimen name="medium_width">36dp</dimen>
+    <dimen name="small_width">24dp</dimen>
+    <dimen name="very_small_widthe">12dp</dimen>
 
     <dimen name="width40">60dp</dimen>
     <dimen name="width30">50dp</dimen>
@@ -167,4 +174,6 @@
     <dimen name="search_list_search_text_size">26sp</dimen>
     <dimen name="search_list_search_text_padding">15dp</dimen>
 
+    <!-- common_grid.xml -->
+    <dimen name="common_grid_page_text_size">24sp</dimen>
 </resources>

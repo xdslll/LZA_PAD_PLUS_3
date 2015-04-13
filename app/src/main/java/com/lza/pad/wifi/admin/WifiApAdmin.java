@@ -20,19 +20,19 @@ import java.lang.reflect.Method;
  */
 public class WifiApAdmin {
 
-    private static WifiApAdmin mInstance;
+    //private static WifiApAdmin mInstance;
     private Context mCtx;
-    private static WifiManager mWifiManager = null;
-    private static WifiConfiguration mWifiConfig = null;
+    private WifiManager mWifiManager = null;
+    private WifiConfiguration mWifiConfig = null;
 
-    public static WifiApAdmin getInstance(Context context) {
+    /*public synchronized static WifiApAdmin getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new WifiApAdmin(context);
         }
         return mInstance;
-    }
+    }*/
 
-    private WifiApAdmin(Context context) {
+    public WifiApAdmin(Context context) {
         this.mCtx = context;
         mWifiManager = (WifiManager) mCtx.getSystemService(Context.WIFI_SERVICE);
         mCtx = context;
@@ -48,7 +48,7 @@ public class WifiApAdmin {
         mAction = ACTION_OPEN_WIFI_AP;
         mSSID = ssid;
         mPassword = password;
-        WifiAdmin wifiAdmin = WifiAdmin.getInstance(mCtx);
+        WifiAdmin wifiAdmin = new WifiAdmin(mCtx);
         if (wifiAdmin.isWifiEnable()) {
             wifiAdmin.closeWifi(new WifiAdmin.OnWifiStateChange() {
                 @Override

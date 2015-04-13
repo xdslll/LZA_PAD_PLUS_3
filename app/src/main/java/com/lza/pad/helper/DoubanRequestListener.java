@@ -67,7 +67,7 @@ public abstract class DoubanRequestListener<T> implements RequestHelper.OnReques
      *
      * @param error
      */
-    public void handleRespone(VolleyError error) {}
+    public void handleRespone(Throwable error) {}
 
     /**
      * 处理未知错误的请求

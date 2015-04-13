@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.lza.pad.R;
 import com.lza.pad.app.socket.admin.file.MinaFileServerAdmin;
 import com.lza.pad.app.socket.admin.server.MinaServerHelper;
@@ -30,11 +29,11 @@ import com.lza.pad.db.model.douban.DoubanRating;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
 import com.lza.pad.fragment.base._BaseImageFragment;
-import com.lza.pad.helper.event.model.ResponseEventInfo;
-import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
+import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.support.file.FileTools;
 import com.lza.pad.support.utils.Consts;
 import com.lza.pad.widget.DefaultEbookCover;
@@ -306,7 +305,7 @@ public class EbookContentFragment extends _BaseImageFragment {
         }
 
         @Override
-        public void handleRespone(VolleyError error) {
+        public void handleRespone(Throwable error) {
             showBookFromPadResource();
         }
 

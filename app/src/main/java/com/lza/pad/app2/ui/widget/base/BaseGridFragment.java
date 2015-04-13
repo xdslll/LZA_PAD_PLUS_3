@@ -1,6 +1,5 @@
 package com.lza.pad.app2.ui.widget.base;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
+import com.lza.pad.app2.event.base.OnItemClickListener;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.widget.DefaultEbookCover;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -72,10 +72,13 @@ public class BaseGridFragment extends BaseImageFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mGrid.setAdapter(new BookGridAdapter());
-        mGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGrid.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (isEmpty(mPadResources) || mPadEvent == null || isEmpty(mPadEvent.getEvent_code_path())) return;
+                super.onItemClick(parent, view, position, id);
+                if (isEmpty(mPadResources) || mPadResources.get(position) == null) return;
+                startContentPage(mPadResources.get(position));
+                /*if (isEmpty(mPadResources) || mPadEvent == null || isEmpty(mPadEvent.getEvent_code_path())) return;
                 PadResource res = mPadResources.get(position);
                 if (res == null) return;
                 String activityPath = buildCodePath(mPadEvent.getEvent_code_path());
@@ -84,7 +87,7 @@ public class BaseGridFragment extends BaseImageFragment {
                 intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
                 intent.putExtra(KEY_PAD_WIDGET, mPadModuleWidget);
                 intent.putExtra(KEY_PAD_RESOURCE_INFO, res);
-                startActivity(intent);
+                startActivity(intent);*/
             }
         });
     }

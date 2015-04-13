@@ -2,16 +2,11 @@ package com.lza.pad.app2.service;
 
 import android.content.Intent;
 
-import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadScene;
 import com.lza.pad.db.model.pad.PadSceneSwitching;
 import com.lza.pad.db.model.pad.PadSwitching;
-import com.lza.pad.helper.JsonParseHelper;
-import com.lza.pad.helper.SimpleRequestListener;
-import com.lza.pad.helper.UrlHelper;
 
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +19,7 @@ import de.greenrobot.event.EventBus;
  * @author xiads
  * @Date 3/12/15.
  */
+@Deprecated
 public class SceneSwitchingService extends BaseIntentService {
 
     PadDeviceInfo mPadDeviceInfo;
@@ -48,17 +44,9 @@ public class SceneSwitchingService extends BaseIntentService {
         log("[SP101]接收当前场景");
         mPadScene = intent.getParcelableExtra(KEY_PAD_SCENE);
         mPadDeviceInfo = intent.getParcelableExtra(KEY_PAD_DEVICE_INFO);
+        mPadSceneSwitching = intent.getParcelableExtra(KEY_PAD_SCENE_SWITCHING);
         if (mPadScene == null || mPadDeviceInfo == null) return;
-        getSceneSwitching();
-    }
-
-    /**
-     * [SP102]查询当前场景是否存在切换服务
-     */
-    private void getSceneSwitching() {
-        log("[SP102]查询当前场景是否存在切换服务");
-        String sceneSwitchingUrl = UrlHelper.getPadSceneSwitching(mPadDeviceInfo, mPadScene);
-        send(sceneSwitchingUrl, new SceneSwitchingListener());
+        checkSceneSwitching();
     }
 
     /**
@@ -66,7 +54,8 @@ public class SceneSwitchingService extends BaseIntentService {
      */
     private void checkSceneSwitching() {
         log("[SP103]是否存在下一个场景");
-        if (mPadSceneSwitching.getNext_scene() == null ||
+        if (mPadSceneSwitching == null ||
+                mPadSceneSwitching.getNext_scene() == null ||
                 mPadSceneSwitching.getNext_scene().size() <= 0) return;
         mNextScene = mPadSceneSwitching.getNext_scene().get(0);
         if (mNextScene == null) return;
@@ -123,18 +112,22 @@ public class SceneSwitchingService extends BaseIntentService {
      * @param delay
      */
     private void switchingScene(final int delay) {
-        EventBus.getDefault().register(this);
+        log("启动定时器，延迟：" + delay + "s");
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         mService = Executors.newSingleThreadScheduledExecutor();
         mService.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
+                log("当前延迟（计算前）：" + mHasElapse);
                 mHasElapse += FIXED_DELAY;
+                log("当前延迟（计算后）：" + mHasElapse);
                 if (mHasElapse >= delay) {
                     sendSceneSwitchingBroadcast();
+                    log("关闭场景切换服务");
                     mService.shutdownNow();
-                    stopSelf();
                 }
-                log("当前延迟：" + mHasElapse);
             }
         }, FIXED_DELAY, FIXED_DELAY, TimeUnit.SECONDS);
     }
@@ -143,11 +136,14 @@ public class SceneSwitchingService extends BaseIntentService {
      * 发送场景切换的请求
      */
     private void sendSceneSwitchingBroadcast() {
+        log("发送场景切换广播");
         Intent intent = new Intent();
         intent.setAction(ACTION_SCENE_SWITCHING_RECEIVER);
         intent.putExtra(KEY_PAD_SCENE, mNextScene);
         sendBroadcast(intent);
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     public void onEvent(ServiceMode mode) {
@@ -157,25 +153,6 @@ public class SceneSwitchingService extends BaseIntentService {
             if (mService != null) {
                 mService.shutdownNow();
             }
-        }
-    }
-
-    private class SceneSwitchingListener extends SimpleRequestListener<PadSceneSwitching> {
-
-        @Override
-        public ResponseData<PadSceneSwitching> parseJson(String json) {
-            return JsonParseHelper.parsePadSceneSwitchingResponse(json);
-        }
-
-        @Override
-        public void handleRespone(List<PadSceneSwitching> content) {
-            mPadSceneSwitching = content.get(0);
-            checkSceneSwitching();
-        }
-
-        @Override
-        public void handleResponseFailed() {
-
         }
     }
 

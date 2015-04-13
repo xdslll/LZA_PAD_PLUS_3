@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,8 +52,8 @@ public class DatabaseTools {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        UniversalUtility.close(buffer);
-        UniversalUtility.close(is);
+        Utility.close(buffer);
+        Utility.close(is);
     }
 
     public static boolean dropTables(Context context, int resId, ConnectionSource connectionSource) {

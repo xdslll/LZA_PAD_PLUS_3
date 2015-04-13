@@ -23,6 +23,10 @@ public class PadWidgetData implements Parcelable {
 
     private String data_each;
 
+    private String cls;
+
+    private String start_page;
+
     public String getId() {
         return id;
     }
@@ -71,6 +75,25 @@ public class PadWidgetData implements Parcelable {
         this.data_each = data_each;
     }
 
+    public String getCls() {
+        return cls;
+    }
+
+    public void setCls(String cls) {
+        this.cls = cls;
+    }
+
+    public String getStart_page() {
+        return start_page;
+    }
+
+    public void setStart_page(String start_page) {
+        this.start_page = start_page;
+    }
+
+    public PadWidgetData() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,9 +107,8 @@ public class PadWidgetData implements Parcelable {
         dest.writeString(this.url);
         dest.writeString(this.data_size);
         dest.writeString(this.data_each);
-    }
-
-    public PadWidgetData() {
+        dest.writeString(this.cls);
+        dest.writeString(this.start_page);
     }
 
     private PadWidgetData(Parcel in) {
@@ -96,9 +118,11 @@ public class PadWidgetData implements Parcelable {
         this.url = in.readString();
         this.data_size = in.readString();
         this.data_each = in.readString();
+        this.cls = in.readString();
+        this.start_page = in.readString();
     }
 
-    public static final Parcelable.Creator<PadWidgetData> CREATOR = new Parcelable.Creator<PadWidgetData>() {
+    public static final Creator<PadWidgetData> CREATOR = new Creator<PadWidgetData>() {
         public PadWidgetData createFromParcel(Parcel source) {
             return new PadWidgetData(source);
         }

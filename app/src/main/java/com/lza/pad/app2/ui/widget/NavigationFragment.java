@@ -22,7 +22,6 @@ import com.lza.pad.app2.event.base.OnItemClickListener;
 import com.lza.pad.app2.ui.widget.base.BaseImageFragment;
 import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadSceneModule;
-import com.lza.pad.support.utils.ToastUtils;
 import com.lza.pad.wifi.admin.WifiApAdmin;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -54,12 +53,13 @@ public class NavigationFragment extends BaseImageFragment {
     /**
      * 自定义时钟服务
      */
-    ScheduledExecutorService mCalendarService = null;
+    private ScheduledExecutorService mCalendarService = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mWifiApAdmin = WifiApAdmin.getInstance(mActivity);
+        mWifiApAdmin = new WifiApAdmin(mActivity);
+        //mWifiApAdmin = WifiApAdmin.getInstance(mActivity);
     }
 
     @Override
@@ -86,7 +86,8 @@ public class NavigationFragment extends BaseImageFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 super.onItemClick(parent, view, position, id);
-                ToastUtils.showLong(mActivity, "跳转到相应模块");
+                //ToastUtils.showLong(mActivity, "跳转到相应模块");
+                launchSubpageModule(position);
             }
         });
         return view;
@@ -112,6 +113,28 @@ public class NavigationFragment extends BaseImageFragment {
     @Override
     public void onResume() {
         super.onResume();
+        startCalendarService();
+        boolean hasFreeWifi = mWifiApAdmin.isWifiApEnable();
+        if (hasFreeWifi)
+            mLayoutFreeWifi.setVisibility(View.VISIBLE);
+        else
+            mLayoutFreeWifi.setVisibility(View.GONE);
+        mHandler.sendEmptyMessage(REQUEST_UPDATE_CONNECT_USER_LOOP);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        shutdownCalendarService();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    private void startCalendarService() {
         mCalendarService = Executors.newSingleThreadScheduledExecutor();
         mCalendarService.scheduleAtFixedRate(new Runnable() {
             @Override
@@ -133,19 +156,9 @@ public class NavigationFragment extends BaseImageFragment {
                 }
             }
         }, 0, 1, TimeUnit.SECONDS);
-
-        //boolean hasFreeWifi = _WifiApAdmin.instance(mActivity).isWifiApEnable();
-        boolean hasFreeWifi = mWifiApAdmin.isWifiApEnable();
-        if (hasFreeWifi)
-            mLayoutFreeWifi.setVisibility(View.VISIBLE);
-        else
-            mLayoutFreeWifi.setVisibility(View.GONE);
-        mHandler.sendEmptyMessage(REQUEST_UPDATE_CONNECT_USER_LOOP);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    private void shutdownCalendarService() {
         mCalendarService.shutdown();
     }
 
@@ -224,9 +237,9 @@ public class NavigationFragment extends BaseImageFragment {
                     mTxtDate.append("\t" + mWeekStr);
                 }
             } else if (msg.what == REQUEST_UPDATE_CONNECT_USER) {
-                sendEmptyMessageDelayed(REQUEST_UPDATE_CONNECT_USER_LOOP, CALENDAR_DELAY);
+                //sendEmptyMessageDelayed(REQUEST_UPDATE_CONNECT_USER_LOOP, CALENDAR_DELAY);
             } else if (msg.what == REQUEST_UPDATE_CONNECT_USER_LOOP) {
-                sendEmptyMessage(REQUEST_UPDATE_CONNECT_USER);
+                //sendEmptyMessage(REQUEST_UPDATE_CONNECT_USER);
             }
         }
     };

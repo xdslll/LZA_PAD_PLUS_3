@@ -10,7 +10,7 @@ import android.view.View;
 import com.lza.pad.R;
 import com.lza.pad.app.base._BaseActivity;
 import com.lza.pad.support.debug.AppLogger;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.Utility;
 
 import java.io.File;
 
@@ -35,7 +35,7 @@ public class PluginInstallActivity extends _BaseActivity {
         findViewById(R.id.content_update).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UniversalUtility.showDialog(
+                Utility.showDialog(
                         PluginInstallActivity.this, "请确认", "是否开始更新？",
                         new DialogInterface.OnClickListener() {
                             @Override

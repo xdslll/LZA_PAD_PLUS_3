@@ -3,10 +3,15 @@ package com.lza.pad.helper;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.lza.pad.helper.event.model.ResponseEventInfo;
 import com.lza.pad.helper.event.state.ResponseEventTag;
 import com.lza.pad.support.debug.AppLogger;
+import com.lza.pad.support.network.VolleySingleton;
 import com.lza.pad.support.utils.Consts;
 
 import java.util.Map;
@@ -17,6 +22,7 @@ import java.util.Map;
  * @author xiads
  * @Date 15/2/8.
  */
+@Deprecated
 public class _RequestHelper implements Consts {
 
     private String mOriginalResponseData = "";
@@ -29,7 +35,7 @@ public class _RequestHelper implements Consts {
 
     private Context mCtx;
 
-    //private MyStringRequest mRequest;
+    private MyStringRequest mRequest;
 
     private OnRequestListener mListener = new SimpleRequestListener();
 
@@ -61,7 +67,7 @@ public class _RequestHelper implements Consts {
         return new _RequestHelper(c, listener, url);
     }
 
-    /*private MyStringRequest createRequest(String url) {
+    private MyStringRequest createRequest(String url) {
         return new MyStringRequest(url,
                 new Response.Listener<String>() {
                     @Override
@@ -75,11 +81,11 @@ public class _RequestHelper implements Consts {
                         handleError(error);
                     }
                 });
-    }*/
+    }
 
     public void send() {
         log("url-->" + mRequestUrl);
-        /*if (mRequest != null) {
+        if (mRequest != null) {
             VolleySingleton.getInstance(mCtx).addToRequestQueue(mRequest);
         } else {
             if (!TextUtils.isEmpty(mRequestUrl)) {
@@ -88,13 +94,13 @@ public class _RequestHelper implements Consts {
             } else {
                 log("url为空，不能发送请求！");
             }
-        }*/
+        }
     }
 
     public void send(String url) {
         if (TextUtils.isEmpty(url)) return;
         mRequestUrl = url;
-        //mRequest = createRequest(url);
+        mRequest = createRequest(url);
         send();
     }
 
@@ -147,7 +153,7 @@ public class _RequestHelper implements Consts {
         mListener = listener;
     }
 
-    /*private class MyStringRequest extends StringRequest {
+    private class MyStringRequest extends StringRequest {
 
         public static final int DEFAULT_TIMEOUT = 10 * 1000;
         public static final int DEFAULT_RETRY_COUNT = 3;
@@ -179,7 +185,7 @@ public class _RequestHelper implements Consts {
             mCookie = getCookie(headers);
             return super.parseNetworkResponse(response);
         }
-    }*/
+    }
 
     private void log(String msg) {
         AppLogger.e(">>>> " + msg);

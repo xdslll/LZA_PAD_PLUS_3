@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.lza.pad.R;
@@ -23,8 +22,8 @@ import com.lza.pad.app.news.NewsContentActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.fragment.base._BaseImageFragment;
-import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.JsonParseHelper;
+import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.ToastUtils;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -62,7 +61,7 @@ public class NewslistFragment extends _BaseImageFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.pull_to_resfresh_list, container, false);
+        View view = inflater.inflate(R.layout.common_resfresh_list, container, false);
         mRefreshList = (PullToRefreshListView) view.findViewById(R.id.pull_to_refresh_list);
 
         mRefreshList.setMode(PullToRefreshBase.Mode.PULL_FROM_END);
@@ -141,7 +140,7 @@ public class NewslistFragment extends _BaseImageFragment {
         }
 
         @Override
-        public void handleRespone(VolleyError error) {
+        public void handleRespone(Throwable error) {
             reachPageEnd();
         }
 

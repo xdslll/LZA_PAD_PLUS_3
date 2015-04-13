@@ -6,7 +6,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lza.pad.R;
@@ -26,20 +28,28 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 public class GuideFragment extends BaseImageFragment {
 
     ImageView mImageView;
-    TextView mTxtEmpty;
+    ViewStub mViewStub;
+    LinearLayout mLayoutLoading;
+    TextView mTxtLoading;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.common_imageview, container, false);
         mImageView = (ImageView) view.findViewById(R.id.common_img);
-        mTxtEmpty = (TextView) view.findViewById(R.id.common_empty_text);
+        mViewStub = (ViewStub) view.findViewById(R.id.common_img_viewstub);
+        mViewStub.inflate();
+        if (mLayoutLoading == null) {
+            mLayoutLoading = (LinearLayout) view.findViewById(R.id.common_loading_layout);
+        }
+        if (mTxtLoading == null) {
+            mTxtLoading = (TextView) view.findViewById(R.id.common_loading_layout_text);
+        }
         if (parseInt(mPadModuleType.getType()) == PadModuleType.MODULE_TYPE_GUIDE) {
             view.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     super.onClick(v);
                     launchHomeModule();
-                    mActivity.finish();
                 }
             });
         }
@@ -49,6 +59,10 @@ public class GuideFragment extends BaseImageFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadingImageView();
+    }
+
+    private void loadingImageView() {
         //确定图片尺寸
         int w = mPadWidgetLayout.getWidget_width();
         int h = mPadWidgetLayout.getWidget_height();
@@ -59,22 +73,18 @@ public class GuideFragment extends BaseImageFragment {
         loadImage(url, size, new SimpleImageLoadingListener() {
 
             @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                mTxtEmpty.setVisibility(View.VISIBLE);
-                mTxtEmpty.setText("正在加载");
-            }
-
-            @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                mTxtEmpty.setVisibility(View.VISIBLE);
-                mTxtEmpty.setText("图片加载失败");
+                mLayoutLoading.setVisibility(View.VISIBLE);
+                mTxtLoading.setText("图片加载失败，正在重试...");
+                loadingImageView();
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                mTxtEmpty.setVisibility(View.GONE);
                 mImageView.setImageBitmap(loadedImage);
+                mLayoutLoading.setVisibility(View.GONE);
             }
         });
     }
+
 }

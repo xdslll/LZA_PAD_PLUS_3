@@ -1,13 +1,8 @@
 package com.lza.pad.app2.ui.scene;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 
-import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.app2.ui.base.BaseActivity;
 import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
 import com.lza.pad.db.model.ResponseData;
@@ -18,11 +13,8 @@ import com.lza.pad.db.model.pad.PadSchool;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
-import com.lza.pad.support.utils.UniversalUtility;
 
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
 
 /**
  * Say something about this class
@@ -41,16 +33,31 @@ public class MainParseActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerStartParseReceiver();
+        //registerStartParseReceiver();
         checkDeviceParam();
+        //registerEventBus();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterStartParseReceiver();
-        EventBus.getDefault().post(ServiceMode.MODE_STOP_SCENE_SERVICE);
+        //unregisterStartParseReceiver();
+        //stopParseService();
+        //unregisterEventBus();
     }
+
+    /*private void stopParseService() {
+        String activityPath = buildCodePath(mPadAuthority.getScene_parse_code());
+        log("activity path=" + activityPath);
+        Intent intent = new Intent();
+        intent.setClassName(mCtx, activityPath);
+        stopService(intent);
+    }*/
+
+    /*public void onEventMainThread(PadDeviceInfo deviceInfo) {
+        mPadDeviceInfo = deviceInfo;
+        checkDeviceParam();
+    }*/
 
     /**
      * [P201]验证设备信息
@@ -59,9 +66,13 @@ public class MainParseActivity extends BaseActivity {
         log("[P201]验证设备信息");
         showProgressDialog("正在解析场景", false);
         if (getIntent() != null) {
-            mPadDeviceInfo = getIntent().getParcelableExtra(KEY_PAD_DEVICE_INFO);
             if (mPadDeviceInfo == null) {
-                backToDeviceActivity();
+                mPadDeviceInfo = getIntent().getParcelableExtra(KEY_PAD_DEVICE_INFO);
+                if (mPadDeviceInfo == null) {
+                    backToDeviceActivity();
+                } else {
+                    getPadScene();
+                }
             } else {
                 getPadScene();
             }
@@ -100,10 +111,16 @@ public class MainParseActivity extends BaseActivity {
         updateProgressDialog("正在校验学校编号");
         String deviceSchooBh = mPadDeviceInfo.getSchool_bh();
         String sceneSchoolBh = mPadScene.getSchool_bh();
-        if (deviceSchooBh.equals(sceneSchoolBh)) {
+        String scenePrivacy = mPadScene.getPrivacy();
+        //如果场景编号为空，则为共享场景
+        if (scenePrivacy.equals(PadScene.IS_NOT_PRIVACY)) {
             verifyScenceIsActivate();
         } else {
-            handleSceneParseFailed("提示", "当前场景的学校编号与设备的学校编号不一致，请检查后重试！");
+            if (deviceSchooBh.equals(sceneSchoolBh)) {
+                verifyScenceIsActivate();
+            } else {
+                handleSceneParseFailed("提示", "当前场景的学校编号与设备的学校编号不一致，请检查后重试！");
+            }
         }
     }
 
@@ -114,7 +131,8 @@ public class MainParseActivity extends BaseActivity {
      */
     private void handleSceneParseFailed(String title, String message) {
         log("[P205]错误提示 : " + message);
-        dismissProgressDialog();
+        /*dismissProgressDialog();
+
         UniversalUtility.showDialog(mCtx,
                 title,
                 message,
@@ -131,7 +149,13 @@ public class MainParseActivity extends BaseActivity {
                         dialog.dismiss();
                         finish();
                     }
-                });
+                });*/
+        handleErrorProcess(title, message, new Runnable() {
+            @Override
+            public void run() {
+                checkDeviceParam();
+            }
+        });
     }
 
     /**
@@ -194,8 +218,10 @@ public class MainParseActivity extends BaseActivity {
         intent.putExtra(KEY_PAD_SCHOOL, mPadSchool);
         intent.putExtra(KEY_PAD_SCENE, mPadScene);
         intent.putExtra(KEY_PAD_AUTHORITY, mPadAuthority);
-        //startActivity(intent);
-        startService(intent);
+        dismissProgressDialog();
+        startActivity(intent);
+        //startService(intent);
+        finish();
     }
 
     private class GetAuthorityListener extends SimpleRequestListener<PadAuthority> {
@@ -252,27 +278,4 @@ public class MainParseActivity extends BaseActivity {
         }
     }
 
-    private StartParseReceiver mReceiver = new StartParseReceiver();
-    private void registerStartParseReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_START_PARSE_RECEIVER);
-        filter.addAction(ACTION_START_PARSE_ERROR_RECEIVER);
-        registerReceiver(mReceiver, filter);
-    }
-    private void unregisterStartParseReceiver() {
-        unregisterReceiver(mReceiver);
-    }
-    private class StartParseReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_START_PARSE_RECEIVER)) {
-                dismissProgressDialog();
-                finish();
-            } else if (intent.getAction().equals(ACTION_START_PARSE_ERROR_RECEIVER)) {
-                dismissProgressDialog();
-                handleSceneParseFailed("提示", intent.getStringExtra(KEY_START_PARSE_ERROR));
-            }
-        }
-    }
 }

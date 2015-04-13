@@ -1,6 +1,5 @@
 package com.lza.pad.app2.ui.module;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.FrameLayout;
@@ -18,7 +17,7 @@ import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
-import com.lza.pad.support.utils.UniversalUtility;
+import com.lza.pad.support.utils.ToastUtils;
 
 import java.util.List;
 
@@ -39,24 +38,7 @@ public class StandardModuleActivity extends BaseModuleActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_scene_container);
         mMainLayout = (LinearLayout) findViewById(R.id.home);
-
-        /*ImageView img = new ImageView(this);
-        img.setImageResource(R.drawable.test_panoramic_p1);
-        mMainLayout.addView(img);*/
-
         getModuleWidgets();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //startModuleSwitchingService();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //stopModuleSwitchingService();
     }
 
     @Override
@@ -64,19 +46,9 @@ public class StandardModuleActivity extends BaseModuleActivity {
         super.onDestroy();
     }
 
-    /**
-     * [P406]启动模块切换服务
-     */
-    private void startModuleSwitchingService() {
-        //Intent intent = new Intent();
-        //intent.setAction(ACTION_MODULE_SWITCHING_SERVICE);
-        //intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
-        //intent.putExtra(KEY_PAD_MODULE_INFO, pickFirst(mPadSceneModule.getModule_type_id()));
-        //startService(intent);
-    }
-
-    private void stopModuleSwitchingService() {
-        //EventBus.getDefault().post(SwitchingServiceMode.MODE_STOP_MODULE_SERVICE);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     /**
@@ -86,7 +58,7 @@ public class StandardModuleActivity extends BaseModuleActivity {
         log("[P401]获取模块组件");
         final PadModule mod = pickFirst(mPadSceneModule.getModule_id());
         if (mod == null) {
-            handleErrorProcess("提示", "获取模块失败，请重试！");
+            handleModuleErrorProcess("提示", "获取模块失败，请重试！");
             return;
         }
         String getWidgetsUrl = UrlHelper.getMoudleWidgets(mPadDeviceInfo, mod);
@@ -107,7 +79,7 @@ public class StandardModuleActivity extends BaseModuleActivity {
             if (strHeight.equals(PadWidgetLayout.MATCH_PARENT)) {
                 layout.setWidget_width(screenWidth);
                 layout.setWidget_height(screenHeight - totalHeight);
-            } else {
+            } else{
                 float rateHeight = Float.parseFloat(strHeight);
                 layout.setWidget_width(screenWidth);
                 int height = (int) (screenHeight * rateHeight);
@@ -148,6 +120,8 @@ public class StandardModuleActivity extends BaseModuleActivity {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
             }
             mMainLayout.addView(subLayout);
         }
@@ -162,14 +136,14 @@ public class StandardModuleActivity extends BaseModuleActivity {
 
         @Override
         public void handleResponseFailed() {
-            handleErrorProcess("提示", "获取组件失败，请重试！");
+            handleModuleErrorProcess("提示", "获取组件失败，请重试！");
         }
 
         @Override
         public void handleRespone(List<PadModuleWidget> content) {
             PadModuleType moduleType = pickFirst(mPadSceneModule.getModule_type_id());
             if (moduleType == null) {
-                handleErrorProcess("提示", "获取模块类型失败，请重试！");
+                handleModuleErrorProcess("提示", "获取模块类型失败，请重试！");
                 return;
             }
             mPadModuleWidgets = content;
@@ -177,51 +151,16 @@ public class StandardModuleActivity extends BaseModuleActivity {
         }
     }
 
-    /*private class SceneSwitchingReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(ACTION_SCENE_SWITCHING_RECEIVER)) {
-                log("场景切换，关闭：" + StandardModuleActivity.class.getSimpleName());
-                finish();
-            } else if (intent.getAction().equals(ACTION_MODULE_SWITCHING_RECEIVER)) {
-                log("模块切换，关闭：" + StandardModuleActivity.class.getSimpleName());
-                finish();
-            }
+    protected void handleModuleErrorProcess(String title, String message) {
+        if (isTopActivity()) {
+            handleErrorProcess(title, message, new Runnable() {
+                @Override
+                public void run() {
+                    getModuleWidgets();
+                }
+            });
+        } else {
+            ToastUtils.showLong(mCtx, message);
         }
-    }
-
-    private SceneSwitchingReceiver mSwitchingReceiver = new SceneSwitchingReceiver();
-
-    protected void registerSceneSwitchingReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_SCENE_SWITCHING_RECEIVER);
-        filter.addAction(ACTION_MODULE_SWITCHING_RECEIVER);
-        registerReceiver(mSwitchingReceiver, filter);
-    }
-
-    protected void unregisterSceneSwitchingReceiver() {
-        try {
-            unregisterReceiver(mSwitchingReceiver);
-        } catch (Exception ex) {
-
-        }
-    }*/
-
-    protected void handleErrorProcess(String title, String message) {
-        dismissProgressDialog();
-        UniversalUtility.showDialog(mCtx, title, message,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getModuleWidgets();
-                    }
-                },
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
     }
 }

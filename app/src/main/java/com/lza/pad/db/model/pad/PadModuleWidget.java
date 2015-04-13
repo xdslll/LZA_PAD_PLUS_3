@@ -34,6 +34,8 @@ public class PadModuleWidget implements Parcelable {
 
     private String label;
 
+    private List<PadSwitching> update_mode = new ArrayList<PadSwitching>();
+
     public String getLabel() {
         return label;
     }
@@ -86,6 +88,14 @@ public class PadModuleWidget implements Parcelable {
         return widget_layout_id;
     }
 
+    public List<PadSwitching> getUpdate_mode() {
+        return update_mode;
+    }
+
+    public void setUpdate_mode(List<PadSwitching> update_mode) {
+        this.update_mode = update_mode;
+    }
+
     public void setWidget_layout_id(List<PadWidgetLayout> widget_layout_id) {
         this.widget_layout_id = widget_layout_id;
     }
@@ -134,6 +144,7 @@ public class PadModuleWidget implements Parcelable {
         dest.writeString(this.index);
         dest.writeString(this.can_touch);
         dest.writeString(this.label);
+        dest.writeTypedList(update_mode);
     }
 
     private PadModuleWidget(Parcel in) {
@@ -147,6 +158,7 @@ public class PadModuleWidget implements Parcelable {
         this.index = in.readString();
         this.can_touch = in.readString();
         this.label = in.readString();
+        in.readTypedList(update_mode, PadSwitching.CREATOR);
     }
 
     public static final Creator<PadModuleWidget> CREATOR = new Creator<PadModuleWidget>() {

@@ -16,7 +16,9 @@ import de.greenrobot.event.EventBus;
 public class OnTouchListener implements View.OnTouchListener {
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        EventBus.getDefault().post(ServiceMode.MODE_RESET_SERVICE);
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            EventBus.getDefault().post(ServiceMode.MODE_RESET_SERVICE);
+        }
         return false;
     }
 }
