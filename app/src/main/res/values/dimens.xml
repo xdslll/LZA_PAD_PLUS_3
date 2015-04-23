@@ -107,6 +107,7 @@
     <dimen name="ebook_content_value_size">24sp</dimen>
     <dimen name="ebook_content_tip_size">18sp</dimen>
     <dimen name="ebook_content_qcode_width">200dp</dimen>
+    <dimen name="ebook_content_qcode_layout_width">250dp</dimen>
 
     <!-- common_content_container.xml -->
     <dimen name="content_container_title_size">24sp</dimen>

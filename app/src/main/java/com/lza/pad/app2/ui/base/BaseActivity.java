@@ -22,6 +22,7 @@ import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
+import com.lza.pad.helper.CrashHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
@@ -56,7 +57,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
         //不显示ActionBar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        //CrashHelper.getInstance(mCtx).init();
+        CrashHelper.getInstance(mCtx).init();
     }
 
     @Override
@@ -74,23 +75,34 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     private ProgressDialog mProgressDialog = null;
 
     private void _showProgressDialog(String msg, boolean cancelable) {
-        mProgressDialog = new ProgressDialog(mCtx);
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setCancelable(cancelable);
+        try {
+            mProgressDialog = new ProgressDialog(mCtx);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(cancelable);
+            mProgressDialog.setMessage(msg);
+            mProgressDialog.show();
+        } catch (Exception ex) {
 
-        mProgressDialog.setMessage(msg);
-        mProgressDialog.show();
+        }
     }
 
     protected void dismissProgressDialog() {
         if (mProgressDialog != null) {
-            mProgressDialog.dismiss();
+            try {
+                mProgressDialog.dismiss();
+            } catch (Exception ex) {
+
+            }
         }
     }
 
     protected void updateProgressDialog(String msg) {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) return;
-        mProgressDialog.setMessage(msg);
+        try {
+            mProgressDialog.setMessage(msg);
+        } catch (Exception ex) {
+
+        }
     }
 
     protected void showProgressDialog(String msg) {
@@ -98,19 +110,35 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     }
 
     protected void showProgressDialog(int resId) {
-        _showProgressDialog(getResources().getString(resId), true);
+        try {
+            _showProgressDialog(getResources().getString(resId), true);
+        } catch (Exception ex) {
+
+        }
     }
 
     protected void showProgressDialog(String msg, boolean cancelable) {
-        _showProgressDialog(msg, cancelable);
+        try {
+            _showProgressDialog(msg, cancelable);
+        } catch (Exception ex) {
+
+        }
     }
 
     protected void showProgressDialog(int resId, boolean cancelable) {
-        _showProgressDialog(getResources().getString(resId), cancelable);
+        try {
+            _showProgressDialog(getResources().getString(resId), cancelable);
+        } catch (Exception ex) {
+
+        }
     }
 
     protected void updateProgressDialog(int resId) {
-        updateProgressDialog(getResources().getString(resId));
+        try {
+            updateProgressDialog(getResources().getString(resId));
+        } catch (Exception ex) {
+
+        }
     }
 
     protected boolean isProgressDialogShowing() {

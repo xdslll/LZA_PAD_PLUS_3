@@ -227,11 +227,10 @@
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/ebook_content_qcode_layout_width"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginRight="10dp"
             android:id="@+id/ebook_content2_qcode_layout">
             <ImageView
                 android:layout_width="@dimen/ebook_content_qcode_width"
@@ -252,6 +251,19 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="没有Pad+客户端？"
+                android:textColor="@color/common_gray"
+                android:textSize="@dimen/ebook_content_qcode_text_size"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:id="@+id/ebook_content2_get_client"
                 />
         </LinearLayout>
     </LinearLayout>

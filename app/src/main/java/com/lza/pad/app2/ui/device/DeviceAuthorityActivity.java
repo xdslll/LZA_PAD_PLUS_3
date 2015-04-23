@@ -64,16 +64,24 @@ public class DeviceAuthorityActivity extends BaseActivity {
     private void verifyNetwork() {
         log("[P101]验证是否联网");
         if (!isProgressDialogShowing()) {
-            showProgressDialog(R.string.verify_if_network_connected, false);
+            showProgressDialog(R.string.verify_if_network_connected, true);
         }
         //mWifiAdmin = WifiAdmin.getInstance(mCtx);
         mWifiAdmin = new WifiAdmin(mCtx);
-        boolean isNetworkConnected = mWifiAdmin.isNetworkConnected();
+        checkWifiState();
+        /*boolean isNetworkConnected = mWifiAdmin.isNetworkConnected();
         if (isNetworkConnected) {
-            checkWifiState();
+
         } else {
-            checkLocalAuthority();
-        }
+            handleErrorProcess("提示", "网络连接失败", new Runnable() {
+                @Override
+                public void run() {
+                    showProgressDialog(R.string.getting_mac_address);
+                    authorityDevice();
+                }
+            });
+            //checkLocalAuthority();
+        }*/
     }
 
     /**
@@ -328,8 +336,12 @@ public class DeviceAuthorityActivity extends BaseActivity {
         Intent intent = new Intent(mCtx, MainParseActivity.class);
         intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         //overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         finish();
+
+        overridePendingTransition(0, 0);
+        startActivity(intent);
+
     }
 
     /**
@@ -493,5 +505,4 @@ public class DeviceAuthorityActivity extends BaseActivity {
             }
         }
     };
-
 }

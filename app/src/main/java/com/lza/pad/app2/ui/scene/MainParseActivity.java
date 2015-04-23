@@ -64,7 +64,7 @@ public class MainParseActivity extends BaseActivity {
      */
     private void checkDeviceParam() {
         log("[P201]验证设备信息");
-        showProgressDialog("正在解析场景", false);
+        showProgressDialog("正在解析场景", true);
         if (getIntent() != null) {
             if (mPadDeviceInfo == null) {
                 mPadDeviceInfo = getIntent().getParcelableExtra(KEY_PAD_DEVICE_INFO);
@@ -219,9 +219,13 @@ public class MainParseActivity extends BaseActivity {
         intent.putExtra(KEY_PAD_SCENE, mPadScene);
         intent.putExtra(KEY_PAD_AUTHORITY, mPadAuthority);
         dismissProgressDialog();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        finish();
+
+        overridePendingTransition(0, 0);
         startActivity(intent);
         //startService(intent);
-        finish();
+
     }
 
     private class GetAuthorityListener extends SimpleRequestListener<PadAuthority> {

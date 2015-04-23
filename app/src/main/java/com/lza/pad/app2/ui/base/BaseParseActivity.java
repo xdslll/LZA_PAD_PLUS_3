@@ -60,7 +60,7 @@ public abstract class BaseParseActivity extends BaseActivity {
             mPadSchool = getIntent().getParcelableExtra(KEY_PAD_SCHOOL);
             mPadAuthority = getIntent().getParcelableExtra(KEY_PAD_AUTHORITY);
         }
-        showProgressDialog("开始解析场景", false);
+        showProgressDialog("开始解析场景", true);
         getSceneSwitching();
         getSceneModules();
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);

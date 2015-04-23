@@ -1,7 +1,10 @@
 package com.lza.pad.app2.ui.module.content.ebook;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +16,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,7 @@ import com.lza.pad.app.socket.admin.file.MinaFileServerAdmin;
 import com.lza.pad.app.socket.admin.server.MinaServerHelper;
 import com.lza.pad.app.socket.model.MinaClient;
 import com.lza.pad.app.socket.model.MinaServer;
+import com.lza.pad.app2.event.base.OnClickListener;
 import com.lza.pad.app2.ui.widget.base.BaseImageFragment;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
@@ -63,8 +68,8 @@ import java.util.List;
 public class EbookContentFragment extends BaseImageFragment {
 
     DefaultEbookCover mEbookCover;
-    TextView mTxtTitle, mTxtAuthor, mTxtPubdate, mTxtPress, mTxtIsbn,
-            mTxtTotalPages, mTxtBinding, mTxtPrice, mTxtRatingNum, mTxtDoubanRatingAvg;
+    TextView mTxtTitle, mTxtAuthor, mTxtPubdate, mTxtPress, mTxtIsbn, mTxtTotalPages,
+            mTxtBinding, mTxtPrice, mTxtRatingNum, mTxtDoubanRatingAvg, mTxtGetClient;
     RatingBar mRatingBarDouban;
     PagerSlidingTabStrip mPagerTab;
     ViewPager mViewPager;
@@ -121,6 +126,17 @@ public class EbookContentFragment extends BaseImageFragment {
         mLayoutQCode = (LinearLayout) view.findViewById(R.id.ebook_content2_qcode_layout);
         mImgQCode = (ImageView) view.findViewById(R.id.ebook_content2_qcode);
 
+        mTxtGetClient = (TextView) view.findViewById(R.id.ebook_content2_get_client);
+        mTxtGetClient.setText(Html.fromHtml("<u>" + mTxtGetClient.getText() + "</u>"));
+        mTxtGetClient.setTextColor(Color.BLUE);
+        mTxtGetClient.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                super.onClick(v);
+                showDownloadDialog();
+            }
+        });
+
         return view;
     }
 
@@ -136,6 +152,35 @@ public class EbookContentFragment extends BaseImageFragment {
     public void onPause() {
         super.onPause();
         unregisterEventBus();
+    }
+
+    private void showDownloadDialog() {
+        Bitmap bm = Utility.createQCode("http://114.212.7.87/book_center/upload/version//app-release.apk",
+                mImgQCode.getWidth() * 2, mImgQCode.getHeight() * 2);
+        LinearLayout layout = new LinearLayout(mActivity);
+        layout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackgroundColor(Color.WHITE);
+        layout.setGravity(Gravity.CENTER);
+
+        ImageView img = new ImageView(mActivity);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(mImgQCode.getWidth(), mImgQCode.getHeight());
+        lp.setMargins(20, 20, 20, 20);
+        img.setLayoutParams(lp);
+        img.setImageBitmap(bm);
+
+        layout.addView(img);
+        AlertDialog dialog = new AlertDialog.Builder(mActivity)
+                .setTitle("请扫描二维码下载Pad+客户端")
+                .setView(layout)
+                .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     private void showQCode() {
@@ -162,8 +207,9 @@ public class EbookContentFragment extends BaseImageFragment {
                         .append("---").append(pubdate)
                         .append("---").append(press)
                         .append("---").append(isbn)
-                        .append("---").append("")
-                        .append("---").append(img);
+                        .append("---").append("暂无简介")
+                        .append("---").append(img)
+                        .append("---").append(url);
 
                 String urlEncode = Base64.encodeToString(sb.toString().getBytes(), Base64.DEFAULT);
                 Bitmap qcodeImage = Utility.createQCode(urlEncode, mImgQCode.getWidth(), mImgQCode.getHeight());

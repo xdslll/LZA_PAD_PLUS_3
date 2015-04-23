@@ -331,8 +331,10 @@ public class StandardParseActivity extends BaseParseActivity {
         arg.putParcelableArrayList(KEY_PAD_MODULE_SUBPAGE, mSubpageModule);
         arg.putParcelableArrayList(KEY_PAD_MODULE_CONTENT, mContentModule);
         arg.putParcelableArrayList(KEY_PAD_MODULE_HELP, mHelpModule);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtras(arg);
 
+        overridePendingTransition(0, 0);
         startActivity(intent);
         //finish();
     }
