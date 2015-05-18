@@ -53,6 +53,11 @@
     <string name="verify_error_get_authority">获取权场景处理限失败，请重试</string>
     <string name="verify_start_parse_scene">正在解析场景</string>
 
+    <string name="module_restart">重新启动模块</string>
+    <string name="module_error_get_scene_switch">获取场景转换失败</string>
+    <string name="module_error_get_module">模块获取失败，请重试！</string>
+    <string name="module_error_guide_page_number">引导页数量大于1，请检查后重试！</string>
+    <string name="module_error_guide_and_home_page">缺少引导模块和首页，请检查后重试！</string>
 
 
 </resources>

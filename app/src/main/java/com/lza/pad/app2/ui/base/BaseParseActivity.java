@@ -5,10 +5,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.View;
+import android.widget.Button;
 
+import com.lza.pad.R;
 import com.lza.pad.app2.service.BaseService;
 import com.lza.pad.app2.service.ServiceMode;
-import com.lza.pad.app2.ui.scene.MainParseActivity;
+import com.lza.pad.app2.ui.device.UniversalVerifyActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -47,8 +50,10 @@ public abstract class BaseParseActivity extends BaseActivity {
 
     protected List<PadSceneModule> mPadSceneModules = new ArrayList<PadSceneModule>();
 
-    private AlarmManager mAlarmManager;
-    private PendingIntent mSceneSwitchingPendingIntent;
+    protected AlarmManager mAlarmManager;
+    protected PendingIntent mSceneSwitchingPendingIntent;
+
+    protected Button mBtnRestartModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +65,24 @@ public abstract class BaseParseActivity extends BaseActivity {
             mPadSchool = getIntent().getParcelableExtra(KEY_PAD_SCHOOL);
             mPadAuthority = getIntent().getParcelableExtra(KEY_PAD_AUTHORITY);
         }
-        showProgressDialog("开始解析场景", true);
+        setContentView(R.layout.standard_parse);
+        mBtnRestartModule = (Button) findViewById(R.id.btn_restart_module);
+        mBtnRestartModule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBtnRestartModule.setVisibility(View.GONE);
+                showLoadingView();
+                setLoadingViewText(R.string.verify_start_parse_scene);
+                resetSceneData();
+                getSceneSwitching();
+                getSceneModules();
+            }
+        });
+
+        showLoadingView();
+        setLoadingViewText(R.string.verify_start_parse_scene);
+
+        //showProgressDialog("开始解析场景", true);
         getSceneSwitching();
         getSceneModules();
         mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -135,7 +157,7 @@ public abstract class BaseParseActivity extends BaseActivity {
 
         @Override
         public void handleResponseFailed() {
-            handleErrorProcess("提示", "模块获取失败，请重试！");
+            handleModuleErrorProcess(R.string.dialog_prompt, R.string.module_error_get_module);
         }
     }
 
@@ -160,23 +182,8 @@ public abstract class BaseParseActivity extends BaseActivity {
      * @param title
      * @param message
      */
-    protected void handleErrorProcess(String title, String message) {
-        /*dismissProgressDialog();
-        UniversalUtility.showDialog(mCtx, title, message,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        getSceneModules();
-                    }
-                },
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                        backToDeviceAuthorityActivity();
-                    }
-                });*/
-        handleErrorProcess(title, message, new Runnable() {
+    protected void handleModuleErrorProcess(int title, int message) {
+        handleErrorProcess(getString(title), getString(message), new Runnable() {
             @Override
             public void run() {
                 getSceneModules();
@@ -208,7 +215,7 @@ public abstract class BaseParseActivity extends BaseActivity {
 
         @Override
         public void handleResponseFailed() {
-
+            //handleSceneErrorProcess();
         }
     }
 
@@ -330,7 +337,7 @@ public abstract class BaseParseActivity extends BaseActivity {
         }
 
         private void gotoParseActivity() {
-            Intent intent = new Intent(mCtx, MainParseActivity.class);
+            Intent intent = new Intent(mCtx, UniversalVerifyActivity.class);
             intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -338,9 +345,20 @@ public abstract class BaseParseActivity extends BaseActivity {
     }
 
     protected void gotoParseActivity() {
-        Intent intent = new Intent(mCtx, MainParseActivity.class);
+        Intent intent = new Intent(mCtx, UniversalVerifyActivity.class);
         intent.putExtra(KEY_PAD_DEVICE_INFO, mPadDeviceInfo);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    protected void handleSceneErrorProcess() {
+        handleErrorProcess(getString(R.string.dialog_prompt),
+                getString(R.string.module_error_get_scene_switch),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        getSceneSwitching();
+                    }
+                });
     }
 }

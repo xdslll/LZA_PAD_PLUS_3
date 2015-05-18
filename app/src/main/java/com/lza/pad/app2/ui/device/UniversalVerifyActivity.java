@@ -315,6 +315,8 @@ public class UniversalVerifyActivity extends BaseActivity {
                     updateDeviceInfo();
                 } else if (wifiApState == WifiApAdmin.WIFI_AP_STATE_ENABLING) {
                     setLoadingViewText(R.string.opening_wifi_ap);
+                } else if (wifiApState == WifiApAdmin.WIFI_AP_STATE_FAILED) {
+                    log("wifi热点打开失败");
                 }
             }
         }

@@ -2,7 +2,9 @@ package com.lza.pad.app2.ui.scene;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import com.lza.pad.R;
 import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.app2.ui.base.BaseParseActivity;
 import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
@@ -78,7 +80,7 @@ public class StandardParseActivity extends BaseParseActivity {
     private void checkGuidePage() {
         log("[P304]检查是否存在引导页且数量等于1");
         if (mGuideModule.size() > 1) {
-            handleErrorProcess("提示", "引导页数量大于1，请检查后重试！");
+            handleModuleErrorProcess(R.string.dialog_prompt, R.string.module_error_guide_page_number);
         } else if (isEmpty(mGuideModule)) {
             checkHomePage();
         } else {
@@ -92,7 +94,7 @@ public class StandardParseActivity extends BaseParseActivity {
     private void checkHomePage() {
         log("[P305]检查是否存在首页");
         if (isEmpty(mHomeModule)) {
-            handleErrorProcess("提示", "引导页和首页都不存在，请检查后重试！");
+            handleModuleErrorProcess(R.string.dialog_prompt, R.string.module_error_guide_and_home_page);
         } else {
             renderModule(false);
         }
@@ -114,8 +116,14 @@ public class StandardParseActivity extends BaseParseActivity {
             module = mHomeModule.get(0);
             log("开始渲染首页");
         }
+        dismissLoadingView();
         launchModule(module);
+        activateRestartButton();
         startDeviceUpdateService();
+    }
+
+    protected void activateRestartButton() {
+        mBtnRestartModule.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -331,8 +339,9 @@ public class StandardParseActivity extends BaseParseActivity {
         arg.putParcelableArrayList(KEY_PAD_MODULE_SUBPAGE, mSubpageModule);
         arg.putParcelableArrayList(KEY_PAD_MODULE_CONTENT, mContentModule);
         arg.putParcelableArrayList(KEY_PAD_MODULE_HELP, mHelpModule);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
         intent.putExtras(arg);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
         overridePendingTransition(0, 0);
         startActivity(intent);
@@ -351,6 +360,9 @@ public class StandardParseActivity extends BaseParseActivity {
         clear(mSubpageModule);
         clear(mContentModule);
         clear(mHelpModule);
+
+        stopDeviceUpdateService();
+        cancelAlarmService(mSceneSwitchingPendingIntent);
     }
 
     @Override
@@ -362,7 +374,7 @@ public class StandardParseActivity extends BaseParseActivity {
                 if (isEmpty(mHomeModule)) {
                     launchModule(mHomeModule.get(0));
                 } else {
-                    handleErrorProcess("提示", "缺少引导模块和首页，请检查后重试！");
+                    handleModuleErrorProcess(R.string.dialog_prompt, R.string.module_error_guide_and_home_page);
                 }
             }
         } else if (type == PadModuleType.MODULE_TYPE_HOME) {
@@ -372,7 +384,7 @@ public class StandardParseActivity extends BaseParseActivity {
                 if (isEmpty(mGuideModule)) {
                     launchModule(mGuideModule.get(0));
                 } else {
-                    handleErrorProcess("提示", "缺少引导模块和首页，请检查后重试！");
+                    handleModuleErrorProcess(R.string.dialog_prompt, R.string.module_error_guide_and_home_page);
                 }
             }
         } else if (type == PadModuleType.MODULE_TYPE_HELP) {
@@ -384,7 +396,7 @@ public class StandardParseActivity extends BaseParseActivity {
                 } else if (isEmpty(mHomeModule)) {
                     launchModule(mHomeModule.get(0));
                 } else {
-                    handleErrorProcess("提示", "缺少引导模块和首页，请检查后重试！");
+                    handleModuleErrorProcess(R.string.dialog_prompt, R.string.module_error_guide_and_home_page);
                 }
             }
         }
