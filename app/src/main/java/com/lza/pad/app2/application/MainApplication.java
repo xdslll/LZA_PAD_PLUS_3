@@ -21,17 +21,17 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mMinaFileServerAdmin = MinaFileServerAdmin.getInstance();
+        //mMinaFileServerAdmin = MinaFileServerAdmin.getInstance();
 
-        startMinaServer();
-        startMinaFileServer();
+        //startMinaServer();
+        //startMinaFileServer();
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
-        stopMinaServer();
-        stopMinaFileServer();
+        //stopMinaServer();
+        //stopMinaFileServer();
     }
 
     private void startMinaFileServer() {

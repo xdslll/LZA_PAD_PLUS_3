@@ -13,8 +13,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewStub;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.lza.pad.R;
@@ -46,6 +50,10 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
 
     protected Context mCtx;
     protected final static int RETRY_TIMEOUT = 10 * 1000;
+
+    protected ViewStub mViewStubLoading;
+    protected LinearLayout mLayoutLoading;
+    protected TextView mTxtLoadingText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -347,5 +355,45 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
      * @param downloadFile
      */
     public void onEventAsync(DownloadFile downloadFile) {}
+
+    /**
+     * 显示Loading进度条
+     *
+     */
+    protected void showLoadingView() {
+        if (mLayoutLoading == null) {
+            mViewStubLoading = (ViewStub) findViewById(R.id.common_viewstub);
+            mViewStubLoading.inflate();
+            mLayoutLoading = (LinearLayout) findViewById(R.id.common_loading_layout);
+            mTxtLoadingText = (TextView) findViewById(R.id.common_loading_layout_text);
+        }
+        mLayoutLoading.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 隐藏Loading进度条
+     */
+    protected void dismissLoadingView() {
+        if (mLayoutLoading != null) {
+            mLayoutLoading.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 设置Loading文本
+     *
+     * @param text
+     */
+    protected void setLoadingViewText(String text) {
+        if (mTxtLoadingText != null) {
+            mTxtLoadingText.setText(text);
+        }
+    }
+
+    protected void setLoadingViewText(int text) {
+        if (mTxtLoadingText != null) {
+            mTxtLoadingText.setText(text);
+        }
+    }
 
 }

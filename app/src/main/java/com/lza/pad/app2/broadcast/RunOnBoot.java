@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
+import com.lza.pad.app2.ui.device.UniversalVerifyActivity;
 
 /**
  * Say something about this class
@@ -16,7 +16,7 @@ public class RunOnBoot extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent startIntent = new Intent(context, DeviceAuthorityActivity.class);
+        Intent startIntent = new Intent(context, UniversalVerifyActivity.class);
         startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(startIntent);
     }

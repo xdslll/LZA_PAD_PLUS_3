@@ -58,10 +58,6 @@
 
         <activity android:name=".app2.ui.device.DeviceAuthorityActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".app2.ui.scene.MainParseActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask"/>
@@ -77,6 +73,13 @@
         <activity android:name=".app2.ui.module.content.journal.JournalContentActivity" android:screenOrientation="portrait"
             android:launchMode="singleTask" android:theme="@style/DialogTheme"/>
 
+        <activity android:name=".app2.ui.device.UniversalVerifyActivity" android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
 
         <service android:name=".app.socket.admin.server.MinaService" android:enabled="true">
             <intent-filter>
@@ -115,9 +118,6 @@
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.HOME"/>
-            </intent-filter>
-            <intent-filter >
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 

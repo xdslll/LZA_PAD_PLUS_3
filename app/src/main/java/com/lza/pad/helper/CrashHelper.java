@@ -56,7 +56,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
                 e.printStackTrace();
             }
             Intent intent = new Intent();
-            intent.setClassName("com.lza.pad", "app2.ui.device.DeviceAuthorityActivity");
+            intent.setClassName("com.lza.pad", "app2.ui.device.UniversalVerifyActivity");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             PendingIntent restartIntent = PendingIntent.getActivity(
                     mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);

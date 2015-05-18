@@ -206,8 +206,6 @@ public final class WifiAdmin {
     public int getWifiConnectState() {
         NetworkInfo wifiNetworkInfo = mConnManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiNetworkInfo == null) return WIFI_CONNECT_FAILED;
-        /*AppLogger.e("isConnectedOrConnecting = " + wifiNetworkInfo.isConnectedOrConnecting());
-        AppLogger.e("wifiNetworkInfo.getDetailedState() = " + wifiNetworkInfo.getDetailedState());*/
         if (wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.OBTAINING_IPADDR
                 || wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTING
                 || wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.SCANNING
@@ -216,7 +214,6 @@ public final class WifiAdmin {
         } else if (wifiNetworkInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTED) {
             return WIFI_CONNECTED;
         } else {
-            //AppLogger.e("getDetailedState()=" + wifiNetworkInfo.getDetailedState());
             return WIFI_CONNECT_FAILED;
         }
     }
@@ -346,9 +343,13 @@ public final class WifiAdmin {
     }
 
     private void registerWifiReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        mCtx.registerReceiver(mWifiReceiver, filter);
+        try {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            mCtx.registerReceiver(mWifiReceiver, filter);
+        } catch (Exception ex) {
+
+        }
     }
 
     private void unregisterWifiReceiver() {
