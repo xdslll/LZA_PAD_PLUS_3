@@ -1,9 +1,9 @@
 package com.lza.pad.app2.ui.base;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.lza.pad.R;
 import com.lza.pad.app.socket.model.MinaClient;
-import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
+import com.lza.pad.app2.ui.device.UniversalVerifyActivity;
 import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.helper.CrashHelper;
@@ -48,7 +48,7 @@ import de.greenrobot.event.EventBus;
  */
 public abstract class BaseActivity extends SherlockFragmentActivity implements Consts {
 
-    protected Context mCtx;
+    protected Activity mCtx;
     protected final static int RETRY_TIMEOUT = 10 * 1000;
 
     protected ViewStub mViewStubLoading;
@@ -259,7 +259,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
     }
 
     protected void backToDeviceAuthorityActivity() {
-        startActivity(new Intent(mCtx, DeviceAuthorityActivity.class));
+        startActivity(new Intent(mCtx, UniversalVerifyActivity.class));
     }
 
     protected boolean isTopActivity() {
@@ -313,7 +313,9 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
                     .setPositiveButton(R.string.dialog_button_retry, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                            if (dialog != null) {
+                                dialog.dismiss();
+                            }
                             if (runnable != null) {
                                 runnable.run();
                             }
@@ -321,15 +323,22 @@ public abstract class BaseActivity extends SherlockFragmentActivity implements C
                     })
                     .create();
             alertDialog.show();
-            getMainHandler().postDelayed(new Runnable() {
+            Runnable task = new Runnable() {
                 @Override
                 public void run() {
-                    alertDialog.dismiss();
-                    if (runnable != null) {
-                        runnable.run();
+                    if (!isFinishing()) {
+                        if (alertDialog != null && alertDialog.isShowing()) {
+                            alertDialog.dismiss();
+                        }
+                        if (runnable != null) {
+                            runnable.run();
+                        }
+                    } else {
+                        getMainHandler().removeCallbacks(this);
                     }
                 }
-            }, RETRY_TIMEOUT);
+            };
+            getMainHandler().postDelayed(task, RETRY_TIMEOUT);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

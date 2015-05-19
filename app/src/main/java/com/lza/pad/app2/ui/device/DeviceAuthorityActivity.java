@@ -34,6 +34,7 @@ import java.util.List;
  * @author xiads
  * @Date 3/5/15.
  */
+@Deprecated
 public class DeviceAuthorityActivity extends BaseActivity {
 
     WifiAdmin mWifiAdmin;

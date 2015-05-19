@@ -718,6 +718,10 @@ public final class RuntimeUtility implements Consts {
         return getStringFromSP(context, SP_DEVICE_NAME, SP_MODE_PRIVATE, key, defaultValue);
     }
 
+    public static boolean getFromDeviceSP(Context context, String key, boolean defaultValue) {
+        return getBooleanFromSP(context, SP_DEVICE_NAME, SP_MODE_PRIVATE, key, defaultValue);
+    }
+
     public static boolean clearDeviceSp(Context context) {
         return clearSp(context, SP_DEVICE_NAME, SP_MODE_PRIVATE);
     }
@@ -767,6 +771,11 @@ public final class RuntimeUtility implements Consts {
     public static String getStringFromSP(Context context, String spName, int spMode, String key, String defaultValue) {
         SharedPreferences preferences = context.getSharedPreferences(spName, spMode);
         return preferences.getString(key, defaultValue);
+    }
+
+    public static boolean getBooleanFromSP(Context context, String spName, int spMode, String key, boolean defaultValue) {
+        SharedPreferences preferences = context.getSharedPreferences(spName, spMode);
+        return preferences.getBoolean(key, defaultValue);
     }
 
     public static boolean clearSp(Context context, String spName, int spMode) {

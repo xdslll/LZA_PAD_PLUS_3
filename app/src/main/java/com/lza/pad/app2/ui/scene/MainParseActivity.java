@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.lza.pad.app2.ui.base.BaseActivity;
-import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
+import com.lza.pad.app2.ui.device.UniversalVerifyActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
@@ -87,7 +87,7 @@ public class MainParseActivity extends BaseActivity {
     private void backToDeviceActivity() {
         log("[P202]返回设备验证流程");
         dismissProgressDialog();
-        Intent intent = new Intent(mCtx, DeviceAuthorityActivity.class);
+        Intent intent = new Intent(mCtx, UniversalVerifyActivity.class);
         startActivity(intent);
         finish();
     }

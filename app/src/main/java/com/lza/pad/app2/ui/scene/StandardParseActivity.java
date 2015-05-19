@@ -7,7 +7,7 @@ import android.view.View;
 import com.lza.pad.R;
 import com.lza.pad.app2.service.ServiceMode;
 import com.lza.pad.app2.ui.base.BaseParseActivity;
-import com.lza.pad.app2.ui.device.DeviceAuthorityActivity;
+import com.lza.pad.app2.ui.device.UniversalVerifyActivity;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadModuleType;
@@ -225,7 +225,7 @@ public class StandardParseActivity extends BaseParseActivity {
      */
     private void updateVersion() {
         EventBus.getDefault().post(ServiceMode.MODE_UPDATE_VERSION);
-        Intent intent = new Intent(mCtx, DeviceAuthorityActivity.class);
+        Intent intent = new Intent(mCtx, UniversalVerifyActivity.class);
         startActivity(intent);
     }
 

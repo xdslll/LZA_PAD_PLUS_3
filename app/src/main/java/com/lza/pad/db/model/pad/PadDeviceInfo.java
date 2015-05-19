@@ -23,6 +23,9 @@ public class PadDeviceInfo implements Parcelable {
     public static final String TAG_STATE_ON = "1";
     public static final String TAG_STATE_OFF = "0";
 
+    public static final String TAG_WIFI_ON = "1";
+    public static final String TAG_WIFI_OFF = "0";
+
     String id;
 
     String bh;
@@ -70,6 +73,8 @@ public class PadDeviceInfo implements Parcelable {
     String proxy_port;
 
     String scene_id;
+
+    String wifi_switch;
 
     public String getId() {
         return id;
@@ -263,6 +268,14 @@ public class PadDeviceInfo implements Parcelable {
         this.scene_id = scene_id;
     }
 
+    public String getWifi_switch() {
+        return wifi_switch;
+    }
+
+    public void setWifi_switch(String wifi_switch) {
+        this.wifi_switch = wifi_switch;
+    }
+
     public PadDeviceInfo() {
 
     }
@@ -317,6 +330,7 @@ public class PadDeviceInfo implements Parcelable {
         dest.writeString(this.proxy_ip);
         dest.writeString(this.proxy_port);
         dest.writeString(this.scene_id);
+        dest.writeString(this.wifi_switch);
     }
 
     private PadDeviceInfo(Parcel in) {
@@ -344,6 +358,7 @@ public class PadDeviceInfo implements Parcelable {
         this.proxy_ip = in.readString();
         this.proxy_port = in.readString();
         this.scene_id = in.readString();
+        this.wifi_switch = in.readString();
     }
 
     public static final Creator<PadDeviceInfo> CREATOR = new Creator<PadDeviceInfo>() {

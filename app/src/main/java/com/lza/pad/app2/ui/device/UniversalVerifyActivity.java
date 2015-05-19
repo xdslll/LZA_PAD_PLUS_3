@@ -53,6 +53,7 @@ public class UniversalVerifyActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.universal_verify);
 
+        mWifiAdmin = new WifiAdmin(mCtx);
         authorityDevice();
     }
 
@@ -64,8 +65,19 @@ public class UniversalVerifyActivity extends BaseActivity {
         showLoadingView();
         setLoadingViewText(R.string.verify_start);
 
-        mWifiAdmin = new WifiAdmin(mCtx);
-        String macAddress = mWifiAdmin.getMacAddress();
+        String macAddress = RuntimeUtility.getFromDeviceSP(mCtx, KEY_MAC_ADDRESS, "");
+
+        if (isEmpty(macAddress)) {
+            macAddress = mWifiAdmin.getMacAddress();
+            if (isEmpty(macAddress)) {
+                //如果mac地址为空，需要打开wifi后获取
+                if (!mWifiAdmin.isWifiEnable()) {
+                    mWifiAdmin.openWifi(mWifiStateListener);
+                }
+            } else {
+                RuntimeUtility.putToDeviceSP(mCtx, KEY_MAC_ADDRESS, macAddress);
+            }
+        }
 
         String authorityUrl = UrlHelper.getDeviceUrl(macAddress);
         send(authorityUrl, new AuthorityDeviceListener());
@@ -123,6 +135,27 @@ public class UniversalVerifyActivity extends BaseActivity {
     private void handleAuthoritySuccessful(List<PadDeviceInfo> content) {
         log("[P107]验证服务是否过期");
         mPadDeviceInfo = content.get(0);
+
+        String wifiSwitch = mPadDeviceInfo.getWifi_switch();
+        boolean isWifiOpen;
+        if (wifiSwitch.equals(PadDeviceInfo.TAG_WIFI_ON)) {
+            isWifiOpen = true;
+            if (!mWifiAdmin.isWifiEnable()) {
+                mWifiAdmin.openWifi();
+            }
+        } else if (wifiSwitch.equals(PadDeviceInfo.TAG_WIFI_OFF)) {
+            isWifiOpen = false;
+            if (mWifiAdmin.isWifiEnable()) {
+                mWifiAdmin.closeWifi();
+            }
+        } else {
+            isWifiOpen = true;
+            if (!mWifiAdmin.isWifiEnable()) {
+                mWifiAdmin.openWifi();
+            }
+        }
+        RuntimeUtility.putToDeviceSP(mCtx, KEY_WIFI_SWITCH, isWifiOpen);
+
         String date = mPadDeviceInfo.getEnd_pubdate();
         SimpleDateFormat format = (SimpleDateFormat) DateFormat.getDateInstance();
         format.applyPattern("yyyy-MM-dd");
@@ -295,7 +328,17 @@ public class UniversalVerifyActivity extends BaseActivity {
         public void handle(String action, int wifiState) {
             if (action.equals(WifiAdmin.ACTION_OPEN_WIFI)) {
                 if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
-
+                    log("打开Wi-Fi成功，开始获取Mac地址");
+                    String macAddress = mWifiAdmin.getMacAddress();
+                    if (!isEmpty(macAddress)) {
+                        RuntimeUtility.putToDeviceSP(mCtx, KEY_MAC_ADDRESS, macAddress);
+                        //默认打开Wi-Fi
+                        boolean isWifiOn = RuntimeUtility.getFromDeviceSP(mCtx, KEY_WIFI_SWITCH, true);
+                        if (!isWifiOn) {
+                            mWifiAdmin.closeWifi();
+                        }
+                    }
+                    authorityDevice();
                 } else if (wifiState == WifiManager.WIFI_STATE_ENABLING) {
 
                 }
@@ -403,7 +446,7 @@ public class UniversalVerifyActivity extends BaseActivity {
         handleErrorProcess(title, message, new Runnable() {
             @Override
             public void run() {
-                showProgressDialog(R.string.getting_mac_address);
+                setLoadingViewText(R.string.getting_mac_address);
                 authorityDevice();
             }
         });

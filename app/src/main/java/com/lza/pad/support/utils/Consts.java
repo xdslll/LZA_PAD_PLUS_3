@@ -155,6 +155,8 @@ public interface Consts {
     public static final String KEY_PAD_DEVICE_INFO = "key_pad_device";
     public static final String KEY_DEVICE_IS_UPDATING = "key_device_is_updating";
     public static final String KEY_UPDATE_DEVICE_IS_RUNNING = "key_update_device_is_running";
+    public static final String KEY_MAC_ADDRESS = "key_mac_address";
+    public static final String KEY_WIFI_SWITCH = "key_wifi_switch";
 
     public static final String ACTION_START_HOME_MODULE = "ACTION_START_HOME_MODULE";
     public static final String ACTION_UPDATE_DEVICE_CALLBACK = "LZA_PAD_UPDATE_CALLBACK";
