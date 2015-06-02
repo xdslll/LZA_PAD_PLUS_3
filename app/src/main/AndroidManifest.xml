@@ -119,6 +119,7 @@
             <intent-filter >
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.HOME"/>
+                <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT"/>
             </intent-filter>
         </receiver>
 

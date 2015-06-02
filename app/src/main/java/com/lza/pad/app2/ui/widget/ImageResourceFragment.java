@@ -25,12 +25,12 @@ import com.lza.pad.app2.event.base.OnPageChangeListener;
 import com.lza.pad.app2.ui.widget.base.BaseGridFragment;
 import com.lza.pad.app2.ui.widget.base.BaseImageFragment;
 import com.lza.pad.db.model.ResponseData;
+import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
 import com.lza.pad.support.utils.RuntimeUtility;
-import com.lza.pad.support.utils.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +113,20 @@ public class ImageResourceFragment extends BaseImageFragment {
         mTxtMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ToastUtils.showLong(mActivity, "点击更多按钮");
+                List<PadModule> sm = mPadModuleWidget.getRelated_module_id();
+                if (!isEmpty(sm)) {
+                    PadModule module = sm.get(0);
+                    int index = 0;
+                    if (module != null && !isEmpty(mPadSubpageModule)) {
+                        for (int i = 0; i < mPadSubpageModule.size(); i++) {
+                            if (module.getId().equals(mPadSubpageModule.get(i).getId())) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        launchSubpageModule(index);
+                    }
+                }
             }
         });
 

@@ -9,12 +9,12 @@ android {
             keyAlias 'njlza'
         }
     }
-    compileSdkVersion 20
+    compileSdkVersion 19
     buildToolsVersion "20.0.0"
     defaultConfig {
         applicationId "com.lza.pad"
         minSdkVersion 15
-        targetSdkVersion 20
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
         signingConfig signingConfigs.release

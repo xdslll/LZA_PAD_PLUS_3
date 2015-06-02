@@ -298,11 +298,17 @@ public class UrlHelper implements Consts {
     }
 
     public static String getDeviceParam(PadDeviceInfo deviceInfo) {
-
         Map<String, String> par = new HashMap<String, String>();
         par.put(PAR_CONTROL, CONTROL_GET_DEVICE_PARAM);
         par.put(PAR_DEVICE_ID, deviceInfo.getBh());
         par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
+    }
+
+    public static String getPadResourceDetail(PadResource padResource) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_PAD_RESOURCE_BY_ID);
+        par.put(PAR_ID, padResource.getId());
         return generateUrl(par);
     }
 

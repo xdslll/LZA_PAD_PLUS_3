@@ -72,10 +72,21 @@ public class UniversalVerifyActivity extends BaseActivity {
             if (isEmpty(macAddress)) {
                 //如果mac地址为空，需要打开wifi后获取
                 if (!mWifiAdmin.isWifiEnable()) {
-                    mWifiAdmin.openWifi(mWifiStateListener);
+                    mWifiAdmin.openWifi();
+                    getMainHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            authorityDevice();
+                        }
+                    }, 3000);
                 }
             } else {
                 RuntimeUtility.putToDeviceSP(mCtx, KEY_MAC_ADDRESS, macAddress);
+                //默认打开Wi-Fi
+                boolean isWifiOn = RuntimeUtility.getFromDeviceSP(mCtx, KEY_WIFI_SWITCH, true);
+                if (!isWifiOn) {
+                    mWifiAdmin.closeWifi();
+                }
             }
         }
 

@@ -142,7 +142,16 @@ public class EbookContentFragment extends BaseImageFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        showQCode();
+        if (mPadResource != null) {
+            String sourceType = mPadResource.getSource_type();
+            if (sourceType.equals(PadResource.RESOURCE_EBOOK)) {
+                showQCode();
+            } else {
+                mLayoutQCode.setVisibility(View.GONE);
+            }
+        } else {
+            mLayoutQCode.setVisibility(View.GONE);
+        }
         registerEventBus();
         String paramUrl = UrlHelper.getDeviceParam(mPadDeviceInfo);
         send(paramUrl, mDeviceParamListener);
@@ -184,13 +193,19 @@ public class EbookContentFragment extends BaseImageFragment {
     }
 
     private void showQCode() {
-        if (mPadResource == null) return;
-        String url = mPadResource.getFulltext();
-        if (isEmpty(url)) {
+        String fulltextUrl = mPadResource.getFulltext();
+        if (isEmpty(fulltextUrl)) {
             mLayoutQCode.setVisibility(View.GONE);
         } else {
             mLayoutQCode.setVisibility(View.VISIBLE);
             try {
+                String ebookUrl = UrlHelper.getPadResourceDetail(mPadResource);
+                log("二维码（加密前）：" + ebookUrl);
+                ebookUrl = Base64.encodeToString(ebookUrl.getBytes(), Base64.DEFAULT);
+                log("二维码（加密后）：" + ebookUrl);
+                Bitmap qcodeImage = Utility.createQCode(ebookUrl, mImgQCode.getWidth(), mImgQCode.getHeight());
+                mImgQCode.setImageBitmap(qcodeImage);
+                /*
                 String sourceType = mPadResource.getSource_type();
                 String title = mPadResource.getTitle();
                 String author = mPadResource.getAuthor();
@@ -213,7 +228,7 @@ public class EbookContentFragment extends BaseImageFragment {
 
                 String urlEncode = Base64.encodeToString(sb.toString().getBytes(), Base64.DEFAULT);
                 Bitmap qcodeImage = Utility.createQCode(urlEncode, mImgQCode.getWidth(), mImgQCode.getHeight());
-                mImgQCode.setImageBitmap(qcodeImage);
+                mImgQCode.setImageBitmap(qcodeImage);*/
             } catch (Exception ex) {
                 mLayoutQCode.setVisibility(View.GONE);
             }

@@ -186,6 +186,8 @@ public abstract class BaseParseActivity extends BaseActivity {
         handleErrorProcess(getString(title), getString(message), new Runnable() {
             @Override
             public void run() {
+                resetSceneData();
+                getSceneSwitching();
                 getSceneModules();
             }
         });

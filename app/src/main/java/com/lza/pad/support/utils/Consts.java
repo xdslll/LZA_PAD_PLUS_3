@@ -121,6 +121,11 @@ public interface Consts {
      */
     public static final String CONTROL_GET_DEVICE_PARAM = "get_device_param";
 
+    /**
+     * 根据ID获取资源的明细
+     */
+    public static final String CONTROL_GET_PAD_RESOURCE_BY_ID = "get_message_by_id";
+
 
     public static final String KEY_PAD_CURRENT_MODULE_TYPE = "key_pad_current_module_type";
     public static final String KEY_PAD_NEXT_MODULE_TYPE = "key_pad_next_module_type";
