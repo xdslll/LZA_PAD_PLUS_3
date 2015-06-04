@@ -119,7 +119,7 @@ public class ImageResourceFragment extends BaseImageFragment {
                     int index = 0;
                     if (module != null && !isEmpty(mPadSubpageModule)) {
                         for (int i = 0; i < mPadSubpageModule.size(); i++) {
-                            if (module.getId().equals(mPadSubpageModule.get(i).getId())) {
+                            if (module.getId().equals(mPadSubpageModule.get(i).getModule_id().get(0).getId())) {
                                 index = i;
                                 break;
                             }
