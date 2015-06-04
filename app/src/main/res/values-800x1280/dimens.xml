@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--电子书布局-->
+    <dimen name="ebook_list_module_title">16sp</dimen>
+    <dimen name="ebook_list_module_more">14sp</dimen>
+    <dimen name="ebook_list_book_width">180dp</dimen>
+    <dimen name="ebook_list_book_height">250dp</dimen>
+    <dimen name="ebook_list_book_padding_bottom">30dp</dimen>
+    <dimen name="ebook_list_book_title_size">26sp</dimen>
+    <dimen name="ebook_list_book_author_size">18sp</dimen>
+    <dimen name="ebook_list_book_content_size">16sp</dimen>
+    <dimen name="ebook_list_book_content_max_width">220dp</dimen>
+    <integer name="ebook_list_book_content_max_lines">9</integer>
+    <dimen name="ebook_list_seperate_margin">0dp</dimen>
+
+    <dimen name="ebook_list_book_thumb_width">85dp</dimen>
+    <dimen name="ebook_list_book_thumb_height">120dp</dimen>
+    <dimen name="ebook_list_book_thumb_title_size">22sp</dimen>
+    <dimen name="ebook_list_book_thumb_author_size">16sp</dimen>
+    <dimen name="ebook_list_book_thumb_content_size">14sp</dimen>
+    <integer name="ebook_list_book_thumb_content_max_lines">3</integer>
+    <dimen name="ebook_list_book_thumb_margin">2dp</dimen>
+
+    <dimen name="ebook_list_book_cover_title_size">23dp</dimen>
+    <dimen name="ebook_list_book_cover_author_size">18dp</dimen>
+    <dimen name="ebook_list_book_cover_title_margin">40dp</dimen>
+    <dimen name="ebook_list_book_cover_author_margin">15dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_title_size">12dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_author_size">8dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_title_margin">20dp</dimen>
+    <dimen name="ebook_list_book_thumb_cover_author_margin">10dp</dimen>
+
+    <dimen name="ebook_list_book_margin_top">10dp</dimen>
+    <dimen name="ebook_list_book_thumb_margin_top">0dp</dimen>
+
+    <!--电子书布局2-->
+    <dimen name="ebook_list2_book_width">140dp</dimen>
+    <dimen name="ebook_list2_book_height">200dp</dimen>
+    <dimen name="ebook_list2_book_cover_title_size">21dp</dimen>
+    <dimen name="ebook_list2_book_cover_author_size">16dp</dimen>
+    <dimen name="ebook_list2_book_margin_top">10dp</dimen>
+
+    <!--到馆新书布局-->
+    <dimen name="newbook_list_book_width">100dp</dimen>
+    <dimen name="newbook_list_book_height">160dp</dimen>
+    <dimen name="newbook_list_book_cover_title_size">21dp</dimen>
+    <dimen name="newbook_list_book_cover_author_size">16dp</dimen>
+    <dimen name="newbook_list_book_cover_title_margin">10dp</dimen>
+    <dimen name="newbook_list_book_cover_author_margin">5dp</dimen>
+
+    <!--首页头部的尺寸-->
+    <dimen name="title_bg_logo_width">250dp</dimen>
+    <dimen name="title_bg_logo_height">176dp</dimen>
+    <dimen name="title_bg_logo_margin_left">20dp</dimen>
+    <dimen name="title_bg_logo_margin_top">20dp</dimen>
+    <dimen name="title_nav_img_width">64dp</dimen>
+    <dimen name="title_nav_img_height">64dp</dimen>
+    <dimen name="title_nav_text_size">16sp</dimen>
+
+    <!-- EbookNormalListFragment.java -->
+    <dimen name="ebook_list_book_padding_hor">10dp</dimen>
+    <dimen name="ebook_list_book_padding_ver">10dp</dimen>
+    <dimen name="ebook_list_book_padding_hor2">10dp</dimen>
+    <dimen name="ebook_list_book_padding_ver2">20dp</dimen>
+
+    <!-- NewbookListFragment.java -->
+    <dimen name="newbook_list_book_padding_hor">5dp</dimen>
+    <dimen name="newbook_list_book_padding_ver">5dp</dimen>
+    <dimen name="newbook_list_book_padding_hor2">5dp</dimen>
+    <dimen name="newbook_list_book_padding_ver2">5dp</dimen>
+
+    <!-- SubjectFragment.java -->
+    <dimen name="subject_text_size">20sp</dimen>
+    <dimen name="subject_text_padding">10dp</dimen>
+
+    <!-- news_list_item.xml -->
+    <dimen name="news_list_item_img_width">160dp</dimen>
+    <dimen name="news_list_item_img_height">160dp</dimen>
+
+    <!-- library_map.xml -->
+    <dimen name="library_map_img_width">300dp</dimen>
+    <dimen name="library_map_img_height">250dp</dimen>
+    <dimen name="library_map_img_bg_width">320dp</dimen>
+    <dimen name="library_map_img_bg_height">270dp</dimen>
+
+    <!-- panoramic_view.xml -->
+    <dimen name="panoramic_view_title_size">30sp</dimen>
+    <dimen name="panoramic_view_title_func_size">20sp</dimen>
+
+    <!-- IrregularNews.java -->
+    <dimen name="irregular_news_title_size">18sp</dimen>
+    <dimen name="irregular_news_abstract_size">14sp</dimen>
+
+    <!-- news_content.xml -->
+    <dimen name="content_min_width">800dp</dimen>
+    <dimen name="content_min_height">400dp</dimen>
+
+    <!-- ebook_content2.xml -->
+    <dimen name="ebook_content_qcode_text_size">16sp</dimen>
+    <dimen name="ebook_content_title_text_size">20sp</dimen>
+    <dimen name="ebook_content_author_text_size">16sp</dimen>
+    <dimen name="ebook_content_press_text_size">16sp</dimen>
+    <dimen name="ebook_content_pubdate_text_size">16sp</dimen>
+    <dimen name="ebook_content_isbn_text_size">16sp</dimen>
+    <dimen name="ebook_content_pager_tab_text_size">16sp</dimen>
+    <dimen name="ebook_content_key_size">16sp</dimen>
+    <dimen name="ebook_content_value_size">18sp</dimen>
+    <dimen name="ebook_content_tip_size">14sp</dimen>
+    <dimen name="ebook_content_qcode_width">100dp</dimen>
+    <dimen name="ebook_content_qcode_layout_width">140dp</dimen>
+
+    <!-- common_content_container.xml -->
+    <dimen name="content_container_title_size">24sp</dimen>
+
+    <!-- title_menu_item.xml -->
+    <dimen name="title_menu_item_ico_width">48dp</dimen>
+
+    <!-- title.xml -->
+    <dimen name="title_calendar_date_size">32sp</dimen>
+    <dimen name="title_calendar_time_size">20sp</dimen>
+    <dimen name="title_wifi_img_width">30dp</dimen>
+
+    <!-- 通用字体大小 -->
+    <dimen name="super_huge_text_size">48sp</dimen>
+    <dimen name="huge_text_size">40sp</dimen>
+    <dimen name="large_text_size">28sp</dimen>
+    <dimen name="medium_text_size">24sp</dimen>
+    <dimen name="small_text_size">20sp</dimen>
+    <dimen name="very_small_text_size">16sp</dimen>
+    <dimen name="tiny_text_size">14sp</dimen>
+
+    <!-- padding -->
+    <dimen name="large_padding">20dp</dimen>
+    <dimen name="medium_padding">15dp</dimen>
+    <dimen name="small_padding">10dp</dimen>
+    <dimen name="tiny_padding">5dp</dimen>
+
+    <!-- 通用尺寸 -->
+    <dimen name="huge_width">50dp</dimen>
+    <dimen name="large_width">36dp</dimen>
+    <dimen name="medium_width">24dp</dimen>
+    <dimen name="small_width">18dp</dimen>
+    <dimen name="very_small_widthe">12dp</dimen>
+
+    <dimen name="width40">40dp</dimen>
+    <dimen name="width30">30dp</dimen>
+    <dimen name="width20">20dp</dimen>
+    <dimen name="width15">15dp</dimen>
+    <dimen name="width10">10dp</dimen>
+    <dimen name="width8">8dp</dimen>
+    <dimen name="width5">5dp</dimen>
+
+    <dimen name="height0">50dp</dimen>
+    <dimen name="height60">60dp</dimen>
+    <dimen name="height70">70dp</dimen>
+    <dimen name="height80">80dp</dimen>
+    <dimen name="height90">90dp</dimen>
+    <dimen name="height95">95dp</dimen>
+
+    <!-- EbookgridFragment -->
+    <dimen name="ebookgrid_book_ver_padding">10dp</dimen>
+    <dimen name="ebookgrid_book_hor_padding">10dp</dimen>
+
+    <!-- JournalContentCatalogFragment -->
+    <dimen name="journal_catalog_content_title_size">24sp</dimen>
+    <dimen name="journal_catalog_content_normal_size">20sp</dimen>
+
+    <!-- EbookContentOverview -->
+    <dimen name="ebook_content_overview_douban_reviews_marginLeft">100dp</dimen>
+
+    <!-- SearchFragment -->
+    <dimen name="search_list_search_text_size">16sp</dimen>
+    <dimen name="search_list_search_text_padding">10dp</dimen>
+
+    <!-- common_grid.xml -->
+    <dimen name="common_grid_page_text_size">12sp</dimen>
+
+</resources>
