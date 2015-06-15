@@ -161,6 +161,8 @@
     <dimen name="height90">90dp</dimen>
     <dimen name="height95">95dp</dimen>
 
+    <dimen name="tiny_padding">5dp</dimen>
+
     <!-- EbookgridFragment -->
     <dimen name="ebookgrid_book_ver_padding">10dp</dimen>
     <dimen name="ebookgrid_book_hor_padding">10dp</dimen>
