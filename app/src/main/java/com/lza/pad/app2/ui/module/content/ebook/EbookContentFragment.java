@@ -41,7 +41,7 @@ import com.lza.pad.db.model.pad.PadDeviceParam;
 import com.lza.pad.db.model.pad.PadParam;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadResourceDetail;
-import com.lza.pad.helper.DownloadHelper;
+import com.lza.pad.helper._DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
@@ -713,11 +713,11 @@ public class EbookContentFragment extends BaseImageFragment {
                     MinaServerHelper.instance().sendFile(client.getSession(),
                             fileName, bookFile.length());
                 } else {
-                    DownloadHelper.InternelDownloadFile downloadFile = new DownloadHelper.InternelDownloadFile();
+                    _DownloadHelper.InternelDownloadFile downloadFile = new _DownloadHelper.InternelDownloadFile();
                     downloadFile.setFileName(fileName);
                     downloadFile.setFilePath(bookFile.getAbsolutePath());
                     downloadFile.setFileType(parseInt(mPadResource.getSource_type()));
-                    DownloadHelper helper = new DownloadHelper(mActivity, downloadUrl, downloadFile);
+                    _DownloadHelper helper = new _DownloadHelper(mActivity, downloadUrl, downloadFile);
                     helper.download();
                 }
             }

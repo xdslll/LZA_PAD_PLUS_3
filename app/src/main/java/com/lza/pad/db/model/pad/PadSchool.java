@@ -21,6 +21,8 @@ public class PadSchool implements Parcelable {
 
     String max_authority;
 
+    String number;
+
     public String getId() {
         return id;
     }
@@ -61,6 +63,16 @@ public class PadSchool implements Parcelable {
         this.max_authority = max_authority;
     }
 
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public PadSchool() {
+    }
 
     @Override
     public int describeContents() {
@@ -74,9 +86,7 @@ public class PadSchool implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.password);
         dest.writeString(this.max_authority);
-    }
-
-    public PadSchool() {
+        dest.writeString(this.number);
     }
 
     private PadSchool(Parcel in) {
@@ -85,9 +95,10 @@ public class PadSchool implements Parcelable {
         this.title = in.readString();
         this.password = in.readString();
         this.max_authority = in.readString();
+        this.number = in.readString();
     }
 
-    public static final Parcelable.Creator<PadSchool> CREATOR = new Parcelable.Creator<PadSchool>() {
+    public static final Creator<PadSchool> CREATOR = new Creator<PadSchool>() {
         public PadSchool createFromParcel(Parcel source) {
             return new PadSchool(source);
         }

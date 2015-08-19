@@ -4,20 +4,21 @@ import com.google.gson.reflect.TypeToken;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.douban.DoubanBook;
 import com.lza.pad.db.model.douban.DoubanReview;
+import com.lza.pad.db.model.old.OldResponse;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadDeviceParam;
 import com.lza.pad.db.model.pad.PadModuleSwitching;
 import com.lza.pad.db.model.pad.PadModuleWidget;
-import com.lza.pad.db.model.pad.PadSceneModule;
-import com.lza.pad.db.model.pad._old.PadImageCollection;
-import com.lza.pad.db.model.pad._old.PadLayoutModule;
-import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadScene;
+import com.lza.pad.db.model.pad.PadSceneModule;
 import com.lza.pad.db.model.pad.PadSceneSwitching;
 import com.lza.pad.db.model.pad.PadSchool;
 import com.lza.pad.db.model.pad.PadVersionInfo;
+import com.lza.pad.db.model.pad._old.PadImageCollection;
+import com.lza.pad.db.model.pad._old.PadLayoutModule;
+import com.lza.pad.db.model.pad._old.PadModuleControl;
 
 import java.lang.reflect.Type;
 
@@ -195,6 +196,17 @@ public class JsonParseHelper {
     public static ResponseData<PadDeviceParam> parsePadDeviceParamResponse(String json) {
         try {
             Type type = new TypeToken<ResponseData<PadDeviceParam>>() {}.getType();
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static OldResponse parseOldBookSearchResponse(String json) {
+        try {
+            Type type = new TypeToken<OldResponse>() {}.getType();
+
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();

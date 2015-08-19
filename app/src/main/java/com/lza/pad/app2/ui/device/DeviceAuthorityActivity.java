@@ -12,7 +12,7 @@ import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
-import com.lza.pad.helper.DownloadHelper;
+import com.lza.pad.helper._DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.SimpleRequestListener;
 import com.lza.pad.helper.UrlHelper;
@@ -392,7 +392,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
         } catch (Exception ex) {
 
         }
-        DownloadHelper helper = new DownloadHelper(mCtx, version, fileName, apkFile);
+        _DownloadHelper helper = new _DownloadHelper(mCtx, version, fileName, apkFile);
         if (!isRegisterEventBus()) {
             registerEventBus();
         }
@@ -438,7 +438,7 @@ public class DeviceAuthorityActivity extends BaseActivity {
      *
      * @param query
      */
-    public void onEventAsync(DownloadHelper.DownloadQuery query) {
+    public void onEventAsync(_DownloadHelper.DownloadQuery query) {
         int status = query.getStatus();
         if (status == DownloadManager.STATUS_FAILED) {
             log("新版本APK下载失败！");

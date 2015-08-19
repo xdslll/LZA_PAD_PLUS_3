@@ -14,7 +14,7 @@ android {
     defaultConfig {
         applicationId "com.lza.pad"
         minSdkVersion 15
-        targetSdkVersion 19
+        targetSdkVersion 17
         versionCode 1
         versionName "1.0"
         signingConfig signingConfigs.release

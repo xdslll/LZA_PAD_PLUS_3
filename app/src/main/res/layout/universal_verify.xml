@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/home_logo">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/loading"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:id="@+id/universal_verify_text"
+        />
     <include layout="@layout/common_loading_view_stub" android:layout_width="match_parent"
         android:layout_height="wrap_content" android:layout_centerInParent="true"/>
 </RelativeLayout>

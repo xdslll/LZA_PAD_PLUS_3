@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Looper;
 
 import com.lza.pad.support.debug.AppLogger;
@@ -82,7 +81,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
             return false;
         }
         //使用Toast来显示异常信息
-        /*new Thread(){
+        new Thread(){
             @Override
             public void run() {
                 Looper.prepare();
@@ -91,15 +90,7 @@ public class CrashHelper implements Thread.UncaughtExceptionHandler {
                 ex.printStackTrace();
                 Looper.loop();
             }
-        }.start();*/
-        new Handler(Looper.myLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtils.showLong(mContext,
-                        "很抱歉，程序出现异常，即将被您重启程序。异常原因：" + ex.getMessage());
-                ex.printStackTrace();
-            }
-        });
+        }.start();
         return true;
     }
 }

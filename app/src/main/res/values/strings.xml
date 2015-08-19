@@ -32,9 +32,13 @@
     <string name="service_expiration_detail">设备服务过期，请与代理商联系申请延长服务期限</string>
     <string name="updating_device_info">正在更新设备信息</string>
     <string name="dialog_button_retry">重试</string>
+    <string name="update_error">更新失败</string>
+    <string name="update_start">发现新版本，开始更新</string>
 
     <string name="loading">正在加载...</string>
 
+    <string name="verify_restart">正在重试...</string>
+    <string name="verify_error_mac_address">获取Mac地址失败，请打开Wi-Fi后重试</string>
     <string name="verify_start">开始认证...</string>
     <string name="verify_start_updating_version">开始更新版本...</string>
     <string name="verify_updating_version">正在下载升级文件%d%%</string>
@@ -59,5 +63,8 @@
     <string name="module_error_guide_page_number">引导页数量大于1，请检查后重试！</string>
     <string name="module_error_guide_and_home_page">缺少引导模块和首页，请检查后重试！</string>
 
-
+    <string name="search">搜索</string>
+    <string name="empty_text">暂无数据</string>
+    <string name="prev_page">上一页</string>
+    <string name="next_page">下一页</string>
 </resources>

@@ -19,7 +19,7 @@ import com.lza.pad.db.model.DownloadFile;
 import com.lza.pad.db.model.ResponseData;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadVersionInfo;
-import com.lza.pad.helper.DownloadHelper;
+import com.lza.pad.helper._DownloadHelper;
 import com.lza.pad.helper.JsonParseHelper;
 import com.lza.pad.helper.RequestHelper;
 import com.lza.pad.helper.SimpleRequestListener;
@@ -413,11 +413,11 @@ public class SplashActivity extends _BaseActivity implements RequestHelper.OnReq
                 } catch (Exception ex) {
 
                 }
-                DownloadHelper.InternelDownloadFile downloadFile = new DownloadHelper.InternelDownloadFile();
+                _DownloadHelper.InternelDownloadFile downloadFile = new _DownloadHelper.InternelDownloadFile();
                 downloadFile.setFileName(fileName);
                 downloadFile.setFilePath(filePath.getAbsolutePath());
                 downloadFile.setFileType(PadVersionInfo.FILE_TYPE);
-                DownloadHelper helper = new DownloadHelper(SplashActivity.this, downloadUrl, downloadFile);
+                _DownloadHelper helper = new _DownloadHelper(SplashActivity.this, downloadUrl, downloadFile);
                 helper.download();
             }
 

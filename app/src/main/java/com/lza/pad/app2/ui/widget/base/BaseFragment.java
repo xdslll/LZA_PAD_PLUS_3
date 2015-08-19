@@ -1,6 +1,7 @@
 package com.lza.pad.app2.ui.widget.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -349,5 +351,15 @@ public abstract class BaseFragment extends Fragment implements Consts {
      */
     public void onEventAsync(DownloadFile downloadFile) {
 
+    }
+
+    protected void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(mActivity.getWindow().getDecorView(), InputMethodManager.SHOW_FORCED);
+    }
+
+    protected void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mActivity.getWindow().getDecorView().getWindowToken(), 0);
     }
 }

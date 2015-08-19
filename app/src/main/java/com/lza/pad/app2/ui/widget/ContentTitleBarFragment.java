@@ -33,6 +33,7 @@ public class ContentTitleBarFragment extends BaseImageFragment {
         mTxtHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hideKeyboard();
                 mActivity.finish();
             }
         });
