@@ -8,6 +8,7 @@ import com.lza.pad.db.model.old.OldResponse;
 import com.lza.pad.db.model.pad.PadAuthority;
 import com.lza.pad.db.model.pad.PadDeviceInfo;
 import com.lza.pad.db.model.pad.PadDeviceParam;
+import com.lza.pad.db.model.pad.PadMenuGroup;
 import com.lza.pad.db.model.pad.PadModuleSwitching;
 import com.lza.pad.db.model.pad.PadModuleWidget;
 import com.lza.pad.db.model.pad.PadResource;
@@ -207,6 +208,16 @@ public class JsonParseHelper {
         try {
             Type type = new TypeToken<OldResponse>() {}.getType();
 
+            return GsonHelper.instance().fromJson(json, type);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ResponseData<PadMenuGroup> parsePadMenuGroup(String json) {
+        try {
+            Type type = new TypeToken<ResponseData<PadMenuGroup>>() {}.getType();
             return GsonHelper.instance().fromJson(json, type);
         } catch (Exception ex) {
             ex.printStackTrace();

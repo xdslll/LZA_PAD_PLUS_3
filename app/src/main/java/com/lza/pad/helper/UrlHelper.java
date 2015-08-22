@@ -7,6 +7,7 @@ import com.lza.pad.db.model.pad.PadModule;
 import com.lza.pad.db.model.pad.PadModuleType;
 import com.lza.pad.db.model.pad.PadResource;
 import com.lza.pad.db.model.pad.PadScene;
+import com.lza.pad.db.model.pad.PadSceneModule;
 import com.lza.pad.db.model.pad._old.PadLayoutModule;
 import com.lza.pad.db.model.pad._old.PadModuleControl;
 import com.lza.pad.support.utils.Consts;
@@ -93,6 +94,10 @@ public class UrlHelper implements Consts {
     public static final String PAR_PRE_MODULE = "pre_module";
 
     public static final String PAR_DEVICE_ID = "device_id";
+
+    public static final String PAR_GROUP = "group";
+
+    public static final String PAR_CLC = "clc";
 
     public static String generateUrl(Map<String, String> par) {
         String param = Utility.encodeUrl(par);
@@ -196,6 +201,33 @@ public class UrlHelper implements Consts {
         par.put(PAR_PAGE, String.valueOf(page));
         par.put(PAR_PAGE_SIZE, String.valueOf(pageSize));
         par.put(PAR_SOURCE_TYPE, sourceType);
+        return generateUrl(par);
+    }
+
+    public static String getResourcesUrl(PadDeviceInfo deviceInfo, String sourceType, int pageSize, int page, String keyword) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_MESSAGE);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_PAGE, String.valueOf(page));
+        par.put(PAR_PAGE_SIZE, String.valueOf(pageSize));
+        par.put(PAR_SOURCE_TYPE, sourceType);
+        if (!TextUtils.isEmpty(keyword)) {
+            par.put(PAR_KEY, keyword);
+        }
+        return generateUrl(par);
+    }
+
+    public static String getResourcesUrl(PadDeviceInfo deviceInfo, String sourceType, int pageSize, int page, String subjectType, String keyword) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_MESSAGE);
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        par.put(PAR_PAGE, String.valueOf(page));
+        par.put(PAR_PAGE_SIZE, String.valueOf(pageSize));
+        par.put(PAR_SOURCE_TYPE, sourceType);
+        par.put(PAR_CLC, subjectType);
+        if (!TextUtils.isEmpty(keyword)) {
+            par.put(PAR_KEY, keyword);
+        }
         return generateUrl(par);
     }
 
@@ -377,6 +409,21 @@ public class UrlHelper implements Consts {
                 .append("&start=").append(start)
                 .append("&count=").append(count)
                 .toString();
+    }
+
+    /**
+     * 获取模块菜单
+     *
+     * @param deviceInfo
+     * @param padSceneModule
+     * @return
+     */
+    public static String getModuleMenu(PadDeviceInfo deviceInfo, PadSceneModule padSceneModule) {
+        Map<String, String> par = new HashMap<String, String>();
+        par.put(PAR_CONTROL, CONTROL_GET_MODULE_MENU);
+        par.put(PAR_GROUP, padSceneModule.getMenu_group_id());
+        par.put(PAR_MAC_ADDRESS, deviceInfo.getMac_add());
+        return generateUrl(par);
     }
 
 }

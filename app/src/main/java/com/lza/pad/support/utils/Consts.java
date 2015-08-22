@@ -126,6 +126,12 @@ public interface Consts {
      */
     public static final String CONTROL_GET_PAD_RESOURCE_BY_ID = "get_message_by_id";
 
+    /**
+     * 获取模块菜单
+     */
+    public static final String CONTROL_GET_MODULE_MENU = "get_module_menu";
+
+
 
     public static final String KEY_PAD_CURRENT_MODULE_TYPE = "key_pad_current_module_type";
     public static final String KEY_PAD_NEXT_MODULE_TYPE = "key_pad_next_module_type";
@@ -162,6 +168,8 @@ public interface Consts {
     public static final String KEY_UPDATE_DEVICE_IS_RUNNING = "key_update_device_is_running";
     public static final String KEY_MAC_ADDRESS = "key_mac_address";
     public static final String KEY_WIFI_SWITCH = "key_wifi_switch";
+    public static final String KEY_SUBJECT = "key_subject";
+    public static final String KEY_KEYWORD = "key_keyword";
 
     public static final String ACTION_START_HOME_MODULE = "ACTION_START_HOME_MODULE";
     public static final String ACTION_UPDATE_DEVICE_CALLBACK = "LZA_PAD_UPDATE_CALLBACK";
@@ -175,6 +183,8 @@ public interface Consts {
     public static final String ACTION_WIDGET_SWITCHING_SERVICE = "LZA_PAD_WIDGET_SWITCHING_SERVICE";
     public static final String ACTION_START_PARSE_RECEIVER = "LZA_PAD_START_PARSE_RECEIVER";
     public static final String ACTION_START_PARSE_ERROR_RECEIVER = "LZA_PAD_START_PARSE_ERROR_RECEIVER";
+    public static final String ACTION_SUBJECT_RECEIVER = "LZA_PAD_SUBJECT_RECEIVER";
+    public static final String ACTION_SEARCH_RECEIVER = "LZA_PAD_SEARCH_RECEIVER";
 
     public static final String KEY_MINA_SERVER_ACTION = "key_mina_server_action";
 

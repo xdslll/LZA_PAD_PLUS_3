@@ -1,5 +1,9 @@
 package com.lza.pad.app2.ui.widget;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -63,6 +67,16 @@ public class GridResourceFragment extends BaseImageFragment {
      */
     boolean mCanTurnToPage = true;
 
+    /**
+     * 学科类型
+     */
+    String mSubjectType = "ALL";
+
+    /**
+     * 关键字
+     */
+    String mKeyword = "";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +99,27 @@ public class GridResourceFragment extends BaseImageFragment {
         int totalHorizontalPadding = getTotalPadding(mColumnCount, mPaddingHor);
         mBookWidth = (mWidgetWidth - totalHorizontalPadding) / mColumnCount;
         mBookHeight = (mWidgetHeight - totalVerticalPadding) / mRowCount;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_SUBJECT_RECEIVER);
+        filter.addAction(ACTION_SEARCH_RECEIVER);
+        mActivity.registerReceiver(mSubjectReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        try {
+            mActivity.unregisterReceiver(mSubjectReceiver);
+        } catch (Exception ex) {
+
+        }
     }
 
     /**
@@ -151,7 +186,13 @@ public class GridResourceFragment extends BaseImageFragment {
 
     private void getPadResource() {
         if (mPadWidgetData != null) {
-            String url = UrlHelper.getResourcesUrl(mPadDeviceInfo, mPadWidgetData.getType(), mDataSize, mCurrentPage);
+            setLoadingViewText("正在获取数据...");
+            String url;
+            if (mSubjectType.equals("ALL")) {
+                url = UrlHelper.getResourcesUrl(mPadDeviceInfo, mPadWidgetData.getType(), mDataSize, mCurrentPage, mKeyword);
+            } else {
+                url = UrlHelper.getResourcesUrl(mPadDeviceInfo, mPadWidgetData.getType(), mDataSize, mCurrentPage, mSubjectType, mKeyword);
+            }
             send(url, new PadResourceListener());
         } else {
             dismissLoadingView();
@@ -203,6 +244,12 @@ public class GridResourceFragment extends BaseImageFragment {
             showPageButton();//数据加载完毕后，开始展示翻页按钮
             dismissLoadingView();
             mCanTurnToPage = true;
+        }
+
+        @Override
+        public void onResponseContentEmpty() {
+            mPadResources.clear();
+            mGrid.setAdapter(new EbookGridAdapter());
         }
 
         @Override
@@ -291,6 +338,36 @@ public class GridResourceFragment extends BaseImageFragment {
             img = (ImageView) view.findViewById(R.id.ebook_list_item_book_img);
             book = (DefaultEbookCover) view.findViewById(R.id.ebook_list_item_book);
             layout = (RelativeLayout) view.findViewById(R.id.ebook_list_item);
+        }
+    }
+
+    SubjectReceiver mSubjectReceiver = new SubjectReceiver();
+    private class SubjectReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                if (intent.getAction().equals(ACTION_SUBJECT_RECEIVER)) {
+                    String subjectType = intent.getStringExtra(KEY_SUBJECT);
+                    log("学科类型：" + subjectType);
+                    if (subjectType.equals("ALL")) {
+                        mSubjectType = "ALL";
+                    } else {
+                        mSubjectType = subjectType;
+                    }
+                    mKeyword = "";
+                    getPadResource();
+                } else if (intent.getAction().equals(ACTION_SEARCH_RECEIVER)) {
+                    String keyword = intent.getStringExtra(KEY_KEYWORD);
+                    log("搜索关键字：" + keyword);
+                    if (isEmpty(keyword)) {
+                        mKeyword = "";
+                    } else {
+                        mKeyword = keyword;
+                    }
+                    getPadResource();
+                }
+            }
         }
     }
 }
